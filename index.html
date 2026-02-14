@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Alexandre Gaillard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<style>
+/* ─────────────────────────────────────────────
+   RESET
+───────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ─────────────────────────────────────────────
+   SITE TOKENS
+───────────────────────────────────────────── */
+:root{
+  /* site palette */
+  --text:#1a1a1a; --muted:#5a5a5a; --faint:#999;
+  --bg:#fff; --accent:#7a2020; --green:#2a6035; --border:#e2e2e2;
+  --max-w:1140px;
+  /* explorer palette (prefixed e-) */
+  --e-bg:#f7f6f3; --e-surface:#fff; --e-card:#fff; --e-border:#e2e0da;
+  --e-accent:#c9440f; --e-accent2:#2c5faa; --e-accent3:#287a52; --e-accent4:#7b3fa0;
+  --e-text:#1a1a1a; --e-muted:#888580;
+  --font-d:'DM Serif Display',serif;
+  --font-s:'DM Sans',sans-serif;
+  --font-m:'DM Mono',monospace;
+  --r:8px;
+  --nav-h:52px;   /* site nav height — used for sticky offsets */
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font-s);font-weight:300;font-size:14px;line-height:1.7;overflow-x:hidden}
+
+/* ─────────────────────────────────────────────
+   SITE NAV
+───────────────────────────────────────────── */
+.site-nav{
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;
+  background:#fff;
+  z-index:200;
+}
+.site-nav-inner{
+  max-width:var(--max-w);margin:0 auto;padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:var(--nav-h);
+}
+.nav-left{display:flex;align-items:center;gap:.75rem}
+
+.brown-logo{display:flex;align-items:center;text-decoration:none;flex-shrink:0;height:var(--nav-h);overflow:hidden}
+.brown-logo img{height:var(--nav-h);width:auto;object-fit:cover;object-position:center;display:block}
+
+.nav-divider{width:1px;height:18px;background:var(--border);flex-shrink:0}
+
+.nav-brand{font-family:'Lora',serif;font-size:1rem;color:var(--text);text-decoration:none;white-space:nowrap}
+
+.nav-tabs{display:flex;list-style:none}
+.nav-tabs button{
+  background:none;border:none;cursor:pointer;
+  font-family:var(--font-s);font-size:.83rem;font-weight:300;color:var(--muted);
+  padding:0 1.1rem;height:var(--nav-h);
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .15s,border-color .15s;
+}
+.nav-tabs button.active{color:var(--text);border-bottom-color:var(--text)}
+.nav-tabs button:hover:not(.active){color:var(--text)}
+
+/* ─────────────────────────────────────────────
+   PANEL SWITCHER
+───────────────────────────────────────────── */
+.panel{display:none}.panel.active{display:block}
+
+/* ─────────────────────────────────────────────
+   SITE WRAP
+───────────────────────────────────────────── */
+.wrap{max-width:var(--max-w);margin:0 auto;padding:0 2rem}
+
+/* ─────────────────────────────────────────────
+   HOME — two-column layout
+───────────────────────────────────────────── */
+.home-layout{
+  display:grid;grid-template-columns:250px 1fr;gap:0 2rem;
+  padding:2rem 0 5rem;align-items:start;
+}
+.home-sidebar{
+  position:sticky;top:calc(var(--nav-h) + 20px);
+  display:flex;flex-direction:column;gap:1rem;
+}
+.hero-photo{width:250px;height:318px;overflow:hidden;border-radius:2px;flex-shrink:0}
+.hero-photo img{width:100%;height:100%;object-fit:cover;object-position:center top}
+
+h1{font-family:'Lora',serif;font-size:1.25rem;font-weight:400;line-height:1.3;margin-bottom:.1rem}
+.hero-role{font-size:.78rem;color:var(--muted);line-height:1.5;margin-bottom:.5rem}
+.hero-bio{font-size:.79rem;color:var(--muted);line-height:1.7;margin-bottom:.55rem}
+.hero-bio a{color:var(--text);text-decoration:underline;text-decoration-color:#ccc;text-underline-offset:2px}
+.hero-bio a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+.hero-meta{display:flex;flex-direction:column;gap:.12rem;font-size:.76rem;color:var(--muted)}
+.hero-meta a{color:var(--accent);text-decoration:none}.hero-meta a:hover{text-decoration:underline}
+.meta-row{display:flex;gap:.4rem;align-items:baseline;flex-wrap:wrap}
+.meta-label{color:var(--faint);font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0;width:3.8rem}
+
+/* papers */
+.main-content{min-width:0}
+section{margin-bottom:2rem}
+.section-title{font-family:'Lora',serif;font-size:.68rem;font-style:italic;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.paper-list{display:flex;flex-direction:column}
+.paper{padding:.6rem 0}
+.paper-status{font-size:.72rem;font-weight:300;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.08rem;line-height:1.3}
+.paper-status.status-rr{color:var(--accent);font-weight:600}
+.paper-title-row{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap;margin-bottom:.08rem}
+.paper-title{font-family:'Lora',serif;font-size:.87rem;font-style:italic;color:var(--text);text-decoration:none;line-height:1.4}
+a.paper-title:hover{color:var(--accent)}
+.pill-group{display:flex;gap:0;flex-wrap:wrap;flex-shrink:0;align-items:center}
+.pill{display:inline-block;font-size:.63rem;font-weight:300;color:#aaa;background:none;border:none;padding:.05rem .3rem;text-decoration:none;white-space:nowrap;transition:color .15s;line-height:1.6}
+.pill:hover{color:var(--accent)}
+.pill+.pill::before{content:'·';margin-right:.3rem;color:#ccc}
+.paper-info{font-size:.75rem;color:var(--muted);line-height:1.55}
+.journal-pub{font-style:italic;color:var(--accent);font-weight:500}
+
+/* footer */
+footer{border-top:1px solid var(--border);margin-top:2rem;padding:1.2rem 0 2.5rem}
+footer .wrap{display:flex;justify-content:space-between;font-size:.7rem;color:var(--faint)}
+footer a{color:var(--faint);text-decoration:none}
+footer a:hover{color:var(--accent)}
+
+/* ─────────────────────────────────────────────
+   MORE PAGE
+───────────────────────────────────────────── */
+.more-wrap{max-width:var(--max-w);margin:0 auto;padding:2.5rem 2rem 5rem}
+.more-intro{font-size:.87rem;color:var(--muted);line-height:1.75;max-width:54ch;margin-bottom:2.2rem;padding-bottom:2.2rem;border-bottom:1px solid var(--border)}
+.more-section{margin-bottom:2.2rem}
+.more-section-title{font-family:'Lora',serif;font-size:.68rem;font-style:italic;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.more-text{font-size:.84rem;color:var(--muted);line-height:1.75;max-width:56ch;margin-bottom:.8rem}
+.more-hobby-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.8rem}
+.hobby-card{border:1px solid var(--border);border-radius:3px;padding:1rem 1.2rem}
+.hobby-icon{font-size:1.3rem;margin-bottom:.4rem}
+.hobby-title{font-family:'Lora',serif;font-size:.85rem;font-style:italic;margin-bottom:.25rem}
+.hobby-desc{font-size:.77rem;color:var(--muted);line-height:1.6}
+.more-link-item{font-size:.82rem;color:var(--muted);margin-bottom:.4rem}
+.more-link-item a{color:var(--accent);text-decoration:none}
+.more-link-item a:hover{text-decoration:underline}
+
+/* ─────────────────────────────────────────────
+   EXPLORER — scoped under #panel-explorer
+   Original styles from the standalone file,
+   adapted: no standalone <header>, sticky
+   offsets account for the 52px site nav.
+   The explorer sub-nav sticks at top:52px.
+   The explorer sidebar sticks at top:52px+42px=94px.
+───────────────────────────────────────────── */
+#panel-explorer{background:var(--e-bg);color:var(--e-text);font-family:var(--font-s);font-weight:300}
+
+/* splash (fixed, covers everything below site nav) */
+#exp-splash{
+  position:fixed;inset:0;top:var(--nav-h);
+  background:var(--e-bg);display:flex;align-items:center;justify-content:center;
+  z-index:100;transition:opacity .4s;
+}
+.sp-inner{display:flex;flex-direction:column;align-items:center;gap:1.1rem;text-align:center}
+.sp-title{font-family:var(--font-d);font-size:3.4rem;letter-spacing:-.02em;color:var(--e-text);line-height:1}
+.sp-title em{font-style:italic;color:var(--e-accent)}
+.sp-sub{font-family:var(--font-m);font-size:.78rem;color:var(--e-muted);letter-spacing:.08em;margin-bottom:.3rem}
+.sp-loader{display:flex;flex-direction:column;align-items:center;gap:.7rem;margin-top:.4rem;width:260px}
+.sp-bar-wrap{width:100%;height:3px;background:var(--e-border);border-radius:4px;overflow:hidden}
+.sp-bar{height:100%;width:0%;background:var(--e-accent);border-radius:4px;transition:width .35s ease}
+.sp-status{font-family:var(--font-m);font-size:.68rem;color:var(--e-muted);letter-spacing:.06em}
+.sp-err{font-family:var(--font-m);font-size:.74rem;color:#b84040;display:none;max-width:340px}
+
+/* explorer sub-nav — sticks right below the site nav */
+#panel-explorer .exp-nav{
+  display:flex;border-bottom:1px solid var(--e-border);
+  background:#fff;padding:0 2.5rem;
+  position:sticky;top:var(--nav-h);z-index:40;
+  overflow-x:auto;
+}
+#panel-explorer .exp-nav-tab{
+  padding:.72rem 1.3rem;font-family:var(--font-s);font-size:.84rem;font-weight:500;
+  color:var(--e-muted);border:none;background:none;cursor:pointer;
+  border-bottom:2px solid transparent;transition:color .15s,border-color .15s;white-space:nowrap;
+}
+#panel-explorer .exp-nav-tab:hover{color:var(--e-text)}
+#panel-explorer .exp-nav-tab.active{color:var(--e-accent);border-bottom-color:var(--e-accent)}
+
+/* layout grid */
+#panel-explorer .exp-layout{
+  display:grid;grid-template-columns:255px 1fr;
+  min-height:calc(100vh - var(--nav-h) - 42px);
+}
+
+/* explorer sidebar */
+#panel-explorer .exp-sidebar{
+  background:var(--e-surface);border-right:1px solid var(--e-border);
+  padding:1.1rem .95rem;overflow-y:auto;
+  position:sticky;top:calc(var(--nav-h) + 42px);
+  height:calc(100vh - var(--nav-h) - 42px);
+}
+#panel-explorer .sb-sec{margin-bottom:1.1rem}
+#panel-explorer .sb-lbl{font-family:var(--font-m);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--e-muted);margin-bottom:.38rem;padding-bottom:.22rem;border-bottom:1px solid var(--e-border)}
+#panel-explorer select{width:100%;background:var(--e-card);border:1px solid var(--e-border);color:var(--e-text);font-family:var(--font-s);font-size:.79rem;padding:.4rem .55rem;border-radius:var(--r);appearance:none;cursor:pointer;outline:none;transition:border-color .2s}
+#panel-explorer select:hover,#panel-explorer select:focus{border-color:var(--e-accent2)}
+#panel-explorer .pg{display:flex;flex-wrap:wrap;gap:.26rem}
+#panel-explorer .pg1 .epill{flex:1 0 100%}
+#panel-explorer .pg3 .epill{flex:1 0 calc(33.3% - .26rem)}
+#panel-explorer .epill{flex:1 0 calc(50% - .26rem);background:var(--e-card);border:1px solid var(--e-border);color:var(--e-muted);font-family:var(--font-m);font-size:.65rem;padding:.3rem .32rem;border-radius:20px;cursor:pointer;text-align:center;transition:all .15s;user-select:none}
+#panel-explorer .epill:hover{border-color:var(--e-accent2);color:var(--e-accent2)}
+#panel-explorer .epill.active{background:var(--e-accent2);border-color:var(--e-accent2);color:#fff;font-weight:500}
+#panel-explorer .ck-list{display:flex;flex-direction:column;gap:.35rem}
+#panel-explorer .ck-item{display:flex;align-items:center;gap:.42rem;cursor:pointer;font-size:.75rem;color:var(--e-muted);transition:color .14s;line-height:1.4}
+#panel-explorer .ck-item:hover{color:var(--e-text)}
+#panel-explorer .ck-item input{accent-color:var(--e-accent2);width:13px;height:13px}
+#panel-explorer .cdot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* explorer main */
+#panel-explorer main{padding:1.4rem 1.8rem;display:flex;flex-direction:column;gap:1.3rem;background:var(--e-bg)}
+#panel-explorer .tab-page{display:none;flex-direction:column;gap:1.3rem}
+#panel-explorer .tab-page.active{display:flex}
+
+/* kpi */
+#panel-explorer .kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem}
+#panel-explorer .kpi{background:var(--e-card);border:1px solid var(--e-border);border-radius:var(--r);padding:.8rem .95rem;position:relative;overflow:hidden}
+#panel-explorer .kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--e-accent);opacity:.7}
+#panel-explorer .kpi:nth-child(2)::before{background:var(--e-accent2)}
+#panel-explorer .kpi:nth-child(3)::before{background:var(--e-accent3)}
+#panel-explorer .kpi:nth-child(4)::before{background:var(--e-accent4)}
+#panel-explorer .kpi-lbl{font-family:var(--font-m);font-size:.58rem;color:var(--e-muted);letter-spacing:.09em;text-transform:uppercase;margin-bottom:.28rem}
+#panel-explorer .kpi-val{font-family:var(--font-d);font-size:1.5rem;color:var(--e-text);line-height:1}
+#panel-explorer .kpi-sub{font-size:.65rem;color:var(--e-muted);margin-top:.2rem;font-family:var(--font-m)}
+
+/* panels */
+#panel-explorer .g2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+#panel-explorer .epanel{background:var(--e-card);border:1px solid var(--e-border);border-radius:var(--r);padding:1.1rem 1.3rem}
+#panel-explorer .epanel.wide{grid-column:1/-1}
+#panel-explorer .pt{font-family:var(--font-d);font-size:.98rem;color:var(--e-text);margin-bottom:.16rem}
+#panel-explorer .ps{font-size:.68rem;font-family:var(--font-m);color:var(--e-muted);margin-bottom:.85rem;letter-spacing:.04em}
+#panel-explorer .cw{position:relative;height:230px}
+#panel-explorer .cw-tall{position:relative;height:310px}
+#panel-explorer .cw-sq{position:relative;height:420px}
+#panel-explorer .nodata{display:flex;align-items:center;justify-content:center;height:100%;font-family:var(--font-m);font-size:.73rem;color:var(--e-muted)}
+
+/* bivar */
+#panel-explorer .bv-ctrl{display:grid;grid-template-columns:1fr auto 1fr;gap:.6rem;margin-bottom:.7rem;align-items:end}
+#panel-explorer .bv-ctrl label{font-family:var(--font-m);font-size:.61rem;color:var(--e-muted);display:block;margin-bottom:.16rem;text-transform:uppercase;letter-spacing:.07em}
+#panel-explorer .vs{font-family:var(--font-d);font-size:1.05rem;color:var(--e-accent);text-align:center;padding-bottom:.28rem}
+#panel-explorer .tgl-row{display:flex;gap:.35rem;align-items:center;margin-bottom:.65rem;flex-wrap:wrap}
+#panel-explorer .tgl-row span{font-family:var(--font-m);font-size:.62rem;color:var(--e-muted);margin-right:.15rem}
+#panel-explorer .tgl{background:var(--e-card);border:1px solid var(--e-border);color:var(--e-muted);font-family:var(--font-m);font-size:.65rem;padding:.26rem .6rem;border-radius:20px;cursor:pointer;transition:all .14s}
+#panel-explorer .tgl:hover{border-color:var(--e-accent2);color:var(--e-accent2)}
+#panel-explorer .tgl.active{background:var(--e-accent2);border-color:var(--e-accent2);color:#fff}
+
+/* table */
+#panel-explorer .tbl-wrap{overflow-x:auto}
+#panel-explorer table{width:100%;border-collapse:collapse;font-family:var(--font-m);font-size:.68rem}
+#panel-explorer th{padding:.4rem .52rem;border-bottom:1px solid var(--e-border);color:var(--e-muted);text-align:left;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap}
+#panel-explorer td{padding:.34rem .52rem;border-bottom:1px solid var(--e-border);color:var(--e-text);white-space:nowrap}
+#panel-explorer tr:hover td{background:rgba(44,95,170,.04)}
+#panel-explorer .num{text-align:right;color:var(--e-accent2)}
+
+/* codebook */
+#panel-explorer .cb-group{margin-bottom:1.6rem}
+#panel-explorer .cb-group-title{font-family:var(--font-d);font-size:1rem;color:var(--e-accent2);margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid var(--e-border)}
+#panel-explorer .cb-entry{display:grid;grid-template-columns:200px 1fr;gap:.5rem 1rem;padding:.45rem 0;border-bottom:1px solid var(--e-border);align-items:start;font-size:.78rem}
+#panel-explorer .cb-entry:last-child{border-bottom:none}
+#panel-explorer .cb-key{font-family:var(--font-m);font-size:.68rem;color:var(--e-accent2);padding-top:.05rem}
+#panel-explorer .cb-name{font-weight:600;color:var(--e-text);margin-bottom:.15rem;font-size:.8rem}
+#panel-explorer .cb-desc{color:var(--e-muted);line-height:1.5}
+
+/* footnote */
+#panel-explorer .exp-footnote{padding:.9rem 2.5rem;border-top:1px solid var(--e-border);background:#fff;font-family:var(--font-m);font-size:.62rem;color:var(--e-muted);line-height:1.6}
+#panel-explorer .exp-footnote strong{color:var(--e-text);font-weight:500}
+
+/* scrollbar */
+#panel-explorer ::-webkit-scrollbar{width:4px;height:4px}
+#panel-explorer ::-webkit-scrollbar-track{background:transparent}
+#panel-explorer ::-webkit-scrollbar-thumb{background:var(--e-border);border-radius:4px}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────────── */
+@media(max-width:720px){
+  /* home */
+  .home-layout{grid-template-columns:1fr;padding-top:1.5rem}
+  .home-sidebar{position:static;flex-direction:row;align-items:flex-start;gap:1rem}
+  .hero-photo{width:110px;height:140px;flex-shrink:0}
+  /* extra breathing room between photo block and first paper section */
+  .main-content{margin-top:2rem}
+  /* more */
+  .more-hobby-grid{grid-template-columns:1fr}
+  footer .wrap{flex-direction:column;gap:.3rem}
+  /* nav */
+  .nav-tabs button{padding:0 .6rem;font-size:.74rem}
+  .nav-brand{font-size:.87rem}
+  /* explorer */
+  #panel-explorer .exp-layout{grid-template-columns:1fr}
+  #panel-explorer .exp-sidebar{position:static;height:auto}
+  #panel-explorer .kpi-row{grid-template-columns:1fr 1fr}
+  #panel-explorer .g2{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .site-nav-inner{padding:0 1rem}
+  .nav-tabs button{padding:0 .45rem;font-size:.7rem}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     SITE NAV
+═══════════════════════════════════════════ -->
+<nav class="site-nav">
+  <div class="site-nav-inner">
+    <div class="nav-left">
+      <a class="brown-logo" href="https://economics.brown.edu/" target="_blank" title="Brown University">
+        <img src="https://logos-world.net/wp-content/uploads/2022/11/Brown-University-Symbol.png" alt="Brown University"/>
+      </a>
+      <div class="nav-divider"></div>
+      <a class="nav-brand" href="#" onclick="siteTab('home',document.querySelector('.nav-tabs button'));return false;">Alexandre Gaillard</a>
+    </div>
+    <ul class="nav-tabs">
+      <li><button class="active" onclick="siteTab('home',this)">Home</button></li>
+      <li><button onclick="siteTab('explorer',this)">Inequality Explorer</button></li>
+      <li><button onclick="siteTab('more',this)">More</button></li>
+      <li><button onclick="window.open('https://drive.google.com/file/d/10_Kg-LkSiRxwDqm-Ik7PusROsZfWGQ1E/view','_blank')">CV</button></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HOME
+═══════════════════════════════════════════ -->
+<div class="panel active" id="panel-home">
+<div class="wrap">
+<div class="home-layout">
+
+  <aside class="home-sidebar">
+    <div class="hero-photo">
+      <img src="https://cdn.prod.website-files.com/679d8dc97386dcb29b493dd8/679d8e74c23ed7847fc6cee4_agaillard%20(5).jpg" alt="Alexandre Gaillard"/>
+    </div>
+    <div>
+      <h1>Alexandre Gaillard</h1>
+      <p class="hero-role">Assistant Professor of Economics<br>Brown University</p>
+      <p class="hero-bio">Previously postdoc at <a href="https://economics.princeton.edu/" target="_blank">Princeton</a> (2022–2023) and PhD from Toulouse School of Economics.</p>
+      <div class="hero-meta">
+        <div class="meta-row"><span class="meta-label">Research</span><span>Macro · Inequality · Entrepreneurship · Trade</span></div>
+        <div class="meta-row"><span class="meta-label">Contact</span><a href="mailto:agaillard@brown.edu">agaillard@brown.edu</a></div>
+        <div class="meta-row"><span class="meta-label">CV</span><a href="https://drive.google.com/file/d/10_Kg-LkSiRxwDqm-Ik7PusROsZfWGQ1E/view" target="_blank">Download →</a></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+
+    <section>
+      <p class="section-title">Working Papers</p>
+      <div class="paper-list">
+        <div class="paper">
+          <p class="paper-status status-rr">R&R — Quarterly Journal of Economics</p>
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://www.dropbox.com/scl/fi/bxfxrio8taz6bywwjqcvu/GHWW_2024.pdf?rlkey=8d9oymi9jdagybvwriringwy5&dl=0" target="_blank">Consumption, Wealth, and Income Inequality: A Tale of Tails</a>
+            <div class="pill-group"><a class="pill" href="https://www.dropbox.com/scl/fi/bxfxrio8taz6bywwjqcvu/GHWW_2024.pdf?rlkey=8d9oymi9jdagybvwriringwy5&dl=0" target="_blank">PDF</a></div>
+          </div>
+          <p class="paper-info">with C. Hellwig, P. Wangner, and N. Werquin — October 2023</p>
+        </div>
+        <div class="paper">
+          <p class="paper-status status-rr">R&R — American Economic Journal: Economic Policy</p>
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://www.dropbox.com/scl/fi/3stijfuf4i6v2erkoompb/UIGSE.pdf?rlkey=vx3ysenkeh9r0jb6cwg3vxzjg&dl=0" target="_blank">Unemployment Insurance Generosity and Self-Employment</a>
+            <div class="pill-group">
+              <a class="pill" href="https://www.dropbox.com/scl/fi/3stijfuf4i6v2erkoompb/UIGSE.pdf?rlkey=vx3ysenkeh9r0jb6cwg3vxzjg&dl=0" target="_blank">PDF</a>
+              <a class="pill" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3902165" target="_blank">SSRN</a>
+              <a class="pill" href="https://www.dropbox.com/scl/fi/6pbi37ukvj4ho5m2kurm4/UIGSE_OA.pdf?rlkey=faboq51xlv7i4393cbhktwhm4&dl=0" target="_blank">Appendix</a>
+            </div>
+          </div>
+          <p class="paper-info">with S. Kankanamge — April 2025</p>
+        </div>
+        <div class="paper">
+          <p class="paper-status" style="color:var(--faint);">Working Paper — New version coming soon</p>
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4292481" target="_blank">Inequality, Business Cycles, and Growth: A Unified Approach to Stabilization Policies</a>
+            <div class="pill-group"><a class="pill" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4292481" target="_blank">SSRN</a></div>
+          </div>
+          <p class="paper-info">with P. Wangner — December 2022</p>
+        </div>
+        <div class="paper">
+          <p class="paper-status" style="color:var(--faint);">Working Paper — New version coming soon</p>
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://drive.google.com/file/d/1XjdLoS3d4sO_ZZ-idTOA0wiOTmkt8Iqj/view?usp=sharing" target="_blank">Wealth, Returns, and Taxation: A Tale of Two Dependencies</a>
+            <div class="pill-group">
+              <a class="pill" href="https://drive.google.com/file/d/1XjdLoS3d4sO_ZZ-idTOA0wiOTmkt8Iqj/view?usp=sharing" target="_blank">PDF</a>
+              <a class="pill" href="https://drive.google.com/file/d/1_h_wsApxQAPmu8zuj7CWXRjMZ-9Sixw-/view?usp=sharing" target="_blank">Appendix</a>
+              <a class="pill" href="https://drive.google.com/file/d/1bct4Pm8D4On_idKjh6VY2x7lBkffQ5oQ/view" target="_blank">NBER Slides</a>
+            </div>
+          </div>
+          <p class="paper-info">with P. Wangner — November 2023</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-title">Published & Accepted</p>
+      <div class="paper-list">
+        <div class="paper">
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://www.aeaweb.org/articles?id=10.1257/mac.20210192&&from=f" target="_blank">Trade, Value Added, and Productivity Linkages: A Quantitative Analysis</a>
+            <div class="pill-group">
+              <a class="pill" href="https://www.aeaweb.org/articles?id=10.1257/mac.20210192&&from=f" target="_blank">Journal</a>
+              <a class="pill" href="https://www.aeaweb.org/content/file?id=22766" target="_blank">Appendix</a>
+            </div>
+          </div>
+          <p class="paper-info">with F. de Soyres — <span class="journal-pub">American Economic Journal: Macroeconomics</span>, forthcoming 2025</p>
+        </div>
+        <div class="paper">
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://www.journals.uchicago.edu/doi/10.1086/732765" target="_blank">From Unemployment to Self-Employment: An Evaluation of the SEA Programs</a>
+            <div class="pill-group">
+              <a class="pill" href="https://www.journals.uchicago.edu/doi/10.1086/732765" target="_blank">Journal</a>
+              <a class="pill" href="https://drive.google.com/file/d/1LzfakfiXCVJOPNIyAwQYbp45_FGW7vm7/view?usp=sharing" target="_blank">WP</a>
+              <a class="pill" href="https://drive.google.com/file/d/14_dAMJ37E5iX7Gdjuw9Y525gThh91lBx/view?usp=sharing" target="_blank">Appendix</a>
+            </div>
+          </div>
+          <p class="paper-info">with S. Kankanamge — <span class="journal-pub">Journal of Labor Economics</span>, January 2026</p>
+        </div>
+        <div class="paper">
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://www.aeaweb.org/articles?id=10.1257/pandp.20241099" target="_blank">Supply Disruptions and Fiscal Stimulus: Transmission through Global Value Chains</a>
+            <div class="pill-group"><a class="pill" href="https://www.aeaweb.org/articles?id=10.1257/pandp.20241099" target="_blank">Journal</a></div>
+          </div>
+          <p class="paper-info">with F. De Soyres, A. M. Santacreu, D. Moore — <span class="journal-pub">AEA Papers and Proceedings</span>, May 2024</p>
+        </div>
+        <div class="paper">
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://www.sciencedirect.com/science/article/pii/S0165188922000586" target="_blank">Global Trade and GDP Comovement</a>
+            <div class="pill-group"><a class="pill" href="https://www.sciencedirect.com/science/article/pii/S0165188922000586" target="_blank">Journal</a></div>
+          </div>
+          <p class="paper-info">with F. de Soyres — <span class="journal-pub">Journal of Economic Dynamics and Control</span>, May 2022</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-title">Work in Progress</p>
+      <div class="paper-list">
+        <div class="paper">
+          <div class="paper-title-row"><span class="paper-title" style="cursor:default;">Extreme Poverty in Wealthy Nations: Evidence from France</span></div>
+          <p class="paper-info">with C. Bruneel Zupanc, C. Hellwig, P. Wangner, N. Werquin</p>
+        </div>
+        <div class="paper">
+          <div class="paper-title-row"><span class="paper-title" style="cursor:default;">The Savings Wedge</span></div>
+          <p class="paper-info">with W. Morrison and P. Wangner</p>
+        </div>
+        <div class="paper">
+          <div class="paper-title-row"><span class="paper-title" style="cursor:default;">Wealth Dynamics and Serial Business Ownership</span></div>
+          <p class="paper-info">with S. Kankanamge, O. Karabulut</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="section-title">Older Working Papers</p>
+      <div class="paper-list">
+        <div class="paper">
+          <div class="paper-title-row">
+            <a class="paper-title" href="https://drive.google.com/file/d/1gOwcb7UZ8XcPPCZiQufNUORow5zqqBgA/view?usp=sharing" target="_blank">Buying and Selling Business Assets</a>
+            <div class="pill-group"><a class="pill" href="https://drive.google.com/file/d/1gOwcb7UZ8XcPPCZiQufNUORow5zqqBgA/view?usp=sharing" target="_blank">PDF</a></div>
+          </div>
+          <p class="paper-info">with S. Kankanamge — June 2020</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+</div>
+<footer>
+  <div class="wrap">
+    <span>© 2025 Alexandre Gaillard — Last updated January 2025</span>
+    <span><a href="mailto:agaillard@brown.edu">agaillard@brown.edu</a></span>
+  </div>
+</footer>
+</div><!-- /panel-home -->
+
+<!-- ═══════════════════════════════════════════
+     INEQUALITY EXPLORER
+     Canonical HTML from standalone file,
+     minus the standalone <header> block.
+     Class names scoped under #panel-explorer
+     via CSS above. JS uses same function names
+     as the original — no conflicts since home
+     and explorer have separate namespaces.
+═══════════════════════════════════════════ -->
+<div class="panel" id="panel-explorer">
+
+  <!-- splash: covers area below site nav -->
+  <div id="exp-splash">
+    <div class="sp-inner">
+      <div class="sp-title">Inequality <em>Explorer</em></div>
+      <div class="sp-sub">GHWW · PSID Panel · United States</div>
+      <div class="sp-loader">
+        <div class="sp-bar-wrap"><div class="sp-bar" id="spBar"></div></div>
+        <div class="sp-status" id="spStatus">Initialising…</div>
+      </div>
+      <div class="sp-err" id="spErr"></div>
+    </div>
+  </div>
+
+  <!-- explorer sub-nav (sticks below site nav) -->
+  <nav class="exp-nav">
+    <button class="exp-nav-tab active" onclick="expSwitchTab('overview',this)">Overview</button>
+    <button class="exp-nav-tab"        onclick="expSwitchTab('dist',this)">Distribution &amp; Trends</button>
+    <button class="exp-nav-tab"        onclick="expSwitchTab('bivar',this)">Bivariate</button>
+    <button class="exp-nav-tab"        onclick="expSwitchTab('table',this)">Table</button>
+    <button class="exp-nav-tab"        onclick="expSwitchTab('codebook',this)">Codebook</button>
+  </nav>
+
+  <div class="exp-layout">
+  <aside class="exp-sidebar">
+    <div id="sbVarGroup">
+      <div class="sb-sec">
+        <div class="sb-lbl">Variable</div>
+        <select id="varSel" onchange="onVC()"><option>— load data —</option></select>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-lbl">Group</div>
+        <div class="pg pg1" id="grpPills">
+          <div class="epill active" data-g="consumption" onclick="setGrp(this)">Consumption</div>
+          <div class="epill"        data-g="income"      onclick="setGrp(this)">Income</div>
+          <div class="epill"        data-g="wealth"      onclick="setGrp(this)">Wealth</div>
+          <div class="epill"        data-g="savings"     onclick="setGrp(this)">Savings</div>
+        </div>
+      </div>
+    </div>
+    <div class="sb-sec" id="sbSufMulti">
+      <div class="sb-lbl">Adjustment</div>
+      <div class="ck-list" id="sufList"></div>
+    </div>
+    <div class="sb-sec" id="sbSufSingle" style="display:none">
+      <div class="sb-lbl">Adjustment</div>
+      <div class="ck-list" id="sufListBV"></div>
+    </div>
+    <div id="sbMetric">
+      <div class="sb-sec">
+        <div class="sb-lbl">Metric</div>
+        <div class="pg" id="metPills">
+          <div class="epill active" data-m="gini"         onclick="setMet(this)">Gini</div>
+          <div class="epill"        data-m="share_top10"  onclick="setMet(this)">Top 10%</div>
+          <div class="epill"        data-m="share_top1"   onclick="setMet(this)">Top 1%</div>
+          <div class="epill"        data-m="pareto_alpha" onclick="setMet(this)">Pareto α</div>
+          <div class="epill"        data-m="p90_p50"      onclick="setMet(this)">P90/P50</div>
+          <div class="epill"        data-m="p90_p10"      onclick="setMet(this)">P90/P10</div>
+          <div class="epill"        data-m="mean"         onclick="setMet(this)">Mean</div>
+          <div class="epill"        data-m="median"       onclick="setMet(this)">Median</div>
+        </div>
+      </div>
+      <div class="sb-sec">
+        <div class="sb-lbl">Chart type</div>
+        <div class="pg pg3" id="ctPills">
+          <div class="epill active" data-ct="line" onclick="setCT(this)">Line</div>
+          <div class="epill"        data-ct="bar"  onclick="setCT(this)">Bar</div>
+          <div class="epill"        data-ct="area" onclick="setCT(this)">Area</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <!-- OVERVIEW -->
+    <div class="tab-page active" id="tab-overview">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kpi-lbl">Latest Gini</div><div class="kpi-val" id="kpi-g">—</div><div class="kpi-sub" id="kpi-g-s">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Top 10% share</div><div class="kpi-val" id="kpi-t10">—</div><div class="kpi-sub" id="kpi-t10-s">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Top 1% share</div><div class="kpi-val" id="kpi-t1">—</div><div class="kpi-sub" id="kpi-t1-s">—</div></div>
+        <div class="kpi"><div class="kpi-lbl">Pareto α (P90)</div><div class="kpi-val" id="kpi-pa">—</div><div class="kpi-sub" id="kpi-pa-s">—</div></div>
+      </div>
+      <div class="epanel wide">
+        <div class="pt" id="ov-t">Select a variable</div>
+        <div class="ps" id="ov-s">Metric over time · all adjustment versions</div>
+        <div class="cw-tall"><canvas id="ovMain"></canvas><div class="nodata" id="ovND">Load data to begin</div></div>
+      </div>
+      <div class="g2">
+        <div class="epanel"><div class="pt">Percentile Profile</div><div class="ps">P10 · P25 · P50 · P75 · P90 · P99 — latest year</div><div class="cw"><canvas id="ovPerc"></canvas></div></div>
+        <div class="epanel"><div class="pt">Pareto Tail (Hill α)</div><div class="ps">Estimated above P90 — all versions</div><div class="cw"><canvas id="ovTail"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- DISTRIBUTION & TRENDS -->
+    <div class="tab-page" id="tab-dist">
+      <div class="epanel wide"><div class="pt">Percentile Ladder</div><div class="ps">P10 · P25 · P50 · P75 · P90 · P99 over time</div><div class="cw-tall"><canvas id="dsLadder"></canvas></div></div>
+      <div class="g2">
+        <div class="epanel"><div class="pt">Pareto α over time</div><div class="ps">Hill estimator above P90 · lower α = heavier tail · all adjustment versions</div><div class="cw"><canvas id="dsParetoTime"></canvas></div></div>
+        <div class="epanel"><div class="pt">P90/P50 &amp; P90/P10</div><div class="ps">Percentile ratios over time</div><div class="cw"><canvas id="trRatio"></canvas></div></div>
+      </div>
+      <div class="g2">
+        <div class="epanel"><div class="pt">Gini &amp; Top Shares</div><div class="ps">Gini (left axis) · top 10% &amp; top 1% shares (right axis)</div><div class="cw"><canvas id="trIneq"></canvas></div></div>
+        <div class="epanel"><div class="pt">Mean &amp; Median over time</div><div class="ps">Real 2023$ · solid = mean · dashed = median</div><div class="cw"><canvas id="trLev"></canvas></div></div>
+      </div>
+    </div>
+
+    <!-- BIVARIATE -->
+    <div class="tab-page" id="tab-bivar">
+      <div class="epanel wide">
+        <div class="bv-ctrl">
+          <div><label>X axis (sorting variable)</label><select id="bvX" onchange="renderBV()"><option>—</option></select></div>
+          <div class="vs">vs</div>
+          <div><label>Y axis</label><select id="bvY" onchange="renderBV()"><option>—</option></select></div>
+        </div>
+        <div class="tgl-row">
+          <span>Scale:</span>
+          <div class="tgl active" id="tLev" onclick="setBvSc('levels',this)">Levels</div>
+          <div class="tgl"        id="tLog" onclick="setBvSc('log',this)">Log</div>
+          <span style="margin-left:.7rem">Stat:</span>
+          <div class="tgl active" id="tMn" onclick="setBvSt('mean',this)">Mean</div>
+          <div class="tgl"        id="tMd" onclick="setBvSt('median',this)">Median</div>
+          <span style="margin-left:.7rem">Fit:</span>
+          <div class="tgl active" id="tFitLin" onclick="setBvFit('linear',this)">Linear</div>
+          <div class="tgl"        id="tFitSm"  onclick="setBvFit('smooth',this)">Smooth</div>
+        </div>
+        <div class="pt" id="bvTitle">—</div>
+        <div class="ps">Thin lines = individual years · dark red = pooled average · dashed blue = fit · dashed grey = 45° line</div>
+        <div class="cw-sq" style="position:relative">
+          <canvas id="bvChart"></canvas>
+          <div class="nodata" id="bvND" style="display:none">Load psid_bins.csv to use this tab</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="tab-page" id="tab-table">
+      <div class="epanel wide">
+        <div class="pt">Cross-variable Summary</div>
+        <div class="ps">All variables · latest year · first selected adjustment · click row to explore</div>
+        <div class="tbl-wrap">
+          <table><thead><tr>
+            <th>Variable</th><th class="num">Mean</th><th class="num">Median</th>
+            <th class="num">Gini</th><th class="num">Top 10%</th><th class="num">Top 1%</th>
+            <th class="num">Pareto α</th><th class="num">P90/P50</th><th class="num">P90/P10</th>
+          </tr></thead><tbody id="tblBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODEBOOK -->
+    <div class="tab-page" id="tab-codebook">
+      <div class="epanel wide">
+        <div class="pt">Variable Codebook</div>
+        <div class="ps">Definitions of all variables used in the dashboard — derived from PSID microdata</div>
+        <div id="cbContent"></div>
+      </div>
+    </div>
+  </main>
+  </div><!-- /exp-layout -->
+
+  <div class="exp-footnote">
+    <div><strong>Data:</strong> Panel Study of Income Dynamics (PSID), biennial waves 2005–2023. The PSID microdata have been cleaned and adjusted for misrepresentation and misreporting using: (i) adjustments to National Income and Product Accounts (NIPA) aggregates; (ii) reweighting to match the wealth distribution of the Survey of Consumer Finances (SCF); and (iii) reweighting to match the income distribution of IRS Statistics of Income records.</div>
+    <div style="margin-top:.45rem"><strong>Reference:</strong> Gaillard, A., Wangner, P., Hellwig, C. &amp; Werquin, N. (2023). "Consumption, wealth, and income inequality: A tale of tails." <em>SSRN Working Paper 4636704.</em></div>
+    <div style="margin-top:.45rem"><strong>Interface:</strong> This visualisation was built by Claude (Anthropic). At no point did the AI have access to household-level microdata — only the pre-computed aggregate statistics displayed here were provided as input. All data processing, cleaning, and estimation were performed entirely by the authors in R.</div>
+  </div>
+
+</div><!-- /panel-explorer -->
+
+<!-- ═══════════════════════════════════════════
+     MORE
+═══════════════════════════════════════════ -->
+<div class="panel" id="panel-more">
+  <div class="more-wrap">
+    <p class="more-intro">Some extra facts about myself. Outside of economics, I try to play tennis and drums — both with more enthusiasm than skill.</p>
+    <div class="more-section">
+      <p class="more-section-title">Hobbies</p>
+      <div class="more-hobby-grid">
+        <div class="hobby-card"><div class="hobby-icon">🎾</div><p class="hobby-title">Tennis</p><p class="hobby-desc">A lifelong work in progress. Playing regularly, mostly improving the mental game.</p></div>
+        <div class="hobby-card"><div class="hobby-icon">🥁</div><p class="hobby-title">Drums</p><p class="hobby-desc">Playing drums for fun. The gap between what I hear in my head and what comes out remains large.</p></div>
+      </div>
+    </div>
+    <div class="more-section">
+      <p class="more-section-title">Data</p>
+      <p class="more-text">I maintain a dataset on business transactions sourced from BizBuySell.com — ~100,000 small and mid-sized firm sales with information on asking price, selling price, capital, and firm age.</p>
+      <div class="more-link-item"><a href="https://www.a-gaillard.com/more/data" target="_blank">Business transfer dataset →</a></div>
+    </div>
+    <div class="more-section">
+      <p class="more-section-title">Teaching</p>
+      <p class="more-text">
+        <strong style="font-weight:400;">Brown University</strong> — Undergraduate Intermediate Macroeconomics (Spring 2024, 2025, 2026) · Graduate Macroeconomics (Spring 2026)<br>
+        <strong style="font-weight:400;">Toulouse School of Economics</strong> — Quantitative Macro (Fall 2024)
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════ -->
+<script>
+/* ── site panel switcher ── */
+function siteTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  btn.classList.add('active');
+  // lazy-load explorer the first time
+  if (name === 'explorer' && !window._expLoaded) { window._expLoaded = true; loadData(); }
+}
+
+/* ════════════════════════════════════════════
+   EXPLORER JS — verbatim from canonical file,
+   only change: switchTab → expSwitchTab
+   to avoid clashing with siteTab
+════════════════════════════════════════════ */
+let STATS=[],BINS=[];
+const S={variable:null,suffixes:['raw'],bvSuffix:'raw',metric:'gini',chartType:'line',group:'consumption',years:[],bvScale:'levels',bvStat:'mean',bvFit:'linear'};
+const SC={'raw':'#2c5faa','adj':'#c9440f','adj_rep_SCF':'#287a52','adj_rep_IRS':'#7b3fa0'};
+const SL={'raw':'Raw (survey)','adj':'Adjusted for NIPA','adj_rep_SCF':'Adjusted NIPA + reweighted → SCF','adj_rep_IRS':'Adjusted NIPA + reweighted → IRS'};
+const YC=['#2c5faa','#c9440f','#287a52','#7b3fa0','#b85c00','#006e7f','#8a3500','#3d6b00','#00437a','#5c005c'];
+const VN={'consump_def1':'Consumption (Def. 1 — budget constraint)','consump_def2':'Consumption (Def. 2 — NIPA consistent)','consump_def3':'Consumption (Def. 3 — fixed depreciation)','consump_def4':'Consumption (Def. 4 — instantaneous durable flow)','consump_def5':'Consumption (Def. 5 — excl. imputed rent)','consump_bp':'Consumption (Blundell et al.)','consump_bp_v2':'Consumption (Blundell et al. v2)','food_home_val':'Food at home','food_away_val':'Food away from home','health_val':'Health expenditure','home_service_val':'Housing services (incl. imputed rent)','home_util_val':'Home utilities','transportation_val':'Transportation','education_val':'Education','all_recreation_val':'Recreation','clothing_val':'Clothing','donations_total_val':'Donations','vehicle_purchases_val':'Vehicle purchases','furniture_val':'Furniture & household equipment','trip_conso':'Trips & vacations','energy_consumption':'Energy consumption','NIQ_consumption':'NielsenIQ-comparable consumption','SCF_consumption':'SCF-comparable consumption','SCF_consumption_v2':'SCF-comparable consumption v2','total_income':'Total income','total_labor_income':'Labor income','total_capital_income':'Capital income','total_transfer_income':'Transfer income','networth_val':'Net worth','liquid_wealth':'Liquid wealth','illiquid_wealth':'Illiquid wealth','realassets':'Real assets','financialassets':'Financial assets','net_savings_def1':'Net savings (Def. 1)','net_savings_def2':'Net savings (Def. 2)','net_savings_def3':'Net savings (Def. 3)','net_savings_def5':'Net savings (Def. 5)'};
+function vn(k){return VN[k]||k.replace(/_/g,' ');}
+const VG={consumption:['consump_def1','consump_def2','consump_def3','consump_def4','consump_def5','consump_bp','consump_bp_v2','food_home_val','food_away_val','health_val','home_service_val','home_util_val','transportation_val','education_val','all_recreation_val','clothing_val','donations_total_val','vehicle_purchases_val','furniture_val','trip_conso','energy_consumption','NIQ_consumption','SCF_consumption','SCF_consumption_v2'],income:['total_income','total_labor_income','total_capital_income','total_transfer_income'],wealth:['networth_val','liquid_wealth','illiquid_wealth','realassets','financialassets'],savings:['net_savings_def1','net_savings_def2','net_savings_def3','net_savings_def5']};
+const URL_STATS='https://cdn.prod.website-files.com/679d8dc97386dcb29b493dd8/698faff819e021d4962ecd50_psid_stats.csv';
+const URL_BINS='https://cdn.prod.website-files.com/679d8dc97386dcb29b493dd8/698fafc1086985d5b674d73b_psid_bins.csv';
+
+function setBar(p){document.getElementById('spBar').style.width=p+'%';}
+function setStatus(m){document.getElementById('spStatus').textContent=m;}
+function showErr(m){const e=document.getElementById('spErr');e.textContent=m;e.style.display='block';setStatus('Error — see below');}
+async function fetchCSV(url){const res=await fetch(url);if(!res.ok)throw new Error('HTTP '+res.status);const text=await res.text();const p=Papa.parse(text,{header:true,dynamicTyping:true,skipEmptyLines:true});if(!p.data||!p.data.length)throw new Error('Empty CSV');return p.data;}
+async function loadData(){
+  try{
+    await new Promise(r=>setTimeout(r,300));
+    setStatus('Loading statistics…');setBar(15);
+    STATS=await fetchCSV(URL_STATS);setBar(55);setStatus('Loading bin data…');
+    await new Promise(r=>setTimeout(r,200));
+    BINS=await fetchCSV(URL_BINS);setBar(90);setStatus('Rendering…');
+    await new Promise(r=>setTimeout(r,250));setBar(100);
+    await new Promise(r=>setTimeout(r,180));
+    const sp=document.getElementById('exp-splash');sp.style.opacity='0';setTimeout(()=>sp.style.display='none',380);
+    init();
+  }catch(e){console.error(e);showErr('Could not load data: '+e.message);}
+}
+function init(){
+  const vars=[...new Set(STATS.map(r=>r.variable))];
+  const years=[...new Set(STATS.map(r=>r.year))].sort((a,b)=>a-b);
+  const suffs=[...new Set(STATS.map(r=>r.suffix))].filter(Boolean);
+  const grpVars=(VG['consumption']||[]).filter(v=>vars.includes(v));
+  S.years=years;S.variable=grpVars[0]||vars[0];S.suffixes=[suffs[0]];S.bvSuffix=suffs[0];
+  buildSufList(suffs);buildVarSel(vars);buildBVSels();renderAll();renderTable();
+}
+function expSwitchTab(id,el){
+  document.querySelectorAll('#panel-explorer .tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.exp-nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');el.classList.add('active');
+  const isBV=id==='bivar',isCB=id==='codebook';
+  document.getElementById('sbVarGroup').style.display=(isBV||isCB)?'none':'block';
+  document.getElementById('sbSufMulti').style.display=(isBV||isCB)?'none':'block';
+  document.getElementById('sbSufSingle').style.display=isBV?'block':'none';
+  document.getElementById('sbMetric').style.display=(isBV||isCB)?'none':'block';
+  if(id==='bivar')renderBV();
+  if(id==='table')renderTable();
+  if(id==='codebook')renderCodebook();
+}
+function buildSufList(sf){
+  const el=document.getElementById('sufList');el.innerHTML='';
+  sf.forEach(s=>{const d=document.createElement('div');d.className='ck-item';const chk=S.suffixes.includes(s)?'checked':'';d.innerHTML=`<input type="checkbox" ${chk} onchange="togSuf('${s}',this.checked)"/><span class="cdot" style="background:${SC[s]||'#999'}"></span><span>${SL[s]||s}</span>`;el.appendChild(d);});
+  const el2=document.getElementById('sufListBV');el2.innerHTML='';
+  sf.forEach((s,i)=>{const d=document.createElement('div');d.className='ck-item';const chk=i===0?'checked':'';d.innerHTML=`<input type="radio" name="bvSuf" ${chk} onchange="setBvSuf('${s}')" style="accent-color:${SC[s]||'#999'};width:13px;height:13px"/><span class="cdot" style="background:${SC[s]||'#999'}"></span><span>${SL[s]||s}</span>`;el2.appendChild(d);});
+}
+function buildVarSel(vars){const sel=document.getElementById('varSel');sel.innerHTML='';const list=(VG[S.group]||[]).filter(v=>vars.includes(v));const show=list.length?list:vars;show.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=vn(v);if(v===S.variable)o.selected=true;sel.appendChild(o);});sel.onchange=()=>{S.variable=sel.value;renderAll();};if(show.length&&!show.includes(S.variable)){S.variable=show[0];sel.value=show[0];}}
+function buildBVSels(){if(!BINS.length)return;const xv=[...new Set(BINS.map(r=>r.xvar))],yv=[...new Set(BINS.map(r=>r.yvar))];const sx=document.getElementById('bvX');sx.innerHTML='';xv.forEach((v,i)=>{const o=document.createElement('option');o.value=v;o.textContent=vn(v);if(i===0)o.selected=true;sx.appendChild(o);});const sy=document.getElementById('bvY');sy.innerHTML='';yv.forEach((v,i)=>{const o=document.createElement('option');o.value=v;o.textContent=vn(v);if(i===0)o.selected=true;sy.appendChild(o);});}
+function onVC(){S.variable=document.getElementById('varSel').value;renderAll();}
+function togSuf(s,on){if(on){if(!S.suffixes.includes(s))S.suffixes.push(s);}else S.suffixes=S.suffixes.filter(x=>x!==s);renderAll();}
+function setMet(el){document.querySelectorAll('#metPills .epill').forEach(b=>b.classList.remove('active'));el.classList.add('active');S.metric=el.dataset.m;renderAll();}
+function setCT(el){document.querySelectorAll('#ctPills .epill').forEach(b=>b.classList.remove('active'));el.classList.add('active');S.chartType=el.dataset.ct;renderAll();}
+function setGrp(el){document.querySelectorAll('#grpPills .epill').forEach(b=>b.classList.remove('active'));el.classList.add('active');S.group=el.dataset.g;const vars=[...new Set(STATS.map(r=>r.variable))];buildVarSel(vars);renderAll();}
+function setBvSc(v,el){['tLev','tLog'].forEach(id=>document.getElementById(id).classList.remove('active'));el.classList.add('active');S.bvScale=v;renderBV();}
+function setBvSt(v,el){['tMn','tMd'].forEach(id=>document.getElementById(id).classList.remove('active'));el.classList.add('active');S.bvStat=v;renderBV();}
+function setBvFit(v,el){['tFitLin','tFitSm'].forEach(id=>document.getElementById(id).classList.remove('active'));el.classList.add('active');S.bvFit=v;renderBV();}
+function setBvSuf(s){S.bvSuffix=s;renderBV();}
+function fmtM(v,m){v=Number(v);if(!isFinite(v))return'—';if(['share_top10','share_top1','gini'].includes(m))return(v*100).toFixed(1)+'%';if(m==='pareto_alpha')return v.toFixed(2);if(['p90_p50','p90_p10'].includes(m))return v.toFixed(2)+'×';return v>=1000?'$'+Math.round(v/1000)+'k':'$'+Math.round(v);}
+function fmtN(v){v=Number(v);if(!isFinite(v))return'—';if(Math.abs(v)>=1e6)return'$'+(v/1e6).toFixed(1)+'M';if(Math.abs(v)>=1000)return'$'+Math.round(v/1000)+'k';return'$'+v.toFixed(0);}
+function fmtP(v){v=Number(v);return isFinite(v)?(v*100).toFixed(1)+'%':'—';}
+const CH={};
+function dc(id){if(CH[id]){CH[id].destroy();delete CH[id];}}
+function gr(v,s){return STATS.filter(r=>r.variable===v&&r.suffix===s).sort((a,b)=>a.year-b.year);}
+const CD={responsive:true,maintainAspectRatio:false,animation:{duration:320},plugins:{legend:{labels:{color:'#888580',font:{family:'DM Mono',size:10},boxWidth:10}}},scales:{x:{ticks:{color:'#888580',font:{family:'DM Mono',size:10}},grid:{color:'#ece9e3'}},y:{ticks:{color:'#888580',font:{family:'DM Mono',size:10}},grid:{color:'#ece9e3'}}}};
+function renderAll(){if(!STATS.length)return;const v=S.variable;if(!v)return;updKPI(v);renderOvMain(v);renderOvPerc(v);renderOvTail(v);renderDsLadder(v);renderDsParetoTime(v);renderTrRatio(v);renderTrIneq(v);renderTrLev(v);}
+function updKPI(v){const s=S.suffixes[0]||'raw',rows=gr(v,s),last=rows[rows.length-1];if(!last)return;document.getElementById('kpi-g').textContent=last.gini!=null?(last.gini*100).toFixed(1)+'%':'—';document.getElementById('kpi-t10').textContent=fmtP(last.share_top10);document.getElementById('kpi-t1').textContent=fmtP(last.share_top1);document.getElementById('kpi-pa').textContent=last.pareto_alpha!=null?last.pareto_alpha.toFixed(2):'—';const lbl='yr '+last.year+' · '+(SL[s]||s);['g','t10','t1','pa'].forEach(k=>document.getElementById('kpi-'+k+'-s').textContent=lbl);}
+function renderOvMain(v){dc('ovm');document.getElementById('ovND').style.display='none';document.getElementById('ov-t').textContent=vn(v);document.getElementById('ov-s').textContent=(document.querySelector('#metPills .epill.active')?.textContent||S.metric)+' · over time';const yrs=S.years,ds=S.suffixes.map(s=>{const rows=gr(v,s),ym=Object.fromEntries(rows.map(r=>[r.year,r[S.metric]])),isB=S.chartType==='bar';return{label:SL[s]||s,data:yrs.map(y=>ym[y]??null),borderColor:SC[s]||'#888',backgroundColor:(SC[s]||'#888')+(isB?'bb':'22'),borderWidth:2,pointRadius:4,tension:0.3,fill:S.chartType==='area',type:isB?'bar':'line',spanGaps:true};});if(!ds.length)return;CH['ovm']=new Chart(document.getElementById('ovMain'),{type:S.chartType==='bar'?'bar':'line',data:{labels:yrs,datasets:ds},options:{...CD,plugins:{...CD.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmtM(ctx.parsed.y,S.metric)}`}}},scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:v=>fmtM(v,S.metric)}}}}});}
+function renderOvPerc(v){dc('ovp');const s=S.suffixes[0]||'raw',rows=gr(v,s),last=rows[rows.length-1];if(!last)return;CH['ovp']=new Chart(document.getElementById('ovPerc'),{type:'bar',data:{labels:['P10','P25','P50','P75','P90','P99'],datasets:[{label:'Value',data:[last.p10,last.p25,last.p50,last.p75,last.p90,last.p99],backgroundColor:['#2c5faa22','#2c5faa44','#2c5faa77','#2c5faabb','#c9440fcc','#b84040cc'],borderColor:['#2c5faa','#2c5faa','#2c5faa','#2c5faa','#c9440f','#b84040'],borderWidth:1.5,borderRadius:3}]},options:{...CD,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>fmtN(ctx.parsed.y)}}},scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:fmtN}}}}});}
+function renderOvTail(v){dc('ovt');const yrs=S.years,ds=S.suffixes.map(s=>{const rows=gr(v,s),ym=Object.fromEntries(rows.map(r=>[r.year,r.pareto_alpha]));return{label:SL[s]||s,data:yrs.map(y=>ym[y]??null),borderColor:SC[s]||'#888',backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:0.25,spanGaps:true};});CH['ovt']=new Chart(document.getElementById('ovTail'),{type:'line',data:{labels:yrs,datasets:ds},options:{...CD,plugins:{...CD.plugins,tooltip:{callbacks:{label:ctx=>`α = ${ctx.parsed.y?.toFixed(3)}`}}},scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:v=>v?.toFixed(2)}}}}});}
+function renderTrLev(v){dc('trl');const yrs=S.years,ds=[];S.suffixes.forEach(s=>{const rows=gr(v,s),ymMn=Object.fromEntries(rows.map(r=>[r.year,r.mean])),ymMd=Object.fromEntries(rows.map(r=>[r.year,r.median])),c=SC[s]||'#888';ds.push({label:`Mean (${SL[s]})`,data:yrs.map(y=>ymMn[y]??null),borderColor:c,backgroundColor:c+'22',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true,fill:false});ds.push({label:`Median (${SL[s]})`,data:yrs.map(y=>ymMd[y]??null),borderColor:c,backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true,borderDash:[5,3],fill:false});});CH['trl']=new Chart(document.getElementById('trLev'),{type:'line',data:{labels:yrs,datasets:ds},options:{...CD,plugins:{...CD.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmtN(ctx.parsed.y)}`}}},scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:fmtN}}}}});}
+function renderTrIneq(v){dc('tri');const yrs=S.years,s=S.suffixes[0]||'raw',rows=gr(v,s),ymG=Object.fromEntries(rows.map(r=>[r.year,r.gini])),ymT10=Object.fromEntries(rows.map(r=>[r.year,r.share_top10])),ymT1=Object.fromEntries(rows.map(r=>[r.year,r.share_top1]));CH['tri']=new Chart(document.getElementById('trIneq'),{type:'line',data:{labels:yrs,datasets:[{label:'Gini',data:yrs.map(y=>ymG[y]??null),borderColor:'#2c5faa',backgroundColor:'#2c5faa22',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true,yAxisID:'y'},{label:'Top 10%',data:yrs.map(y=>ymT10[y]??null),borderColor:'#c9440f',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true,yAxisID:'y2'},{label:'Top 1%',data:yrs.map(y=>ymT1[y]??null),borderColor:'#287a52',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true,borderDash:[4,3],yAxisID:'y2'}]},options:{...CD,scales:{x:CD.scales.x,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:v=>fmtP(v)},title:{display:true,text:'Gini',color:'#888580',font:{family:'DM Mono',size:9}}},y2:{position:'right',ticks:{color:'#888580',font:{family:'DM Mono',size:10},callback:v=>fmtP(v)},grid:{display:false}}}}});}
+function renderTrRatio(v){dc('trr');const yrs=S.years,s=S.suffixes[0]||'raw',rows=gr(v,s),ym5050=Object.fromEntries(rows.map(r=>[r.year,r.p90_p50])),ym1090=Object.fromEntries(rows.map(r=>[r.year,r.p90_p10]));CH['trr']=new Chart(document.getElementById('trRatio'),{type:'line',data:{labels:yrs,datasets:[{label:'P90/P50',data:yrs.map(y=>ym5050[y]??null),borderColor:'#2c5faa',backgroundColor:'#2c5faa22',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true},{label:'P90/P10',data:yrs.map(y=>ym1090[y]??null),borderColor:'#c9440f',backgroundColor:'transparent',borderWidth:2,pointRadius:3,tension:0.3,spanGaps:true}]},options:{...CD,scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:v=>v?.toFixed(2)+'×'}}}}});}
+function renderDsLadder(v){dc('dsl');const yrs=S.years,s=S.suffixes[0]||'raw',pKeys=['p10','p25','p50','p75','p90','p99'],pLbl=['P10','P25','P50','P75','P90','P99'],ds=pKeys.map((k,ki)=>{const rows=gr(v,s),ym=Object.fromEntries(rows.map(r=>[r.year,r[k]])),a=['22','44','66','88','bb','ee'][ki];return{label:pLbl[ki],data:yrs.map(y=>ym[y]??null),borderColor:'#2c5faa'+a,backgroundColor:'transparent',borderWidth:ki===2?2.5:1.5,pointRadius:3,tension:0.3,spanGaps:true,borderDash:ki===2?[]:[3,3]};});CH['dsl']=new Chart(document.getElementById('dsLadder'),{type:'line',data:{labels:yrs,datasets:ds},options:{...CD,scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:fmtN}}}}});}
+function renderDsParetoTime(v){dc('dspt');const yrs=S.years,ds=S.suffixes.map(s=>{const rows=gr(v,s),ym=Object.fromEntries(rows.map(r=>[r.year,r.pareto_alpha]));return{label:SL[s]||s,data:yrs.map(y=>ym[y]??null),borderColor:SC[s]||'#888',backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:0.25,spanGaps:true};});CH['dspt']=new Chart(document.getElementById('dsParetoTime'),{type:'line',data:{labels:yrs,datasets:ds},options:{...CD,plugins:{...CD.plugins,tooltip:{callbacks:{label:ctx=>`α = ${ctx.parsed.y?.toFixed(3)}`}}},scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:v=>v?.toFixed(2)}}}}});}
+function renderCodebook(){const CB=[{group:'Consumption aggregates',entries:[{key:'consump_def1',name:'Consumption (Def. 1 — budget constraint)',desc:'Non-durables + durable consumption flows (running stock method) + housing services. Budget-constraint consistent measure; main definition used in the paper.'},{key:'consump_def2',name:'Consumption (Def. 2 — NIPA consistent)',desc:'Non-durables + durable expenditure (not flows) + housing services. Closest to NIPA personal consumption expenditure definition.'},{key:'consump_def3',name:'Consumption (Def. 3 — fixed depreciation)',desc:'Non-durables + 15% of durable expenditure (fixed depreciation rate) + housing services.'},{key:'consump_def4',name:'Consumption (Def. 4 — instantaneous durable flow)',desc:'Non-durables + instantaneous durable flow only (no stock carryover) + housing services.'},{key:'consump_def5',name:'Consumption (Def. 5 — excl. imputed rent)',desc:'Non-durables + durable expenditure + rent paid (not imputed owner rent). Close to Yodlee/expenditure-based measures.'},{key:'consump_bp',name:'Consumption (Blundell et al.)',desc:'Food at home + food away + health + utilities + transportation + education + housing services. Replicates the Blundell et al. (1998) basket.'},{key:'consump_bp_v2',name:'Consumption (Blundell et al. v2)',desc:'Blundell et al. basket plus recreation and clothing.'}]},{group:'Consumption sub-components',entries:[{key:'food_home_val',name:'Food at home',desc:'Expenditure on food consumed at home, adjusted to NIPA food aggregates.'},{key:'food_away_val',name:'Food away from home',desc:'Expenditure on food consumed outside the home (restaurants, cafeterias).'},{key:'health_val',name:'Health expenditure',desc:'Out-of-pocket health expenditure.'},{key:'home_service_val',name:'Housing services',desc:'Rental payments for renters; self-reported rental value for homeowners (imputed rent).'},{key:'home_util_val',name:'Home utilities',desc:'Heating and electricity expenditure.'},{key:'transportation_val',name:'Transportation',desc:'Transportation expenditure excluding vehicle purchases.'},{key:'education_val',name:'Education',desc:'Education-related expenditure.'},{key:'all_recreation_val',name:'Recreation',desc:'Total recreation expenditure.'},{key:'clothing_val',name:'Clothing',desc:'Clothing and apparel expenditure.'},{key:'donations_total_val',name:'Donations',desc:'Total charitable and religious donations.'},{key:'vehicle_purchases_val',name:'Vehicle purchases',desc:'Expenditure on vehicle purchases (durable good).'},{key:'furniture_val',name:'Furniture & household equipment',desc:'Expenditure on furniture and household equipment (durable good).'}]},{group:'Alternative consumption measures',entries:[{key:'trip_conso',name:'Trips & vacations',desc:'Expenditure on trips and vacations.'},{key:'energy_consumption',name:'Energy consumption',desc:'Heating + electricity.'},{key:'NIQ_consumption',name:'NielsenIQ-comparable',desc:'Food at home + clothing + computing.'},{key:'SCF_consumption',name:'SCF-comparable',desc:'Food (at home + away) + housing services.'},{key:'SCF_consumption_v2',name:'SCF-comparable v2',desc:'SCF-comparable consumption plus donations.'}]},{group:'Income',entries:[{key:'total_income',name:'Total income',desc:'Sum of financial asset income, rental income, labor income, business income, and transfers.'},{key:'total_labor_income',name:'Labor income',desc:'Wages, salaries, and the labor share of business income.'},{key:'total_capital_income',name:'Capital income',desc:'Capital share of business income + rental income − debt payments + financial asset income.'},{key:'total_transfer_income',name:'Transfer income',desc:'Government transfer income, scaled to NIPA transfer aggregates.'}]},{group:'Wealth',entries:[{key:'networth_val',name:'Net worth',desc:'Total assets minus total liabilities.'},{key:'liquid_wealth',name:'Liquid wealth',desc:'Checking accounts + bonds + other financial assets − credit card debt.'},{key:'illiquid_wealth',name:'Illiquid wealth',desc:'Housing equity + private equity + real estate + stocks + consumer durables − non-credit-card debt.'},{key:'realassets',name:'Real assets',desc:'House value + private equity + real estate + consumer durables.'},{key:'financialassets',name:'Financial assets',desc:'Stock holdings + liquid wealth.'}]},{group:'Savings',entries:[{key:'net_savings_def1',name:'Net savings (Def. 1)',desc:'Total income − Consumption (Def. 1) − taxes.'},{key:'net_savings_def2',name:'Net savings (Def. 2)',desc:'Total income − Consumption (Def. 2) − taxes.'},{key:'net_savings_def3',name:'Net savings (Def. 3)',desc:'Total income − Consumption (Def. 3) − taxes.'},{key:'net_savings_def5',name:'Net savings (Def. 5)',desc:'Total income − Consumption (Def. 4) − taxes.'}]}];const el=document.getElementById('cbContent');el.innerHTML='';CB.forEach(g=>{const gd=document.createElement('div');gd.className='cb-group';gd.innerHTML=`<div class="cb-group-title">${g.group}</div>`;g.entries.forEach(e=>{const d=document.createElement('div');d.className='cb-entry';d.innerHTML=`<div class="cb-key">${e.key}</div><div><div class="cb-name">${e.name}</div><div class="cb-desc">${e.desc}</div></div>`;gd.appendChild(d);});el.appendChild(gd);});}
+function renderBV(){dc('bv');if(!BINS.length){document.getElementById('bvND').style.display='flex';document.getElementById('bvChart').style.display='none';return;}document.getElementById('bvND').style.display='none';document.getElementById('bvChart').style.display='block';const xvar=document.getElementById('bvX').value,yvar=document.getElementById('bvY').value;const suf=S.bvSuffix||S.suffixes[0]||'raw',xKey=S.bvStat==='mean'?'mean_x':'median_x',yKey=S.bvStat==='mean'?'mean_y':'median_y',useLog=S.bvScale==='log';const data=BINS.filter(r=>r.xvar===xvar&&r.yvar===yvar&&r.suffix===suf);if(!data.length){document.getElementById('bvND').style.display='flex';document.getElementById('bvND').textContent='No data for this pair/adjustment';return;}const yearData=data.filter(r=>r.year!==9999),poolData=data.filter(r=>r.year===9999);const years=[...new Set(yearData.map(r=>r.year))].sort((a,b)=>a-b);function sv(v){return useLog&&v>0?Math.log(v):(!useLog?v:null);}const ds=[];years.forEach((yr,yi)=>{const pts=yearData.filter(r=>r.year===yr).sort((a,b)=>a.bin-b.bin).map(r=>({x:sv(r[xKey]),y:sv(r[yKey])})).filter(p=>p.x!=null&&p.y!=null);if(!pts.length)return;const c=YC[yi%YC.length];ds.push({label:String(yr),data:pts,type:'line',borderColor:c+'55',backgroundColor:'transparent',borderWidth:1.2,pointRadius:2,pointBackgroundColor:c+'44',tension:0.2,showLine:true,order:2});});const pp=poolData.sort((a,b)=>a.bin-b.bin).map(r=>({x:sv(r[xKey]),y:sv(r[yKey])})).filter(p=>p.x!=null&&p.y!=null);if(pp.length){ds.push({label:'Average (all years)',data:pp,type:'scatter',borderColor:'#8b0000',backgroundColor:'#8b0000cc',pointRadius:6,pointHoverRadius:8,order:1});if(pp.length>=2){const xs=pp.map(p=>p.x),ys=pp.map(p=>p.y),n=xs.length;const xmin=Math.min(...xs),xmax=Math.max(...xs);let fitData,fitLbl;if(S.bvFit==='smooth'){const bw=0.75*(xmax-xmin);const pts=[];for(let i=0;i<40;i++){const tx=xmin+i*(xmax-xmin)/39;let wsum=0,wxsum=0,wysum=0,wxxsum=0,wxysum=0;for(let j=0;j<n;j++){const u=Math.abs(xs[j]-tx)/bw;if(u>=1)continue;const w=Math.pow(1-u*u*u,3);wsum+=w;wxsum+=w*xs[j];wysum+=w*ys[j];wxxsum+=w*xs[j]*xs[j];wxysum+=w*xs[j]*ys[j];}if(wsum===0)continue;const denom=wsum*wxxsum-wxsum*wxsum;const ty=denom===0?(wysum/wsum):((wsum*wxysum-wxsum*wysum)/denom*(tx-wxsum/wsum)+wysum/wsum);pts.push({x:tx,y:ty});}fitData=pts;fitLbl='Smooth fit';}else{const sx=xs.reduce((a,b)=>a+b,0),sy=ys.reduce((a,b)=>a+b,0);const sxy=xs.reduce((a,b,i)=>a+b*ys[i],0),sxx=xs.reduce((a,b)=>a+b*b,0);const b=(n*sxy-sx*sy)/(n*sxx-sx*sx),a=(sy-b*sx)/n;fitData=[{x:xmin,y:a+b*xmin},{x:xmax,y:a+b*xmax}];fitLbl=useLog?`log fit: log(y)=${a.toFixed(2)}+${b.toFixed(3)}·log(x)`:`Linear: y=${fmtN(a)}+${b.toFixed(3)}·x`;}ds.push({label:fitLbl,data:fitData,type:'line',borderColor:'#00008b',backgroundColor:'transparent',borderWidth:2,pointRadius:0,borderDash:[6,3],order:0,tension:S.bvFit==='smooth'?0.4:0});}}document.getElementById('bvTitle').textContent=`${yvar.replace(/_/g,' ')} vs ${xvar.replace(/_/g,' ')}`;const axLbl=useLog?'log':S.bvStat==='mean'?'mean (2023$)':'median (2023$)';CH['bv']=new Chart(document.getElementById('bvChart'),{type:'scatter',data:{datasets:ds},options:{responsive:true,maintainAspectRatio:false,animation:{duration:320},plugins:{legend:{labels:{color:'#888580',font:{family:'DM Mono',size:9},boxWidth:9,filter:item=>item.datasetIndex>=ds.length-2}}},scales:{x:{type:'linear',ticks:{color:'#888580',font:{family:'DM Mono',size:10},callback:v=>useLog?v.toFixed(1):fmtN(v)},grid:{color:'#ece9e3'},title:{display:true,text:xvar.replace(/_/g,' ')+' ('+axLbl+')',color:'#888580',font:{family:'DM Mono',size:10}}},y:{type:'linear',ticks:{color:'#888580',font:{family:'DM Mono',size:10},callback:v=>useLog?v.toFixed(1):fmtN(v)},grid:{color:'#ece9e3'},title:{display:true,text:yvar.replace(/_/g,' ')+' ('+axLbl+')',color:'#888580',font:{family:'DM Mono',size:10}}}}}});CH['bv'].options.animation.onComplete=()=>{const chart=CH['bv'],ctx=chart.ctx,xSc=chart.scales.x,ySc=chart.scales.y;ctx.save();ctx.font='9px DM Mono';ctx.fillStyle='#aaa';ctx.textAlign='left';years.forEach(yr=>{const di=ds.findIndex(d=>d.label===String(yr));if(di<0)return;const meta=chart.getDatasetMeta(di);if(!meta.data.length)return;const last=meta.data[meta.data.length-1];ctx.fillText(yr,last.x+4,last.y+3);});const lo=Math.max(xSc.min,ySc.min),hi=Math.min(xSc.max,ySc.max);if(lo<hi){const x1=xSc.getPixelForValue(lo),y1=ySc.getPixelForValue(lo),x2=xSc.getPixelForValue(hi),y2=ySc.getPixelForValue(hi);ctx.strokeStyle='#c0c0c0';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);ctx.font='bold 10px DM Mono';ctx.fillStyle='#c0c0c0';ctx.textAlign='left';ctx.fillText('45°',(x1+x2)/2+4,(y1+y2)/2-4);}ctx.restore();};CH['bv'].update();}
+function renderTable(){if(!STATS.length)return;const s=S.suffixes[0]||'raw',yrs=S.years,lastYr=yrs[yrs.length-1];const vars=[...new Set(STATS.map(r=>r.variable))];const list=(VG[S.group]||[]).filter(v=>vars.includes(v));const show=list.length?list:vars;const tb=document.getElementById('tblBody');tb.innerHTML='';show.forEach(v=>{const r=STATS.find(row=>row.variable===v&&row.suffix===s&&row.year===lastYr);if(!r)return;const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--e-accent2);font-family:var(--font-m);font-size:.67rem">${vn(v)}</td><td class="num">${fmtN(r.mean)}</td><td class="num">${fmtN(r.median)}</td><td class="num">${fmtP(r.gini)}</td><td class="num">${fmtP(r.share_top10)}</td><td class="num">${fmtP(r.share_top1)}</td><td class="num">${isFinite(Number(r.pareto_alpha))?Number(r.pareto_alpha).toFixed(2):'—'}</td><td class="num">${isFinite(Number(r.p90_p50))?Number(r.p90_p50).toFixed(2)+'×':'—'}</td><td class="num">${isFinite(Number(r.p90_p10))?Number(r.p90_p10).toFixed(2)+'×':'—'}</td>`;tr.onclick=()=>{S.variable=v;document.getElementById('varSel').value=v;renderAll();expSwitchTab('overview',document.querySelector('.exp-nav-tab'));window.scrollTo({top:0,behavior:'smooth'});};tr.style.cursor='pointer';tb.appendChild(tr);});}
+</script>
+</body>
+</html>
