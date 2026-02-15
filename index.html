@@ -107,12 +107,13 @@ h1{font-family:'Lora',serif;font-size:1.25rem;font-weight:400;line-height:1.3;ma
 
 /* papers */
 .main-content{min-width:0}
-section{margin-bottom:2rem}
+section{margin-bottom:1.6rem}
 .section-title{font-family:'Lora',serif;font-size:.68rem;font-style:italic;color:var(--faint);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
-.paper-list{display:flex;flex-direction:column}
-.paper{padding:.6rem 0}
-.paper-status{font-size:.72rem;font-weight:300;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.08rem;line-height:1.3}
+.paper-list{display:flex;flex-direction:column;gap:.22rem}
+.paper{padding:.42rem 0}
+.paper-status{font-size:.72rem;font-weight:300;letter-spacing:.04em;text-transform:uppercase;margin-bottom:.08rem;margin-top:.22rem;line-height:1.3}
 .paper-status.status-rr{color:var(--accent);font-weight:600}
+.paper-coming-soon{font-size:.63rem;font-weight:400;color:var(--accent);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap;flex-shrink:0;align-self:center;opacity:.7}
 .paper-title-row{display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap;margin-bottom:.08rem}
 .paper-title{font-family:'Lora',serif;font-size:.87rem;font-style:italic;color:var(--text);text-decoration:none;line-height:1.4}
 a.paper-title:hover{color:var(--accent)}
@@ -153,6 +154,19 @@ footer a:hover{color:var(--accent)}
 .more-link-item{font-size:.82rem;color:var(--muted);margin-bottom:.4rem}
 .more-link-item a{color:var(--accent);text-decoration:none}
 .more-link-item a:hover{text-decoration:underline}
+
+/* ─────────────────────────────────────────────
+   TEACHING PAGE
+───────────────────────────────────────────── */
+.teach-institution{font-family:'Lora',serif;font-size:1rem;font-weight:400;color:var(--text);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+.teach-level{font-size:.65rem;text-transform:uppercase;letter-spacing:.09em;color:var(--faint);margin:1rem 0 .45rem}
+.teach-item{display:flex;justify-content:space-between;align-items:baseline;gap:1.5rem;padding:.42rem 0;border-bottom:1px solid var(--border)}
+.teach-item:last-child{border-bottom:none}
+.teach-title{font-family:'Lora',serif;font-style:italic;font-size:.88rem;color:var(--text)}
+.teach-meta{font-size:.74rem;color:var(--faint);white-space:nowrap;flex-shrink:0}
+.teach-topics{list-style:none;margin:.3rem 0 .6rem 0;padding:0;display:flex;flex-direction:column;gap:.18rem}
+.teach-topics li{font-size:.74rem;color:var(--muted);line-height:1.5;padding-left:1rem;position:relative}
+.teach-topics li::before{content:'—';position:absolute;left:0;color:var(--faint)}
 
 /* ─────────────────────────────────────────────
    EXPLORER — scoped under #panel-explorer
@@ -327,11 +341,11 @@ footer a:hover{color:var(--accent)}
       <a class="brown-logo" href="https://economics.brown.edu/" target="_blank" title="Brown University">
         <img src="https://logos-world.net/wp-content/uploads/2022/11/Brown-University-Symbol.png" alt="Brown University"/>
       </a>
-      <div class="nav-divider"></div>
       <a class="nav-brand" href="#" onclick="siteTab('home',document.querySelector('.nav-tabs button'));return false;">Alexandre Gaillard</a>
     </div>
     <ul class="nav-tabs">
       <li><button class="active" onclick="siteTab('home',this)">Home</button></li>
+      <li><button onclick="siteTab('teaching',this)">Teaching</button></li>
       <li><button onclick="siteTab('explorer',this)">Inequality Explorer</button></li>
       <li><button onclick="siteTab('more',this)">More</button></li>
       <li><button onclick="window.open('https://drive.google.com/file/d/10_Kg-LkSiRxwDqm-Ik7PusROsZfWGQ1E/view','_blank')">CV</button></li>
@@ -368,15 +382,14 @@ footer a:hover{color:var(--accent)}
       <p class="section-title">Working Papers</p>
       <div class="paper-list">
         <div class="paper">
-          <p class="paper-status status-rr">R&R — Quarterly Journal of Economics</p>
           <div class="paper-title-row">
             <a class="paper-title" href="https://www.dropbox.com/scl/fi/bxfxrio8taz6bywwjqcvu/GHWW_2024.pdf?rlkey=8d9oymi9jdagybvwriringwy5&dl=0" target="_blank">Consumption, Wealth, and Income Inequality: A Tale of Tails</a>
             <div class="pill-group"><a class="pill" href="https://www.dropbox.com/scl/fi/bxfxrio8taz6bywwjqcvu/GHWW_2024.pdf?rlkey=8d9oymi9jdagybvwriringwy5&dl=0" target="_blank">PDF</a></div>
           </div>
           <p class="paper-info">with C. Hellwig, P. Wangner, and N. Werquin — October 2023</p>
+          <p class="paper-status status-rr">R&R — Quarterly Journal of Economics</p>
         </div>
         <div class="paper">
-          <p class="paper-status status-rr">R&R — American Economic Journal: Economic Policy</p>
           <div class="paper-title-row">
             <a class="paper-title" href="https://www.dropbox.com/scl/fi/3stijfuf4i6v2erkoompb/UIGSE.pdf?rlkey=vx3ysenkeh9r0jb6cwg3vxzjg&dl=0" target="_blank">Unemployment Insurance Generosity and Self-Employment</a>
             <div class="pill-group">
@@ -386,19 +399,20 @@ footer a:hover{color:var(--accent)}
             </div>
           </div>
           <p class="paper-info">with S. Kankanamge — April 2025</p>
+          <p class="paper-status status-rr">R&R — American Economic Journal: Economic Policy</p>
         </div>
         <div class="paper">
-          <p class="paper-status" style="color:var(--faint);">Working Paper — New version coming soon</p>
           <div class="paper-title-row">
             <a class="paper-title" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4292481" target="_blank">Inequality, Business Cycles, and Growth: A Unified Approach to Stabilization Policies</a>
+            <span class="paper-coming-soon">Coming soon</span>
             <div class="pill-group"><a class="pill" href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4292481" target="_blank">SSRN</a></div>
           </div>
           <p class="paper-info">with P. Wangner — December 2022</p>
         </div>
         <div class="paper">
-          <p class="paper-status" style="color:var(--faint);">Working Paper — New version coming soon</p>
           <div class="paper-title-row">
             <a class="paper-title" href="https://drive.google.com/file/d/1XjdLoS3d4sO_ZZ-idTOA0wiOTmkt8Iqj/view?usp=sharing" target="_blank">Wealth, Returns, and Taxation: A Tale of Two Dependencies</a>
+            <span class="paper-coming-soon">Coming soon</span>
             <div class="pill-group">
               <a class="pill" href="https://drive.google.com/file/d/1XjdLoS3d4sO_ZZ-idTOA0wiOTmkt8Iqj/view?usp=sharing" target="_blank">PDF</a>
               <a class="pill" href="https://drive.google.com/file/d/1_h_wsApxQAPmu8zuj7CWXRjMZ-9Sixw-/view?usp=sharing" target="_blank">Appendix</a>
@@ -492,6 +506,59 @@ footer a:hover{color:var(--accent)}
   </div>
 </footer>
 </div><!-- /panel-home -->
+
+<!-- ═══════════════════════════════════════════
+     TEACHING
+═══════════════════════════════════════════ -->
+<div class="panel" id="panel-teaching">
+  <div class="more-wrap">
+    <div class="more-section">
+      <p class="teach-institution">Brown University</p>
+      <p class="teach-level">PhD</p>
+      <div>
+        <div class="teach-item">
+          <span class="teach-title">Advanced Macroeconomics</span>
+          <span class="teach-meta">1st year PhD · Spring 2026</span>
+        </div>
+        <ul class="teach-topics">
+          <li>Dynamic optimization — Hamiltonian, Lagrangian, growth model</li>
+          <li>Dynamic programming — Bellman equation, HJB equation</li>
+          <li>Complete markets and their rejection in micro data</li>
+          <li>Incomplete markets — Yaari–Blanchard, Aiyagari model</li>
+          <li>Heterogeneous-agent models — misallocation, Krusell–Smith</li>
+          <li>Unemployment and job search in frictional labor markets</li>
+        </ul>
+        <div class="teach-item">
+          <span class="teach-title">Topics in Macroeconomics</span>
+          <span class="teach-meta">2nd year PhD · Spring 2026</span>
+        </div>
+      </div>
+      <p class="teach-level">Undergraduate</p>
+      <div>
+        <div class="teach-item">
+          <span class="teach-title">Intermediate Macroeconomics</span>
+          <span class="teach-meta">Spring 2024, 2025, 2026</span>
+        </div>
+      </div>
+    </div>
+    <div class="more-section">
+      <p class="teach-institution">Toulouse School of Economics</p>
+      <p class="teach-level">PhD</p>
+      <div>
+        <div class="teach-item">
+          <span class="teach-title">Quantitative Macroeconomics</span>
+          <span class="teach-meta">2nd year PhD · Fall 2024, 2025</span>
+        </div>
+        <ul class="teach-topics">
+          <li>Modern quantitative techniques — discretization, Young method</li>
+          <li>Dynamic programming and endogenous grid method (EGM)</li>
+          <li>Aiyagari model and extensions — labor supply, heterogeneous returns</li>
+          <li>Firm dynamics models and misallocation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      INEQUALITY EXPLORER
@@ -701,22 +768,6 @@ footer a:hover{color:var(--accent)}
       <img src="https://cdn.prod.website-files.com/679d8dc97386dcb29b493dd8/681ecb601529fd586ee997ef_Screenshot%202025-05-09%20at%2011.43.20%E2%80%AFPM.png" alt="Tennis / Drums"/>
     </div>
 
-    <!-- Data -->
-    <div class="more-section">
-      <p class="more-section-title">Data</p>
-      <p class="more-text">I maintain a dataset on business transactions sourced from BizBuySell.com — ~100,000 small and mid-sized firm sales with information on asking price, selling price, capital, and firm age.</p>
-      <div class="more-link-item"><a href="https://www.a-gaillard.com/more/data" target="_blank">Business transfer dataset →</a></div>
-    </div>
-
-    <!-- Teaching -->
-    <div class="more-section">
-      <p class="more-section-title">Teaching</p>
-      <p class="more-text">
-        <strong style="font-weight:400;">Brown University</strong> — Undergraduate Intermediate Macroeconomics (Spring 2024, 2025, 2026) · Graduate Macroeconomics (Spring 2026)<br>
-        <strong style="font-weight:400;">Toulouse School of Economics</strong> — Quantitative Macro (Fall 2024)
-      </p>
-    </div>
-
   </div>
 </div>
 
@@ -824,7 +875,7 @@ function renderDsLadder(v){dc('dsl');const yrs=S.years,s=S.suffixes[0]||'raw',pK
 function renderDsParetoTime(v){dc('dspt');const yrs=S.years,ds=S.suffixes.map(s=>{const rows=gr(v,s),ym=Object.fromEntries(rows.map(r=>[r.year,r.pareto_alpha]));return{label:SL[s]||s,data:yrs.map(y=>ym[y]??null),borderColor:SC[s]||'#888',backgroundColor:'transparent',borderWidth:2,pointRadius:4,tension:0.25,spanGaps:true};});CH['dspt']=new Chart(document.getElementById('dsParetoTime'),{type:'line',data:{labels:yrs,datasets:ds},options:{...CD,plugins:{...CD.plugins,tooltip:{callbacks:{label:ctx=>`α = ${ctx.parsed.y?.toFixed(3)}`}}},scales:{...CD.scales,y:{...CD.scales.y,ticks:{...CD.scales.y.ticks,callback:v=>v?.toFixed(2)}}}}});}
 function renderCodebook(){const CB=[{group:'Consumption aggregates',entries:[{key:'consump_def1',name:'Consumption (Def. 1 — budget constraint)',desc:'Non-durables + durable consumption flows (running stock method) + housing services. Budget-constraint consistent measure; main definition used in the paper.'},{key:'consump_def2',name:'Consumption (Def. 2 — NIPA consistent)',desc:'Non-durables + durable expenditure (not flows) + housing services. Closest to NIPA personal consumption expenditure definition.'},{key:'consump_def3',name:'Consumption (Def. 3 — fixed depreciation)',desc:'Non-durables + 15% of durable expenditure (fixed depreciation rate) + housing services.'},{key:'consump_def4',name:'Consumption (Def. 4 — instantaneous durable flow)',desc:'Non-durables + instantaneous durable flow only (no stock carryover) + housing services.'},{key:'consump_def5',name:'Consumption (Def. 5 — excl. imputed rent)',desc:'Non-durables + durable expenditure + rent paid (not imputed owner rent). Close to Yodlee/expenditure-based measures.'},{key:'consump_bp',name:'Consumption (Blundell et al.)',desc:'Food at home + food away + health + utilities + transportation + education + housing services. Replicates the Blundell et al. (1998) basket.'},{key:'consump_bp_v2',name:'Consumption (Blundell et al. v2)',desc:'Blundell et al. basket plus recreation and clothing.'}]},{group:'Consumption sub-components',entries:[{key:'food_home_val',name:'Food at home',desc:'Expenditure on food consumed at home, adjusted to NIPA food aggregates.'},{key:'food_away_val',name:'Food away from home',desc:'Expenditure on food consumed outside the home (restaurants, cafeterias).'},{key:'health_val',name:'Health expenditure',desc:'Out-of-pocket health expenditure.'},{key:'home_service_val',name:'Housing services',desc:'Rental payments for renters; self-reported rental value for homeowners (imputed rent).'},{key:'home_util_val',name:'Home utilities',desc:'Heating and electricity expenditure.'},{key:'transportation_val',name:'Transportation',desc:'Transportation expenditure excluding vehicle purchases.'},{key:'education_val',name:'Education',desc:'Education-related expenditure.'},{key:'all_recreation_val',name:'Recreation',desc:'Total recreation expenditure.'},{key:'clothing_val',name:'Clothing',desc:'Clothing and apparel expenditure.'},{key:'donations_total_val',name:'Donations',desc:'Total charitable and religious donations.'},{key:'vehicle_purchases_val',name:'Vehicle purchases',desc:'Expenditure on vehicle purchases (durable good).'},{key:'furniture_val',name:'Furniture & household equipment',desc:'Expenditure on furniture and household equipment (durable good).'}]},{group:'Alternative consumption measures',entries:[{key:'trip_conso',name:'Trips & vacations',desc:'Expenditure on trips and vacations.'},{key:'energy_consumption',name:'Energy consumption',desc:'Heating + electricity.'},{key:'NIQ_consumption',name:'NielsenIQ-comparable',desc:'Food at home + clothing + computing.'},{key:'SCF_consumption',name:'SCF-comparable',desc:'Food (at home + away) + housing services.'},{key:'SCF_consumption_v2',name:'SCF-comparable v2',desc:'SCF-comparable consumption plus donations.'}]},{group:'Income',entries:[{key:'total_income',name:'Total income',desc:'Sum of financial asset income, rental income, labor income, business income, and transfers.'},{key:'total_labor_income',name:'Labor income',desc:'Wages, salaries, and the labor share of business income.'},{key:'total_capital_income',name:'Capital income',desc:'Capital share of business income + rental income − debt payments + financial asset income.'},{key:'total_transfer_income',name:'Transfer income',desc:'Government transfer income, scaled to NIPA transfer aggregates.'}]},{group:'Wealth',entries:[{key:'networth_val',name:'Net worth',desc:'Total assets minus total liabilities.'},{key:'liquid_wealth',name:'Liquid wealth',desc:'Checking accounts + bonds + other financial assets − credit card debt.'},{key:'illiquid_wealth',name:'Illiquid wealth',desc:'Housing equity + private equity + real estate + stocks + consumer durables − non-credit-card debt.'},{key:'realassets',name:'Real assets',desc:'House value + private equity + real estate + consumer durables.'},{key:'financialassets',name:'Financial assets',desc:'Stock holdings + liquid wealth.'}]},{group:'Savings',entries:[{key:'net_savings_def1',name:'Net savings (Def. 1)',desc:'Total income − Consumption (Def. 1) − taxes.'},{key:'net_savings_def2',name:'Net savings (Def. 2)',desc:'Total income − Consumption (Def. 2) − taxes.'},{key:'net_savings_def3',name:'Net savings (Def. 3)',desc:'Total income − Consumption (Def. 3) − taxes.'},{key:'net_savings_def5',name:'Net savings (Def. 5)',desc:'Total income − Consumption (Def. 4) − taxes.'}]}];const el=document.getElementById('cbContent');el.innerHTML='';CB.forEach(g=>{const gd=document.createElement('div');gd.className='cb-group';gd.innerHTML=`<div class="cb-group-title">${g.group}</div>`;g.entries.forEach(e=>{const d=document.createElement('div');d.className='cb-entry';d.innerHTML=`<div class="cb-key">${e.key}</div><div><div class="cb-name">${e.name}</div><div class="cb-desc">${e.desc}</div></div>`;gd.appendChild(d);});el.appendChild(gd);});}
 function renderBV(){dc('bv');if(!BINS.length){document.getElementById('bvND').style.display='flex';document.getElementById('bvChart').style.display='none';return;}document.getElementById('bvND').style.display='none';document.getElementById('bvChart').style.display='block';const xvar=document.getElementById('bvX').value,yvar=document.getElementById('bvY').value;const suf=S.bvSuffix||S.suffixes[0]||'raw',xKey=S.bvStat==='mean'?'mean_x':'median_x',yKey=S.bvStat==='mean'?'mean_y':'median_y',useLog=S.bvScale==='log';const data=BINS.filter(r=>r.xvar===xvar&&r.yvar===yvar&&r.suffix===suf);if(!data.length){document.getElementById('bvND').style.display='flex';document.getElementById('bvND').textContent='No data for this pair/adjustment';return;}const yearData=data.filter(r=>r.year!==9999),poolData=data.filter(r=>r.year===9999);const years=[...new Set(yearData.map(r=>r.year))].sort((a,b)=>a-b);function sv(v){return useLog&&v>0?Math.log(v):(!useLog?v:null);}const ds=[];years.forEach((yr,yi)=>{const pts=yearData.filter(r=>r.year===yr).sort((a,b)=>a.bin-b.bin).map(r=>({x:sv(r[xKey]),y:sv(r[yKey])})).filter(p=>p.x!=null&&p.y!=null);if(!pts.length)return;const c=YC[yi%YC.length];ds.push({label:String(yr),data:pts,type:'line',borderColor:c+'55',backgroundColor:'transparent',borderWidth:1.2,pointRadius:2,pointBackgroundColor:c+'44',tension:0.2,showLine:true,order:2});});const pp=poolData.sort((a,b)=>a.bin-b.bin).map(r=>({x:sv(r[xKey]),y:sv(r[yKey])})).filter(p=>p.x!=null&&p.y!=null);if(pp.length){ds.push({label:'Average (all years)',data:pp,type:'scatter',borderColor:'#8b0000',backgroundColor:'#8b0000cc',pointRadius:6,pointHoverRadius:8,order:1});if(pp.length>=2){const xs=pp.map(p=>p.x),ys=pp.map(p=>p.y),n=xs.length;const xmin=Math.min(...xs),xmax=Math.max(...xs);let fitData,fitLbl;if(S.bvFit==='smooth'){const bw=0.75*(xmax-xmin);const pts=[];for(let i=0;i<40;i++){const tx=xmin+i*(xmax-xmin)/39;let wsum=0,wxsum=0,wysum=0,wxxsum=0,wxysum=0;for(let j=0;j<n;j++){const u=Math.abs(xs[j]-tx)/bw;if(u>=1)continue;const w=Math.pow(1-u*u*u,3);wsum+=w;wxsum+=w*xs[j];wysum+=w*ys[j];wxxsum+=w*xs[j]*xs[j];wxysum+=w*xs[j]*ys[j];}if(wsum===0)continue;const denom=wsum*wxxsum-wxsum*wxsum;const ty=denom===0?(wysum/wsum):((wsum*wxysum-wxsum*wysum)/denom*(tx-wxsum/wsum)+wysum/wsum);pts.push({x:tx,y:ty});}fitData=pts;fitLbl='Smooth fit';}else{const sx=xs.reduce((a,b)=>a+b,0),sy=ys.reduce((a,b)=>a+b,0);const sxy=xs.reduce((a,b,i)=>a+b*ys[i],0),sxx=xs.reduce((a,b)=>a+b*b,0);const b=(n*sxy-sx*sy)/(n*sxx-sx*sx),a=(sy-b*sx)/n;fitData=[{x:xmin,y:a+b*xmin},{x:xmax,y:a+b*xmax}];fitLbl=useLog?`log fit: log(y)=${a.toFixed(2)}+${b.toFixed(3)}·log(x)`:`Linear: y=${fmtN(a)}+${b.toFixed(3)}·x`;}ds.push({label:fitLbl,data:fitData,type:'line',borderColor:'#00008b',backgroundColor:'transparent',borderWidth:2,pointRadius:0,borderDash:[6,3],order:0,tension:S.bvFit==='smooth'?0.4:0});}}document.getElementById('bvTitle').textContent=`${yvar.replace(/_/g,' ')} vs ${xvar.replace(/_/g,' ')}`;const axLbl=useLog?'log':S.bvStat==='mean'?'mean (2023$)':'median (2023$)';CH['bv']=new Chart(document.getElementById('bvChart'),{type:'scatter',data:{datasets:ds},options:{responsive:true,maintainAspectRatio:false,animation:{duration:320},plugins:{legend:{labels:{color:'#888580',font:{family:'DM Mono',size:9},boxWidth:9,filter:item=>item.datasetIndex>=ds.length-2}}},scales:{x:{type:'linear',ticks:{color:'#888580',font:{family:'DM Mono',size:10},callback:v=>useLog?v.toFixed(1):fmtN(v)},grid:{color:'#ece9e3'},title:{display:true,text:xvar.replace(/_/g,' ')+' ('+axLbl+')',color:'#888580',font:{family:'DM Mono',size:10}}},y:{type:'linear',ticks:{color:'#888580',font:{family:'DM Mono',size:10},callback:v=>useLog?v.toFixed(1):fmtN(v)},grid:{color:'#ece9e3'},title:{display:true,text:yvar.replace(/_/g,' ')+' ('+axLbl+')',color:'#888580',font:{family:'DM Mono',size:10}}}}}});CH['bv'].options.animation.onComplete=()=>{const chart=CH['bv'],ctx=chart.ctx,xSc=chart.scales.x,ySc=chart.scales.y;ctx.save();ctx.font='9px DM Mono';ctx.fillStyle='#aaa';ctx.textAlign='left';years.forEach(yr=>{const di=ds.findIndex(d=>d.label===String(yr));if(di<0)return;const meta=chart.getDatasetMeta(di);if(!meta.data.length)return;const last=meta.data[meta.data.length-1];ctx.fillText(yr,last.x+4,last.y+3);});const lo=Math.max(xSc.min,ySc.min),hi=Math.min(xSc.max,ySc.max);if(lo<hi){const x1=xSc.getPixelForValue(lo),y1=ySc.getPixelForValue(lo),x2=xSc.getPixelForValue(hi),y2=ySc.getPixelForValue(hi);ctx.strokeStyle='#c0c0c0';ctx.lineWidth=1.5;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.setLineDash([]);ctx.font='bold 10px DM Mono';ctx.fillStyle='#c0c0c0';ctx.textAlign='left';ctx.fillText('45°',(x1+x2)/2+4,(y1+y2)/2-4);}ctx.restore();};CH['bv'].update();}
-function renderTable(){if(!STATS.length)return;const s=S.suffixes[0]||'raw',yrs=S.years,lastYr=yrs[yrs.length-1];const vars=[...new Set(STATS.map(r=>r.variable))];const list=(VG[S.group]||[]).filter(v=>vars.includes(v));const show=list.length?list:vars;const tb=document.getElementById('tblBody');tb.innerHTML='';show.forEach(v=>{const r=STATS.find(row=>row.variable===v&&row.suffix===s&&row.year===lastYr);if(!r)return;const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--e-accent2);font-family:var(--font-m);font-size:.67rem">${vn(v)}</td><td class="num">${fmtN(r.mean)}</td><td class="num">${fmtN(r.median)}</td><td class="num">${fmtP(r.gini)}</td><td class="num">${fmtP(r.share_top10)}</td><td class="num">${fmtP(r.share_top1)}</td><td class="num">${isFinite(Number(r.pareto_alpha))?Number(r.pareto_alpha).toFixed(2):'—'}</td><td class="num">${isFinite(Number(r.p90_p50))?Number(r.p90_p50).toFixed(2)+'×':'—'}</td><td class="num">${isFinite(Number(r.p90_p10))?Number(r.p90_p10).toFixed(2)+'×':'—'}</td>`;tr.onclick=()=>{S.variable=v;document.getElementById('varSel').value=v;renderAll();expSwitchTab('overview',document.querySelector('.exp-nav-tab'));window.scrollTo({top:0,behavior:'smooth'});};tr.style.cursor='pointer';tb.appendChild(tr);});}
+function renderTable(){if(!STATS.length)return;const s=S.suffixes[0]||'raw',yrs=S.years,lastYr=yrs[yrs.length-1];const vars=[...new Set(STATS.map(r=>r.variable))];const list=(VG[S.group]||[]).filter(v=>vars.includes(v));const show=list.length?list:vars;const tb=document.getElementById('tblBody');tb.innerHTML='';show.forEach(v=>{const r=STATS.find(row=>row.variable===v&&row.suffix===s&&row.year===lastYr);if(!r)return;const tr=document.createElement('tr');tr.innerHTML=`<td style="color:var(--e-accent2);font-family:var(--font-m);font-size:.67rem">${vn(v)}</td><td class="num">${fmtN(r.mean)}</td><td class="num">${fmtN(r.median)}</td><td class="num">${fmtP(r.gini)}</td><td class="num">${fmtP(r.share_top10)}</td><td class="num">${fmtP(r.share_top1)}</td><td class="num">${isFinite(Number(r.pareto_alpha))?Number(r.pareto_alpha).toFixed(2):'\u2014'}</td><td class="num">${isFinite(Number(r.p90_p50))?Number(r.p90_p50).toFixed(2)+'\u00d7':'\u2014'}</td><td class="num">${isFinite(Number(r.p90_p10))?Number(r.p90_p10).toFixed(2)+'\u00d7':'\u2014'}</td>`;tr.onclick=()=>{S.variable=v;document.getElementById('varSel').value=v;renderAll();expSwitchTab('overview',document.querySelector('.exp-nav-tab'));window.scrollTo({top:0,behavior:'smooth'});};tr.style.cursor='pointer';tb.appendChild(tr);});}
 </script>
 </body>
 </html>
