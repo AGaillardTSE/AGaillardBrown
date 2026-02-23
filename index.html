@@ -357,6 +357,7 @@ footer a:hover{color:var(--accent)}
       <li><button class="active" onclick="siteTab('home',this)">Home</button></li>
       <li><button onclick="siteTab('teaching',this)">Teaching</button></li>
       <li style="display:none;"><button onclick="siteTab('explorer',this)">Inequality Explorer</button></li>
+      <li><button onclick="siteTab('code',this)">Code/Data</button></li>
       <li><button onclick="siteTab('more',this)">More</button></li>
       <li><button onclick="window.open('https://drive.google.com/file/d/10_Kg-LkSiRxwDqm-Ik7PusROsZfWGQ1E/view','_blank')">CV</button></li>
     </ul>
@@ -752,6 +753,80 @@ footer a:hover{color:var(--accent)}
   </div>
 
 </div><!-- /panel-explorer -->
+
+
+
+<!-- ═══════════════════════════════════════════
+     CODE / DATA
+═══════════════════════════════════════════ -->
+<div class="panel" id="panel-code">
+  <div class="more-wrap">
+
+    <div class="more-section">
+      <p class="teach-institution" style="margin-bottom:.6rem">GitHub: <a href="https://github.com/AGaillardTSE" target="_blank" style="font-family:var(--font-m);font-size:.85rem;color:var(--accent)">AGaillardTSE</a></p>
+      <p class="section-title" style="margin-bottom:1rem">Replication files</p>
+
+      <p class="teach-level">C++</p>
+      <div>
+        <div class="teach-item">
+          <span class="teach-title">Aiyagari</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.15rem 0 .75rem 0;line-height:1.6;">
+          Solve the standard Aiyagari model in 0.04–0.14 seconds with EGM + Young method (2010). Useful note (by Josep Pijoan-Mas): <a href="https://www.cemfi.es/~pijoan/download/notes-on-endogenous-grid-method.pdf" target="_blank">Very short notes on the endogenous grid method</a>. Code: <a href="https://github.com/AGaillardTSE/aiyagari" target="_blank">Aiyagari Code quick replication</a>.
+        </p>
+        <div class="teach-item">
+          <span class="teach-title">Entrepreneurial model</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.15rem 0 .75rem 0;line-height:1.6;">
+          Solve efficiently <a href="http://users.nber.org/~denardim/research/JPEfinal.pdf" target="_blank">Cagetti &amp; DeNardi (2006, JPE)</a> with endogenous borrowing constraint in 3s with DC-EGM, code available <em>upon request</em>.
+        </p>
+        <div class="teach-item">
+          <span class="teach-title">Housing model</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.15rem 0 .75rem 0;line-height:1.6;">
+          Solve standard housing macroeconomic models of <a href="https://www.aeaweb.org/articles?id=10.1257/aer.20141751" target="_blank">Sommer &amp; Sullivan (2018, AER)</a> with EGM and DC-EGM. Note: <a href="https://github.com/AGaillardTSE/housing_code/blob/master/numerical_solution_Sommer_Sullivan_AER.pdf" target="_blank">Numerical Note: Solving Housing Macroeconomic Models with Discrete Choices</a>. Code: <a href="https://github.com/AGaillardTSE/housing_code/tree/master" target="_blank">Replication Code Sommer &amp; Sullivan AER (2018)</a>.
+        </p>
+        <div class="teach-item">
+          <span class="teach-title">Heterogeneous Agent New Keynesian (HANK)</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.15rem 0 .75rem 0;line-height:1.6;">
+          <a href="https://www.princeton.edu/~moll/HANK.pdf" target="_blank">Kaplan et al. (2018, AER)</a>. Notes: <a href="https://github.com/AGaillardTSE/MACRO_continuous_time/blob/main/HANK.pdf" target="_blank">HANK Model Numerical solutions</a>, <a href="https://github.com/AGaillardTSE/MACRO_continuous_time/blob/main/2CHANK.pdf" target="_blank">Two-Country (2C) HANK model</a>.
+        </p>
+      </div>
+
+      <p class="teach-level" style="margin-top:1.2rem">MatLab</p>
+      <div>
+        <div class="teach-item">
+          <span class="teach-title">Aiyagari in Continuous Time</span>
+        </div>
+        <p style="font-size:.82rem;color:var(--muted);margin:.15rem 0 .75rem 0;line-height:1.6;">
+          With Jump-Drift Process. Code available <em>upon request</em>. Note: <a href="https://github.com/AGaillardTSE/MACRO_continuous_time/blob/main/aiyagari2.pdf" target="_blank">Aiyagari Model in Continuous Time with Jump-Drift Income Process</a>.
+        </p>
+      </div>
+    </div>
+
+    <div class="more-section" style="margin-top:2rem">
+      <p class="section-title" style="margin-bottom:1rem">Useful papers, techniques and links</p>
+      <ul class="teach-topics" style="font-size:.82rem;line-height:1.9;color:var(--muted)">
+        <li><strong>[EGM]</strong> Endogenous Grid Method: <a href="http://pages.stern.nyu.edu/~dbackus/Computation/Carroll%20endog%20grid%20EL%2006.pdf" target="_blank">Carroll (2006)</a></li>
+        <li><strong>[ECM]</strong> Envelope Condition Method: <a href="https://stanford.edu/~maliarl/Files/EL2013.pdf" target="_blank">Maliar (2013)</a></li>
+        <li><strong>[DC-EGM]</strong> Algorithm for discrete-continuous choice models via EGM: <a href="https://onlinelibrary.wiley.com/doi/abs/10.3982/QE643" target="_blank">Iskhakov et al. (2017)</a></li>
+        <li><strong>[G2-EGM]</strong> Multi-dimensional DC-EGM: <a href="https://www.sciencedirect.com/science/article/pii/S0165188916301920" target="_blank">Druedahl and Jørgensen (2017)</a></li>
+        <li><strong>[N-EGM]</strong> Nested EGM: <a href="https://hal.archives-ouvertes.fr/hal-00732758/document" target="_blank">Hintermaier and Koeniger (2012)</a>, <a href="http://web.econ.ku.dk/druedahl/papers/2019_NEGM.pdf" target="_blank">Druedahl (2019)</a></li>
+        <li><strong>[EXPECTATION]</strong> Value function expectations via polynomials: <a href="https://onlinelibrary.wiley.com/doi/abs/10.3982/QE329" target="_blank">Judd et al. (2017)</a></li>
+        <li><strong>[COLLOCATION]</strong> <a href="https://en.wikipedia.org/wiki/Collocation_method" target="_blank">Collocation Method</a></li>
+        <li><strong>[VAR, AR(1)]</strong> Discretizing VAR: <a href="https://www.econstor.eu/bitstream/10419/195551/1/1015515150.pdf" target="_blank">Farmer &amp; Toda (2013)</a></li>
+        <li><a href="http://jean-pierre.moreau.pagesperso-orange.fr/links.html" target="_blank">Jean-Pierre Moreau's Homepage</a> — useful codes and routines in C++ and Fortran</li>
+        <li><a href="http://paulbourke.org/miscellaneous/interpolation/" target="_blank">Paul Bourke</a> — useful tool for interpolations</li>
+        <li><a href="https://people.sc.fsu.edu/~jburkardt/" target="_blank">John Burkardt</a> — useful tools for many languages</li>
+        <li><a href="http://quant-econ.net/" target="_blank">John Stachurski and Tom Sargent's QuantEcon</a> — useful codes in Julia / Python</li>
+        <li><a href="https://web.stanford.edu/~maliarl/Files/Chapter7HandbookCE2014.pdf" target="_blank">Maliar &amp; Maliar's Book</a> — all</li>
+        <li><a href="http://www.princeton.edu/~moll/HACTproject.htm" target="_blank">HATC project</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
 
 <!-- ═══════════════════════════════════════════
      MORE
