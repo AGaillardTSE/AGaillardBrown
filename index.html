@@ -70,6 +70,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-s);font-weigh
 
 .nav-brand{font-family:'Lora',serif;font-size:1rem;color:var(--text);text-decoration:none;white-space:nowrap}
 
+@media (max-width: 600px) {
+  .nav-brand { display: none; }
+}
+
 .nav-tabs{display:flex;list-style:none}
 .nav-tabs button{
   background:none;border:none;cursor:pointer;
