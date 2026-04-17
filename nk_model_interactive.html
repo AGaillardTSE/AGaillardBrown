@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NK Model: From RANK to HANK</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: #f7f6f3;
+  color: #1a1a1a;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ─── Page header ─── */
+.page-hd {
+  background: #fff;
+  border-bottom: 1px solid #e5e1d8;
+  padding: 1.25rem 2rem;
+}
+.page-hd h1 { font-size: 20px; font-weight: 700; }
+.page-hd p  { font-size: 12px; color: #999; margin-top: 2px; }
+
+/* ─── Main wrapper ─── */
+.main { padding: 1.25rem 2rem 3rem; }
+
+/* ─── Shared shock bar ─── */
+.shock-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: #fff;
+  border: 1px solid #e5e1d8;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.shock-label { flex: 0 0 auto; }
+.shock-label .title { font-size: 14px; font-weight: 700; }
+.shock-label .title .badge {
+  display: inline-block; margin-left: 6px;
+  font-size: 10px; font-weight: 700; background: #185FA5;
+  color: #fff; border-radius: 99px; padding: 1px 8px; vertical-align: middle;
+}
+.shock-label .sub { font-size: 11px; color: #999; margin-top: 2px; }
+.shock-slider { flex: 1; }
+.shock-slider input[type=range] { width: 100%; accent-color: #185FA5; }
+.shock-slider .ticks {
+  display: flex; justify-content: space-between;
+  font-size: 10px; color: #ccc; margin-top: 2px;
+}
+.shock-val { font-size: 20px; font-weight: 700; color: #185FA5; min-width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ─── Tabs ─── */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid #e5e1d8; margin-bottom: 1.25rem; }
+.tab {
+  padding: 8px 20px; font-size: 13px; font-weight: 600;
+  cursor: pointer; background: transparent; color: #aaa;
+  border: 1px solid transparent; border-bottom: none;
+  border-radius: 7px 7px 0 0; transition: all .15s;
+}
+.tab.active { background: #fff; border-color: #e5e1d8; color: #1a1a1a; margin-bottom: -1px; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ─── TWO-COLUMN LAYOUT ─── */
+/*
+  The tab content fills the full width.
+  Left col: fixed 260px, holds parameters.
+  Right col: fills remaining space, holds plots + equations.
+  Both columns start at the top and size to their own content.
+*/
+.two-col {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: auto;
+  gap: 1rem;
+  width: 100%;
+  align-items: start;
+}
+.col-left  { display: flex; flex-direction: column; gap: .875rem; min-width: 0; }
+.col-right { display: flex; flex-direction: column; gap: .875rem; min-width: 0; }
+
+/* ─── Param cards ─── */
+.pcard {
+  background: #fff;
+  border: 1px solid #e5e1d8;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.pcard-hd {
+  background: #f2f0ea;
+  border-bottom: 1px solid #e5e1d8;
+  padding: 7px 13px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em; color: #888;
+}
+.pcard-body { padding: 12px 13px; display: flex; flex-direction: column; gap: 11px; }
+
+.prow { display: flex; flex-direction: column; gap: 4px; }
+.prow-top { display: flex; justify-content: space-between; align-items: baseline; }
+.pname { font-size: 12px; font-weight: 500; color: #444; }
+.pval  { font-size: 13px; font-weight: 700; color: #185FA5; min-width: 36px; text-align: right; font-variant-numeric: tabular-nums; }
+input[type=range] { width: 100%; accent-color: #185FA5; }
+
+/* ─── Outcome cards ─── */
+.ocards { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.ocard  { background: #fff; border: 1px solid #e5e1d8; border-radius: 8px; padding: 9px 10px; text-align: center; }
+.ocard .v { font-size: 19px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ocard .l { font-size: 10px; color: #999; margin-top: 2px; }
+
+/* ─── Decomp bar ─── */
+.dbar { background: #fff; border: 1px solid #e5e1d8; border-radius: 10px; overflow: hidden; }
+.dbar-hd  { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: #888; padding: 6px 12px; background: #f2f0ea; border-bottom: 1px solid #e5e1d8; }
+.dbar-trk { display: flex; height: 24px; }
+.dbar-seg { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; transition: width .3s; overflow: hidden; }
+.dbar-ft  { font-size: 11px; color: #777; text-align: center; padding: 5px 0; background: #f7f6f3; border-top: 1px solid #e5e1d8; }
+
+/* ─── Hint box ─── */
+.hint { font-size: 11px; color: #888; background: #f7f6f3; border: 1px solid #eae7e0; border-radius: 7px; padding: 7px 9px; line-height: 1.6; }
+
+/* ─── Chart cards ─── */
+.ccard { background: #fff; border: 1px solid #e5e1d8; border-radius: 10px; padding: 14px 16px; }
+.ccard-title { font-size: 13px; font-weight: 700; color: #222; margin-bottom: 10px; }
+
+/* ─── Legend ─── */
+.legend { display: flex; flex-wrap: wrap; gap: 8px; font-size: 11px; color: #666; margin-bottom: 10px; }
+.legend span { display: flex; align-items: center; gap: 5px; }
+.lsw { width: 20px; height: 3px; display: inline-block; border-radius: 2px; }
+.ldot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+/* ─── Equation box (below plots, right col) ─── */
+.eq-card {
+  background: #fff; border: 1px solid #e5e1d8; border-radius: 10px;
+  padding: 13px 16px; font-size: 13px; color: #555; line-height: 1.95;
+}
+.eq-card b { color: #1a1a1a; font-weight: 700; }
+.eq-note { margin-top: 8px; padding-top: 8px; border-top: 1px solid #eae7e0; font-size: 11px; color: #999; }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-hd">
+  <h1>New Keynesian Model &mdash; From RANK to HANK</h1>
+  <p>ECON2890C &middot; Topics in Macro and Monetary Economics &middot; Alexandre Gaillard, Brown University &middot; Spring 2026</p>
+</div>
+
+<div class="main">
+
+<!-- ═══ SHARED MONETARY SHOCK ═══ -->
+<div class="shock-bar">
+  <div class="shock-label">
+    <div class="title">Monetary policy shock <span class="badge">shared</span></div>
+    <div class="sub">e &mdash; shifts LM (IS-LM tab) and PE intercept (Keynesian cross tab)</div>
+  </div>
+  <div class="shock-slider">
+    <input type="range" min="-3" max="3" step="0.25" value="0" id="eshock" oninput="onShock()">
+    <div class="ticks"><span>+3 tight</span><span>+2</span><span>+1</span><span>0</span><span>&minus;1</span><span>&minus;2</span><span>&minus;3 easy</span></div>
+  </div>
+  <div class="shock-val" id="sv_e">0.00</div>
+</div>
+
+<!-- ═══ TABS ═══ -->
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('kc')">Keynesian cross</button>
+  <button class="tab" onclick="switchTab('islm')">IS-LM / PC</button>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TAB 1 — KEYNESIAN CROSS
+═══════════════════════════════════════════════ -->
+<div id="kc" class="panel active">
+  <div class="two-col">
+
+    <!-- LEFT: parameters -->
+    <div class="col-left">
+
+      <div class="pcard">
+        <div class="pcard-hd">Model parameters</div>
+        <div class="pcard-body">
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&sigma; &mdash; EIS</span><span class="pval" id="sv_sig">1.0</span></div>
+            <input type="range" min="0.1" max="3" step="0.1" value="1" id="sig" oninput="updateKC()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&beta; &mdash; discount factor</span><span class="pval" id="sv_beta">0.99</span></div>
+            <input type="range" min="0.5" max="0.99" step="0.01" value="0.99" id="beta" oninput="updateKC()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&rho; &mdash; shock persistence</span><span class="pval" id="sv_rho">0.00</span></div>
+            <input type="range" min="0" max="0.95" step="0.05" value="0" id="rho" oninput="updateKC()">
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-hd">TANK heterogeneity</div>
+        <div class="pcard-body">
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&lambda; &mdash; hand-to-mouth share</span><span class="pval" id="sv_lam">0.00</span></div>
+            <input type="range" min="0" max="0.5" step="0.05" value="0" id="lam" oninput="updateKC()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&chi; &mdash; HtM income cyclicality</span><span class="pval" id="sv_chi">1.0</span></div>
+            <input type="range" min="0.3" max="2" step="0.1" value="1" id="chi" oninput="updateKC()">
+          </div>
+          <div class="hint">&chi; has bite only when &lambda;&nbsp;&gt;&nbsp;0. Set &lambda; first, then vary &chi;: &chi;&nbsp;&gt;&nbsp;1 amplifies, &chi;&nbsp;&lt;&nbsp;1 dampens.</div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-hd">Equilibrium outcomes</div>
+        <div class="pcard-body" style="gap:8px">
+          <div class="ocards">
+            <div class="ocard"><div class="v" id="oc_mpc">—</div><div class="l">MPC &omega;</div></div>
+            <div class="ocard"><div class="v" id="oc_omega">—</div><div class="l">Multiplier &Omega;</div></div>
+            <div class="ocard"><div class="v" id="oc_od">—</div><div class="l">Direct &Omega;<sub>D</sub></div></div>
+            <div class="ocard"><div class="v" id="oc_oi">—</div><div class="l">Indirect &Omega;<sub>I</sub></div></div>
+          </div>
+          <div class="dbar">
+            <div class="dbar-hd"><span>Direct</span><span>Indirect</span></div>
+            <div class="dbar-trk">
+              <div class="dbar-seg" id="bar_d" style="background:#185FA5"></div>
+              <div class="dbar-seg" id="bar_i" style="background:#3B6D11"></div>
+            </div>
+            <div class="dbar-ft" id="bar_pct">—</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- RIGHT: chart + equations -->
+    <div class="col-right">
+
+      <div class="ccard">
+        <div class="ccard-title">New Keynesian Cross</div>
+        <div class="legend">
+          <span><span class="lsw" style="background:#3B6D11"></span>ERC: ĉ = ŷ</span>
+          <span><span class="lsw" style="background:#185FA5;opacity:.4"></span>PE before</span>
+          <span><span class="lsw" style="background:#185FA5"></span>PE after</span>
+          <span><span class="ldot" style="background:#c0392b"></span>Eq. before</span>
+          <span><span class="ldot" style="background:#e67e22"></span>Eq. after</span>
+        </div>
+        <div style="position:relative;height:480px">
+          <canvas id="kcChart" role="img" aria-label="Keynesian cross diagram">Keynesian cross.</canvas>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        ŷ* = &Omega;<sub>D</sub>&thinsp;&middot;&thinsp;(&minus;e) / (1&minus;&omega;)<br>
+        RANK:&ensp;<b>&Omega; = &sigma; / (1&minus;&rho;)</b><br>
+        TANK:&ensp;<b>&Omega; = &sigma;(1&minus;&lambda;) / [(1&minus;&rho;)(1&minus;&lambda;&chi;)]</b>
+        <div class="eq-note">Amplification when &chi;&nbsp;&gt;&nbsp;1 &middot; Dampening when &chi;&nbsp;&lt;&nbsp;1 &middot; Reduces to RANK when &lambda;&nbsp;=&nbsp;0</div>
+      </div>
+
+    </div><!-- /col-right -->
+  </div><!-- /two-col -->
+</div><!-- /panel kc -->
+
+
+<!-- ═══════════════════════════════════════════════
+     TAB 2 — IS-LM / PC
+═══════════════════════════════════════════════ -->
+<div id="islm" class="panel">
+  <div class="two-col">
+
+    <!-- LEFT: parameters -->
+    <div class="col-left">
+
+      <div class="pcard">
+        <div class="pcard-hd">Model parameters</div>
+        <div class="pcard-body">
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&sigma; &mdash; EIS</span><span class="pval" id="sv_sig2">1.0</span></div>
+            <input type="range" min="0.1" max="3" step="0.1" value="1" id="sig2" oninput="updateISLM()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&kappa;<sub>y</sub> &mdash; NKPC slope</span><span class="pval" id="sv_ky">0.10</span></div>
+            <input type="range" min="0.01" max="0.5" step="0.01" value="0.1" id="ky" oninput="updateISLM()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&phi;<sub>&pi;</sub> &mdash; Taylor coefficient</span><span class="pval" id="sv_phi">1.50</span></div>
+            <input type="range" min="0" max="3" step="0.1" value="1.5" id="phi" oninput="updateISLM()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">&beta; &mdash; discount factor</span><span class="pval" id="sv_beta2">0.99</span></div>
+            <input type="range" min="0.8" max="0.99" step="0.01" value="0.99" id="beta2" oninput="updateISLM()">
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-hd">Other shocks</div>
+        <div class="pcard-body">
+          <div class="prow">
+            <div class="prow-top"><span class="pname">g &mdash; demand shock</span><span class="pval" id="sv_g">0.00</span></div>
+            <input type="range" min="-2" max="2" step="0.25" value="0" id="gshock" oninput="updateISLM()">
+          </div>
+          <div class="prow">
+            <div class="prow-top"><span class="pname">u &mdash; cost-push shock</span><span class="pval" id="sv_u">0.00</span></div>
+            <input type="range" min="-1" max="1" step="0.1" value="0" id="ushock" oninput="updateISLM()">
+          </div>
+        </div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-hd">Equilibrium outcomes</div>
+        <div class="pcard-body">
+          <div class="ocards">
+            <div class="ocard"><div class="v" id="oc2_y">—</div><div class="l">&Delta;y</div></div>
+            <div class="ocard"><div class="v" id="oc2_pi">—</div><div class="l">&Delta;&pi;</div></div>
+            <div class="ocard"><div class="v" id="oc2_i">—</div><div class="l">&Delta;i nom.</div></div>
+            <div class="ocard"><div class="v" id="oc2_r">—</div><div class="l">&Delta;r real</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /col-left -->
+
+    <!-- RIGHT: two charts + equations -->
+    <div class="col-right">
+
+      <div class="ccard">
+        <div class="ccard-title">IS-LM &mdash; output &amp; real rate</div>
+        <div class="legend">
+          <span><span class="lsw" style="background:#185FA5"></span>IS</span>
+          <span><span class="lsw" style="background:#3B6D11;opacity:.5"></span>LM (e=0)</span>
+          <span><span class="lsw" style="background:#3B6D11"></span>LM (after e)</span>
+          <span><span class="ldot" style="background:#534AB7"></span>Eq. before</span>
+          <span><span class="ldot" style="background:#e67e22"></span>Eq. after</span>
+        </div>
+        <div style="position:relative;height:320px">
+          <canvas id="isChart" role="img" aria-label="IS-LM diagram">IS-LM diagram.</canvas>
+        </div>
+      </div>
+
+      <div class="ccard">
+        <div class="ccard-title">Phillips curve &mdash; output &amp; inflation</div>
+        <div class="legend">
+          <span><span class="lsw" style="background:#c0392b;opacity:.5"></span>PC (u=0)</span>
+          <span><span class="lsw" style="background:#c0392b"></span>PC (after u)</span>
+          <span><span class="ldot" style="background:#534AB7"></span>Eq. before</span>
+          <span><span class="ldot" style="background:#e67e22"></span>Eq. after</span>
+        </div>
+        <div style="position:relative;height:280px">
+          <canvas id="pcChart" role="img" aria-label="Phillips curve diagram">Phillips curve.</canvas>
+        </div>
+      </div>
+
+      <div class="eq-card">
+        IS:&ensp;<b>r = r̄ + g/&sigma; &minus; y/&sigma;</b><br>
+        LM:&ensp;<b>r = (&phi;<sub>&pi;</sub>&minus;1)(&kappa;<sub>y</sub>&thinsp;y + u) + e</b><br>
+        PC:&ensp;<b>&pi; = &kappa;<sub>y</sub>&thinsp;y + u</b>
+        <div class="eq-note">Taylor principle: &phi;<sub>&pi;</sub>&nbsp;&gt;&nbsp;1 for determinacy &middot; &phi;<sub>&pi;</sub>&nbsp;=&nbsp;0 replicates ZLB peg</div>
+      </div>
+
+    </div><!-- /col-right -->
+  </div><!-- /two-col -->
+</div><!-- /panel islm -->
+
+</div><!-- /main -->
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+const GRID = 'rgba(0,0,0,0.055)', TXT = '#777', BDR = '#ccc';
+let kcChart, isChart, pcChart;
+
+const gv  = id => parseFloat(document.getElementById(id).value);
+const sv  = (id, val, d=2) => { const el = document.getElementById(id); if (el) el.textContent = parseFloat(val).toFixed(d); };
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+function onShock() {
+  sv('sv_e', gv('eshock'), 2);
+  updateKC();
+  if (isChart) updateISLM();
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['kc','islm'][i] === id));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === id));
+  if (id === 'islm' && !isChart) initISLM();
+}
+
+/* ── Annotation plugin: braces on KC chart ── */
+const annotPlugin = {
+  id: 'kcAnnot',
+  afterDraw(chart) {
+    if (!chart._meta) return;
+    const { ctx: c, scales: { x, y } } = chart;
+    const { y0, y1, OmegaI_eff } = chart._meta;
+    if (Math.abs(y1 - y0) < 0.005) return;
+
+    const px0 = x.getPixelForValue(y0), px1 = x.getPixelForValue(y1);
+
+    c.save();
+    c.setLineDash([4, 4]); c.strokeStyle = 'rgba(0,0,0,0.12)'; c.lineWidth = 1;
+    [px0, px1].forEach(px => {
+      c.beginPath(); c.moveTo(px, y.getPixelForValue(y.max * 0.03));
+      c.lineTo(px, y.getPixelForValue(0)); c.stroke();
+    });
+    c.setLineDash([]);
+
+    const bY = y.getPixelForValue(y.min + (y.max - y.min) * 0.04);
+    hBrace(c, px0, px1, bY, '#333', 'Ω·e = ' + Math.abs(y1 - y0).toFixed(2), 12);
+
+    if (chart._pe_b !== undefined && Math.abs(chart._pe_a - chart._pe_b) > 0.01)
+      vBrace(c, px0 + 30, y.getPixelForValue(chart._pe_b), y.getPixelForValue(chart._pe_a), '#185FA5', 'Ω_D·e', 10);
+
+    if (Math.abs(OmegaI_eff) > 0.02)
+      vBrace(c, px0 + 56, y.getPixelForValue(y0), y.getPixelForValue(y1), '#3B6D11', 'Ω_I·e', 10);
+
+    c.restore();
+  }
+};
+
+function hBrace(c, x1, x2, by, col, label, fs) {
+  if (Math.abs(x2 - x1) < 4) return;
+  const mx = (x1 + x2) / 2, h = 11;
+  c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1.5;
+  c.beginPath(); c.moveTo(x1, by); c.lineTo(x1, by-h); c.lineTo(mx, by-h-5); c.lineTo(x2, by-h); c.lineTo(x2, by); c.stroke();
+  c.font = `600 ${fs}px -apple-system,sans-serif`; c.textAlign = 'center';
+  c.fillText(label, mx, by - h - 8);
+}
+
+function vBrace(c, px, py1, py2, col, label, fs) {
+  const mn = Math.min(py1, py2), mx = Math.max(py1, py2);
+  if (mx - mn < 5) return;
+  const my = (mn + mx) / 2, w = 8;
+  c.strokeStyle = col; c.fillStyle = col; c.lineWidth = 1.5;
+  c.beginPath(); c.moveTo(px, mn); c.lineTo(px+w, mn); c.lineTo(px+w+4, my); c.lineTo(px+w, mx); c.lineTo(px, mx); c.stroke();
+  c.font = `600 ${fs}px -apple-system,sans-serif`; c.textAlign = 'left';
+  c.fillText(label, px + w + 6, my + 4);
+}
+
+/* ── TANK formulas (λ=0 → RANK automatically) ── */
+function tank(sig, beta, rho, lam, chi) {
+  const b1  = 1 - lam * chi;
+  const sb1 = Math.abs(b1) < 1e-6 ? 1e-6 * Math.sign(b1 || 1) : b1;
+  const d1  = Math.max(1e-6, 1 - beta * rho * sb1);
+  const d2  = Math.max(1e-6, (1 - rho) * sb1);
+  return {
+    omega:  (1 - beta * sb1) / d1,
+    OmegaD: sig * beta * (1 - lam) / d1,
+    Omega:  sig * (1 - lam) / d2,
+  };
+}
+
+/* ── Keynesian Cross ── */
+function initKC() {
+  Chart.register(annotPlugin);
+  kcChart = new Chart(document.getElementById('kcChart').getContext('2d'), {
+    type: 'line',
+    data: { datasets: [
+      { data: [], borderColor: '#3B6D11', borderWidth: 2.5, pointRadius: 0, tension: 0 },
+      { data: [], borderColor: '#185FA5', borderWidth: 1.5, pointRadius: 0, borderDash: [7,5], tension: 0 },
+      { data: [], borderColor: '#185FA5', borderWidth: 2.5, pointRadius: 0, tension: 0 },
+      { data: [], showLine: false, pointRadius: 10, pointStyle: 'circle', backgroundColor: '#c0392b', borderColor: '#922b21', borderWidth: 2 },
+      { data: [], showLine: false, pointRadius: 10, pointStyle: 'circle', backgroundColor: '#e67e22', borderColor: '#a04000', borderWidth: 2 },
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: d => `(ŷ=${d.parsed.x.toFixed(2)}, ĉ=${d.parsed.y.toFixed(2)})` }}},
+      scales: {
+        x: { type:'linear', min:0, max:5, title:{display:true, text:'Output  ŷ', color:TXT, font:{size:12}}, grid:{color:GRID}, ticks:{color:TXT}, border:{color:BDR} },
+        y: { type:'linear', min:0, max:5, title:{display:true, text:'Consumption  ĉ', color:TXT, font:{size:12}}, grid:{color:GRID}, ticks:{color:TXT}, border:{color:BDR} },
+      }
+    }
+  });
+  updateKC();
+}
+
+function updateKC() {
+  const sig = gv('sig'), beta = gv('beta'), rho = gv('rho'), lam = gv('lam'), chi = gv('chi');
+  const e   = gv('eshock');
+  sv('sv_sig', sig, 1); sv('sv_beta', beta, 2); sv('sv_rho', rho, 2); sv('sv_lam', lam, 2); sv('sv_chi', chi, 1);
+
+  const { omega, OmegaD, Omega } = tank(sig, beta, rho, lam, chi);
+  const OmegaI = Omega - OmegaD;
+  const neg_e  = -e;
+  const shift  = OmegaD * neg_e;   /* PE intercept shift */
+  const anchor = 2.0;
+  const y0     = anchor;
+  const y1     = clamp(anchor + Omega * neg_e, 0.05, 4.95);
+
+  /* PE anchored: passes through (y0, y0) before shock */
+  const base = anchor * (1 - omega);
+  const pe   = extra => [{ x: 0, y: base + extra }, { x: 5, y: base + extra + omega * 5 }];
+
+  sv('oc_mpc', omega, 2); sv('oc_omega', Omega, 2); sv('oc_od', OmegaD, 2); sv('oc_oi', OmegaI, 2);
+
+  const absO = Math.abs(Omega);
+  const pD   = absO > 1e-4 ? Math.min(100, Math.abs(OmegaD) / absO * 100) : 50;
+  const pI   = 100 - pD;
+  document.getElementById('bar_d').style.width = pD.toFixed(1) + '%';
+  document.getElementById('bar_d').textContent = pD > 9 ? pD.toFixed(0) + '%' : '';
+  document.getElementById('bar_i').style.width = pI.toFixed(1) + '%';
+  document.getElementById('bar_i').textContent = pI > 9 ? pI.toFixed(0) + '%' : '';
+  document.getElementById('bar_pct').textContent = `Direct ${pD.toFixed(0)}%  ·  Indirect ${pI.toFixed(0)}%`;
+
+  kcChart.data.datasets[0].data = [{ x:0, y:0 }, { x:5, y:5 }];
+  kcChart.data.datasets[1].data = pe(0);
+  kcChart.data.datasets[2].data = pe(shift);
+  kcChart.data.datasets[3].data = [{ x: y0, y: y0 }];
+  kcChart.data.datasets[4].data = [{ x: y1, y: y1 }];
+  kcChart._pe_b = base + omega * y0;             /* = y0 */
+  kcChart._pe_a = base + shift + omega * y0;
+  kcChart._meta = { y0, y1, OmegaD_eff: OmegaD * neg_e, OmegaI_eff: OmegaI * neg_e };
+  kcChart.update('none');
+}
+
+/* ── IS-LM / PC ── */
+function sc(label, mn, mx) {
+  return { type:'linear', min:mn, max:mx, title:{display:true, text:label, color:TXT, font:{size:12}}, grid:{color:GRID}, ticks:{color:TXT}, border:{color:BDR} };
+}
+
+function initISLM() {
+  isChart = new Chart(document.getElementById('isChart').getContext('2d'), {
+    type: 'line',
+    data: { datasets: [
+      { data: [], borderColor: '#185FA5', borderWidth: 2.5, pointRadius: 0, tension: 0 },
+      { data: [], borderColor: '#3B6D11', borderWidth: 1.5, pointRadius: 0, borderDash: [7,5], tension: 0 },
+      { data: [], borderColor: '#3B6D11', borderWidth: 2.5, pointRadius: 0, tension: 0 },
+      { data: [], showLine: false, pointRadius: 9, pointStyle: 'circle', backgroundColor: '#AFA9EC', borderColor: '#534AB7', borderWidth: 2 },
+      { data: [], showLine: false, pointRadius: 9, pointStyle: 'circle', backgroundColor: '#e67e22', borderColor: '#a04000', borderWidth: 2 },
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: d => `(ŷ=${d.parsed.x.toFixed(2)}, r=${d.parsed.y.toFixed(2)})` }}},
+      scales: { x: sc('Output  ŷ', -3, 3), y: sc('Real rate  r', -3, 3) }
+    }
+  });
+
+  pcChart = new Chart(document.getElementById('pcChart').getContext('2d'), {
+    type: 'line',
+    data: { datasets: [
+      { data: [], borderColor: '#c0392b', borderWidth: 1.5, pointRadius: 0, borderDash: [7,5], tension: 0 },
+      { data: [], borderColor: '#c0392b', borderWidth: 2.5, pointRadius: 0, tension: 0 },
+      { data: [], showLine: false, pointRadius: 8, pointStyle: 'circle', backgroundColor: '#AFA9EC', borderColor: '#534AB7', borderWidth: 2 },
+      { data: [], showLine: false, pointRadius: 8, pointStyle: 'circle', backgroundColor: '#e67e22', borderColor: '#a04000', borderWidth: 2 },
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: d => `(ŷ=${d.parsed.x.toFixed(2)}, π=${d.parsed.y.toFixed(2)})` }}},
+      scales: { x: sc('Output  ŷ', -3, 3), y: sc('Inflation  π', -1.5, 1.5) }
+    }
+  });
+  updateISLM();
+}
+
+function updateISLM() {
+  const sig = gv('sig2'), ky = gv('ky'), phi = gv('phi');
+  const e = gv('eshock'), g = gv('gshock'), u = gv('ushock');
+  sv('sv_sig2', sig, 1); sv('sv_ky', ky, 2); sv('sv_phi', phi, 2); sv('sv_g', g, 2); sv('sv_u', u, 2);
+
+  const d0 = 1/sig + (phi-1)*ky;
+  const d  = Math.abs(d0) < 1e-5 ? 1e-5 : d0;
+  const yStar  = (g/sig - e - (phi-1)*u) / d;
+  const piStar = ky * yStar + u;
+  const rStar  = (phi-1) * piStar + e;
+  const iStar  = rStar + piStar;
+
+  sv('oc2_y', yStar, 2); sv('oc2_pi', piStar, 2); sv('oc2_i', iStar, 2); sv('oc2_r', rStar, 2);
+
+  const Y = [-3, -2, -1, 0, 1, 2, 3];
+  isChart.data.datasets[0].data = Y.map(y => ({ x: y, y: -y/sig + g/sig }));
+  isChart.data.datasets[1].data = Y.map(y => ({ x: y, y: (phi-1)*ky*y }));
+  isChart.data.datasets[2].data = Y.map(y => ({ x: y, y: (phi-1)*(ky*y+u)+e }));
+  isChart.data.datasets[3].data = [{ x: 0, y: 0 }];
+  isChart.data.datasets[4].data = [{ x: yStar, y: rStar }];
+  isChart.update('none');
+
+  pcChart.data.datasets[0].data = Y.map(y => ({ x: y, y: ky*y }));
+  pcChart.data.datasets[1].data = Y.map(y => ({ x: y, y: ky*y+u }));
+  pcChart.data.datasets[2].data = [{ x: 0, y: 0 }];
+  pcChart.data.datasets[3].data = [{ x: yStar, y: piStar }];
+  pcChart.update('none');
+}
+
+initKC();
+</script>
+</body>
+</html>
