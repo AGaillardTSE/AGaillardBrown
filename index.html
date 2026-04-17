@@ -360,6 +360,7 @@ footer a:hover{color:var(--accent)}
     <ul class="nav-tabs">
       <li><button class="active" onclick="siteTab('home',this)">Home</button></li>
       <li><button onclick="siteTab('teaching',this)">Teaching</button></li>
+      <li><button onclick="siteTab('nkmodels',this)">NK Models</button></li>
       <li style="display:none;"><button onclick="siteTab('explorer',this)">Inequality Explorer</button></li>
       <li><button onclick="siteTab('code',this)">Code/Data</button></li>
       <li><button onclick="siteTab('more',this)">More</button></li>
@@ -765,6 +766,20 @@ footer a:hover{color:var(--accent)}
     <div style="margin-top:.45rem"><strong>Interface:</strong> This visualisation was built by Claude (Anthropic). At no point did the AI have access to household-level microdata — only the pre-computed aggregate statistics displayed here were provided as input. All data processing, cleaning, and estimation were performed entirely by the authors in R.</div>
   </div>
 
+</div><!-- /panel-explorer -->
+
+
+
+
+
+  
+<!-- ═══════════════════════════════════════════
+     NK Model -- Teaching 
+═══════════════════════════════════════════ -->
+<div class="panel" id="nkmodel">
+  <div class="more-wrap">
+    <iframe src="https://a-gaillard.com/nk_model_interactive.html" width="80%" height="100%" style="border:none;"></iframe>
+  </div>
 </div><!-- /panel-explorer -->
 
 
