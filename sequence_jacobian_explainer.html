@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Sequence Space Jacobian: A Sum of IRFs</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg:        #ffffff;
+    --bg2:       #f8f8f6;
+    --bg3:       #f0efe9;
+    --border:    rgba(0,0,0,0.08);
+    --border2:   rgba(0,0,0,0.14);
+    --text:      #1a1916;
+    --muted:     #7a7870;
+    --accent:    #a07830;
+    --accent2:   #2c6fad;
+    --accent3:   #1a8c62;
+    --accent4:   #b04070;
+    --mono:      'IBM Plex Mono', monospace;
+    --sans:      'IBM Plex Sans', sans-serif;
+    --serif:     'Playfair Display', serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 3.5rem 4rem 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .subtitle {
+    font-size: 0.95rem;
+    color: var(--muted);
+    max-width: 560px;
+    line-height: 1.7;
+  }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 4rem 6rem;
+  }
+
+  section {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.2rem;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 0.925rem;
+    color: #4a4840;
+    max-width: 680px;
+    margin-bottom: 1rem;
+  }
+
+  .math-block {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-left: 3px solid var(--accent);
+    border-radius: 4px;
+    padding: 1.4rem 1.8rem;
+    margin: 1.8rem 0;
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    color: var(--text);
+    line-height: 2;
+    overflow-x: auto;
+  }
+  .math-block .comment {
+    color: var(--muted);
+    font-size: 0.78rem;
+    margin-top: 0.3rem;
+  }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 2rem 0;
+  }
+
+  .insight-card {
+    background: var(--bg2);
+    padding: 1.6rem;
+    transition: background 0.2s;
+  }
+  .insight-card:hover { background: var(--bg3); }
+
+  .insight-num {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+
+  .insight-card h3 {
+    font-family: var(--sans);
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .insight-card p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    max-width: 100%;
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .note-box {
+    border: 1px solid rgba(44,111,173,0.22);
+    border-left: 3px solid var(--accent2);
+    border-radius: 4px;
+    background: rgba(44,111,173,0.04);
+    padding: 1.2rem 1.6rem;
+    margin: 1.6rem 0;
+    font-size: 0.875rem;
+    color: #3a3830;
+    line-height: 1.7;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 2rem 0 2.5rem;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 1.6rem 2rem;
+    align-items: center;
+  }
+
+  .ctrl-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 180px;
+    flex: 1;
+  }
+
+  .ctrl-group label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .ctrl-row { display: flex; align-items: center; gap: 10px; }
+
+  input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 2px;
+    background: var(--border2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.25); }
+
+  .val-badge {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    background: rgba(160,120,48,0.10);
+    padding: 2px 8px;
+    border-radius: 3px;
+    min-width: 44px;
+    text-align: center;
+  }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1px;
+  }
+
+  .chart-panel { background: var(--bg2); padding: 1.4rem 1.6rem 1.2rem; }
+  .chart-panel.wide { grid-column: 1 / -1; }
+
+  .panel-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+  }
+
+  .panel-eq {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .chart-wrap { position: relative; width: 100%; height: 180px; }
+  .chart-wrap.tall { height: 220px; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    align-items: center;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .swatch { width: 22px; height: 2px; border-radius: 2px; display: inline-block; }
+
+  .ante-swatch {
+    width: 12px; height: 12px; border-radius: 2px;
+    background: rgba(176,64,112,0.30);
+    border: 1px solid #c06888;
+    display: inline-block;
+  }
+  .post-swatch {
+    width: 12px; height: 12px; border-radius: 2px;
+    background: rgba(176,64,112,0.60);
+    border: 1px solid #8c2050;
+    display: inline-block;
+  }
+
+  .ce-box {
+    border: 1px solid rgba(160,120,48,0.25);
+    border-radius: 4px;
+    background: rgba(160,120,48,0.04);
+    padding: 1.6rem 2rem;
+    margin-top: 2rem;
+  }
+  .ce-box h3 {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+  }
+  .ce-box p { font-size: 0.88rem; max-width: 100%; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 700px) {
+    header, main, footer { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .insight-grid { grid-template-columns: 1fr; }
+    .chart-grid { grid-template-columns: 1fr; }
+    .chart-panel.wide { grid-column: 1; }
+    .controls { gap: 1.2rem; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  header { animation: fadeUp 0.5s ease both; }
+  section:nth-of-type(1) { animation: fadeUp 0.5s 0.05s ease both; }
+  section:nth-of-type(2) { animation: fadeUp 0.5s 0.10s ease both; }
+  section:nth-of-type(3) { animation: fadeUp 0.5s 0.15s ease both; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>The Sequence Space Jacobian:<br><em>A Sum of IRFs</em></h1>
+  <p class="subtitle">Each column J<sub>A,z</sub>[·, s] is the IRF to a shock at date s. The full IRF to an AR(1) shock is the ρ<sup>s</sup>-weighted sum of all columns.</p>
+</header>
+
+<main>
+
+  <section>
+    <p>Lighter bars: t &lt; s (anticipation). Darker bars: t ≥ s (post-shock). Gold line: shock date s.</p>
+
+    <div class="controls">
+      <div class="ctrl-group">
+        <label>Persistence ρ</label>
+        <div class="ctrl-row">
+          <input type="range" id="rho" min="0" max="0.99" step="0.01" value="0.70">
+          <span class="val-badge" id="rho-out">0.70</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <label>Horizon T</label>
+        <div class="ctrl-row">
+          <input type="range" id="T" min="8" max="30" step="1" value="18">
+          <span class="val-badge" id="T-out">18</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <label>Highlight column s</label>
+        <div class="ctrl-row">
+          <input type="range" id="scol" min="0" max="17" step="1" value="6">
+          <span class="val-badge" id="scol-out">6</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="chart-panel">
+        <p class="panel-label">Jacobian column · persistence weight</p>
+        <p class="panel-eq">J<sub>A,z</sub>[t, s] · ρ<sup>s</sup></p>
+        <div class="chart-wrap"><canvas id="cCol" role="img" aria-label="Jacobian column s scaled by rho^s, showing anticipation before s and response after s"></canvas></div>
+      </div>
+      <div class="chart-panel">
+        <p class="panel-label">Persistence weights</p>
+        <p class="panel-eq">ρ<sup>s</sup> for s = 0, 1, …, T−1</p>
+        <div class="chart-wrap"><canvas id="cWeights" role="img" aria-label="Exponential decay weights rho to the s"></canvas></div>
+      </div>
+      <div class="chart-panel wide">
+        <p class="panel-label">Full impulse response (sum of all weighted columns)</p>
+        <p class="panel-eq">Â<sub>t</sub> = Σ<sub>s</sub> J<sub>A,z</sub>[t, s] · ρ<sup>s</sup> · ẑ<sub>0</sub></p>
+        <div class="chart-wrap tall"><canvas id="cIRF" role="img" aria-label="Impulse response function of aggregate saving A"></canvas></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <span class="legend-item"><span class="ante-swatch"></span>t &lt; s (anticipation)</span>
+      <span class="legend-item"><span class="post-swatch"></span>t ≥ s (post-shock)</span>
+      <span class="legend-item" style="margin-left:8px;"><span style="display:inline-block;width:2px;height:14px;background:#a07830;margin-right:4px;"></span>shock date s</span>
+      <span class="legend-item" style="margin-left:8px;"><span class="swatch" style="background:#2c6fad;height:2.5px;"></span>IRF Â<sub>t</sub> (full sum)</span>
+      <span class="legend-item"><span class="swatch" style="background:repeating-linear-gradient(90deg,#b04070 0,#b04070 5px,transparent 5px,transparent 9px);"></span>Selected col·ρ<sup>s</sup></span>
+      <span class="legend-item"><span class="swatch" style="background:#1a8c62;"></span>ρ<sup>s</sup></span>
+    </div>
+  </section>
+
+
+</main>
+
+<footer>
+  <span>Sequence Space Jacobian Methods</span>
+  <span>A Sum of IRFs</span>
+</footer>
+
+<script>
+  const BLUE  = '#2c6fad';
+  const GREEN = '#1a8c62';
+  const PINK  = '#b04070';
+  const GOLD  = '#a07830';
+  const GRID  = 'rgba(0,0,0,0.05)';
+  const TICK  = '#999890';
+
+  // Jacobian column with anticipation for t < s and post-shock response for t >= s.
+  // Anticipation: forward-looking households start saving more as shock approaches.
+  // Post-shock:   shock realises, response peaks then decays via distribution dynamics.
+  function makeCol(s, T) {
+    const col = new Array(T).fill(0);
+    if (s === 0) {
+      // s=0: no anticipation possible, purely post-shock
+      for (let t = 0; t < T; t++) {
+        const lag = t;
+        col[t] = Math.exp(-0.32 * lag) * (1 - 0.1 * Math.exp(-0.9 * lag));
+      }
+    } else {
+      for (let t = 0; t < T; t++) {
+        if (t < s) {
+          // anticipation: rises as t approaches s, from near-zero far in advance
+          const lead = s - t;
+          col[t] = 0.52 * Math.exp(-0.20 * lead);
+        } else {
+          // post-shock realisation + gradual decay
+          const lag = t - s;
+          col[t] = Math.exp(-0.30 * lag) * (1 - 0.08 * Math.exp(-0.9 * lag));
+        }
+      }
+    }
+    // normalise to peak = 1
+    const peak = Math.max(...col.map(Math.abs));
+    return col.map(v => v / (peak || 1));
+  }
+
+  function computeIRF(rho, T) {
+    const irf = new Array(T).fill(0);
+    for (let s = 0; s < T; s++) {
+      const w = Math.pow(rho, s);
+      makeCol(s, T).forEach((v, t) => { irf[t] += v * w; });
+    }
+    const peak = Math.max(...irf.map(Math.abs));
+    return irf.map(v => parseFloat((v / (peak || 1)).toFixed(4)));
+  }
+
+  function colScaledData(T, rho, s) {
+    return makeCol(s, T).map(v => parseFloat((v * Math.pow(rho, s)).toFixed(4)));
+  }
+
+  function barColors(T, s, alpha_ante, alpha_post) {
+    return Array.from({length: T}, (_, t) =>
+      t < s ? `rgba(176,64,112,${alpha_ante})` : `rgba(176,64,112,${alpha_post})`
+    );
+  }
+
+  function barBorders(T, s) {
+    return Array.from({length: T}, (_, t) => t < s ? '#c06888' : '#8c2050');
+  }
+
+  let T = 18, rho = 0.70, scol = 6;
+  const labels = n => Array.from({length: n}, (_, i) => i);
+
+  const baseOpts = () => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 220 },
+    plugins: { legend: { display: false } },
+    scales: {
+      x: {
+        ticks: { color: TICK, font: { family: "'IBM Plex Mono'", size: 10 }, maxTicksLimit: 10, autoSkip: true },
+        grid: { color: GRID },
+        title: { display: true, text: 't', color: TICK, font: { family: "'IBM Plex Mono'", size: 10 } }
+      },
+      y: {
+        ticks: { color: TICK, font: { family: "'IBM Plex Mono'", size: 10 }, maxTicksLimit: 5 },
+        grid: { color: GRID }
+      }
+    }
+  });
+
+  // Plugin: draw a vertical gold line at the shock date s
+  const shockLinePlugin = {
+    id: 'shockLine',
+    afterDraw(chart) {
+      const s = chart.config._shockDate;
+      if (s === undefined || s === null) return;
+      const meta = chart.getDatasetMeta(0);
+      if (!meta.data[s]) return;
+      const x = meta.data[s].x;
+      const { top, bottom } = chart.chartArea;
+      const ctx = chart.ctx;
+      ctx.save();
+      ctx.setLineDash([5, 3]);
+      ctx.strokeStyle = GOLD;
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, bottom);
+      ctx.stroke();
+      // label
+      ctx.setLineDash([]);
+      ctx.fillStyle = GOLD;
+      ctx.font = "10px 'IBM Plex Mono'";
+      ctx.fillText('s', x + 3, top + 12);
+      ctx.restore();
+    }
+  };
+  Chart.register(shockLinePlugin);
+
+  const cCol = new Chart(document.getElementById('cCol'), {
+    type: 'bar',
+    data: {
+      labels: labels(T),
+      datasets: [{
+        data: colScaledData(T, rho, scol),
+        backgroundColor: barColors(T, scol, 0.28, 0.58),
+        borderColor: barBorders(T, scol),
+        borderWidth: 1,
+        borderRadius: 2
+      }]
+    },
+    options: { ...baseOpts(), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, min: 0 } }, _shockDate: scol }
+  });
+
+  const cWeights = new Chart(document.getElementById('cWeights'), {
+    type: 'bar',
+    data: {
+      labels: labels(T),
+      datasets: [{
+        data: Array.from({length: T}, (_, s) => parseFloat(Math.pow(rho, s).toFixed(4))),
+        backgroundColor: 'rgba(26,140,98,0.38)',
+        borderColor: GREEN,
+        borderWidth: 1,
+        borderRadius: 2
+      }]
+    },
+    options: { ...baseOpts(), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, min: 0, max: 1.05 } } }
+  });
+
+  const cIRF = new Chart(document.getElementById('cIRF'), {
+    type: 'line',
+    data: {
+      labels: labels(T),
+      datasets: [
+        {
+          data: computeIRF(rho, T),
+          borderColor: BLUE,
+          backgroundColor: 'rgba(44,111,173,0.07)',
+          borderWidth: 2.5,
+          fill: true,
+          tension: 0.38,
+          pointRadius: 3,
+          pointBackgroundColor: BLUE
+        },
+        {
+          data: colScaledData(T, rho, scol),
+          borderColor: PINK,
+          borderDash: [6, 4],
+          borderWidth: 1.8,
+          fill: false,
+          tension: 0.38,
+          pointRadius: 2,
+          pointBackgroundColor: PINK
+        }
+      ]
+    },
+    options: { ...baseOpts(), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, min: 0 } }, _shockDate: scol }
+  });
+
+  function update() {
+    const lbs = labels(T);
+    const cdata = colScaledData(T, rho, scol);
+
+    cCol.data.labels = lbs;
+    cCol.data.datasets[0].data = cdata;
+    cCol.data.datasets[0].backgroundColor = barColors(T, scol, 0.28, 0.58);
+    cCol.data.datasets[0].borderColor = barBorders(T, scol);
+    cCol.config._shockDate = scol;
+
+    cWeights.data.labels = lbs;
+    cWeights.data.datasets[0].data = Array.from({length: T}, (_, s) => parseFloat(Math.pow(rho, s).toFixed(4)));
+
+    cIRF.data.labels = lbs;
+    cIRF.data.datasets[0].data = computeIRF(rho, T);
+    cIRF.data.datasets[1].data = cdata;
+    cIRF.config._shockDate = scol;
+
+    [cCol, cWeights, cIRF].forEach(ch => ch.update());
+  }
+
+  document.getElementById('rho').addEventListener('input', e => {
+    rho = parseFloat(e.target.value);
+    document.getElementById('rho-out').textContent = rho.toFixed(2);
+    update();
+  });
+  document.getElementById('T').addEventListener('input', e => {
+    T = parseInt(e.target.value);
+    document.getElementById('T-out').textContent = T;
+    const sEl = document.getElementById('scol');
+    sEl.max = T - 1;
+    if (scol >= T) { scol = T - 1; sEl.value = scol; document.getElementById('scol-out').textContent = scol; }
+    update();
+  });
+  document.getElementById('scol').addEventListener('input', e => {
+    scol = parseInt(e.target.value);
+    document.getElementById('scol-out').textContent = scol;
+    update();
+  });
+</script>
+</body>
+</html>
