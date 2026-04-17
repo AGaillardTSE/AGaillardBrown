@@ -18,102 +18,99 @@
     --text-primary: #1a1916;
     --text-secondary: #6b6860;
     --text-muted: #a8a49e;
-    --accent: #1a1916;
-    --IS: #2563c7;
-    --LM: #c23b22;
-    --AD: #1e7a4d;
-    --SRAS: #c47a1a;
-    --LRAS: #6d28d9;
-    --VSRAS: #9ca3af;
-    --corr: rgba(0,0,0,0.10);
     --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
   }
 
-  html { font-size: 16px; }
+  /* full-viewport, no scroll */
+  html, body { height: 100%; overflow: hidden; }
   body {
     background: var(--bg);
     color: var(--text-primary);
     font-family: 'DM Sans', sans-serif;
     font-weight: 300;
-    min-height: 100vh;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   /* ── Header ── */
   .header {
+    flex-shrink: 0;
     border-bottom: 1px solid var(--border);
     background: var(--surface);
-    padding: 28px 48px 24px;
+    padding: 16px 36px 14px;
     display: flex;
-    align-items: flex-end;
-    gap: 32px;
+    align-items: center;
+    gap: 24px;
   }
   .header-left { flex: 1; }
   .header h1 {
     font-family: 'Playfair Display', serif;
     font-weight: 500;
-    font-size: 28px;
-    letter-spacing: -0.3px;
+    font-size: 22px;
+    letter-spacing: -0.2px;
     color: var(--text-primary);
     line-height: 1.2;
   }
   .header h1 span { color: var(--text-muted); font-weight: 400; }
   .header .subtitle {
-    margin-top: 6px;
-    font-size: 13px;
+    margin-top: 3px;
+    font-size: 12px;
     color: var(--text-secondary);
     font-weight: 300;
     letter-spacing: 0.02em;
   }
   .chapter-tag {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 400;
     color: var(--text-muted);
     border: 1px solid var(--border);
-    padding: 4px 10px;
+    padding: 3px 9px;
     border-radius: 4px;
     letter-spacing: 0.05em;
     white-space: nowrap;
   }
 
-  /* ── Layout ── */
+  /* ── Main layout ── */
   .main {
+    flex: 1;
+    min-height: 0;
     display: grid;
-    grid-template-columns: 320px 1fr;
-    min-height: calc(100vh - 89px);
+    grid-template-columns: 272px 1fr;
+    overflow: hidden;
   }
 
   /* ── Sidebar ── */
   .sidebar {
     border-right: 1px solid var(--border);
     background: var(--surface);
-    padding: 28px 24px;
+    padding: 16px 14px;
     display: flex;
     flex-direction: column;
-    gap: 28px;
+    gap: 14px;
     overflow-y: auto;
+    height: 100%;
   }
 
   .sidebar-section-label {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   /* Scenarios */
-  .scenario-list { display: flex; flex-direction: column; gap: 4px; }
+  .scenario-list { display: flex; flex-direction: column; gap: 2px; }
   .sc-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
+    gap: 8px;
+    padding: 7px 9px;
     border: 1px solid transparent;
-    border-radius: 8px;
+    border-radius: 7px;
     background: transparent;
     cursor: pointer;
     text-align: left;
@@ -121,23 +118,20 @@
     width: 100%;
   }
   .sc-btn:hover { background: var(--bg); border-color: var(--border); }
-  .sc-btn.active {
-    background: var(--text-primary);
-    border-color: var(--text-primary);
-  }
+  .sc-btn.active { background: var(--text-primary); border-color: var(--text-primary); }
   .sc-btn .sc-icon {
-    width: 28px; height: 28px;
-    border-radius: 6px;
+    width: 24px; height: 24px;
+    border-radius: 5px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 13px;
+    font-size: 11px;
     background: var(--border-light);
     flex-shrink: 0;
     transition: background 0.15s;
   }
   .sc-btn.active .sc-icon { background: rgba(255,255,255,0.12); }
-  .sc-btn .sc-text { flex: 1; }
+  .sc-btn .sc-text { flex: 1; min-width: 0; }
   .sc-btn .sc-name {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 400;
     color: var(--text-primary);
     line-height: 1.3;
@@ -145,18 +139,21 @@
   }
   .sc-btn.active .sc-name { color: #fff; }
   .sc-btn .sc-sub {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-muted);
     margin-top: 1px;
     transition: color 0.15s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .sc-btn.active .sc-sub { color: rgba(255,255,255,0.55); }
+  .sc-btn.active .sc-sub { color: rgba(255,255,255,0.5); }
 
-  /* Phase slider */
-  .phase-block { display: flex; flex-direction: column; gap: 12px; }
-  .phase-header { display: flex; align-items: center; justify-content: space-between; }
+  /* Phase */
+  .phase-block { display: flex; flex-direction: column; gap: 8px; }
+  .phase-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
   .phase-name {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 400;
     color: var(--text-primary);
     line-height: 1.4;
@@ -164,88 +161,76 @@
   }
   .phase-badge {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-muted);
     background: var(--bg);
     border: 1px solid var(--border);
-    padding: 2px 7px;
+    padding: 2px 6px;
     border-radius: 4px;
     flex-shrink: 0;
-    margin-left: 8px;
   }
-
-  .phase-dots { display: flex; gap: 6px; }
+  .phase-dots { display: flex; gap: 4px; }
   .phase-dot {
-    height: 3px;
-    flex: 1;
-    border-radius: 2px;
-    background: var(--border);
-    cursor: pointer;
-    transition: background 0.2s;
+    height: 3px; flex: 1; border-radius: 2px;
+    background: var(--border); cursor: pointer; transition: background 0.2s;
   }
   .phase-dot.active { background: var(--text-primary); }
   .phase-dot:hover { background: var(--text-secondary); }
 
   input[type=range] {
-    width: 100%;
-    -webkit-appearance: none;
-    height: 2px;
-    background: var(--border);
-    border-radius: 2px;
-    outline: none;
-    cursor: pointer;
+    width: 100%; -webkit-appearance: none;
+    height: 2px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer;
   }
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    background: var(--text-primary);
-    border: 2px solid var(--surface);
-    box-shadow: 0 0 0 1px var(--border);
-    transition: transform 0.1s;
+    width: 13px; height: 13px; border-radius: 50%;
+    background: var(--text-primary); border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--border); transition: transform 0.1s;
   }
   input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
   /* Description */
   .desc-box {
-    background: var(--bg);
-    border: 1px solid var(--border-light);
-    border-radius: 8px;
-    padding: 14px;
-    font-size: 12px;
-    line-height: 1.7;
-    color: var(--text-secondary);
-    font-weight: 300;
+    background: var(--bg); border: 1px solid var(--border-light);
+    border-radius: 7px; padding: 10px 11px;
+    font-size: 11px; line-height: 1.65;
+    color: var(--text-secondary); font-weight: 300;
   }
 
   /* Legend */
-  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
-  .leg-item { display: flex; align-items: center; gap: 7px; }
-  .leg-swatch { width: 20px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 10px; }
+  .leg-item { display: flex; align-items: center; gap: 6px; }
+  .leg-swatch { width: 18px; height: 2px; border-radius: 1px; flex-shrink: 0; }
   .leg-swatch.dashed { background: none !important; }
-  .leg-label { font-size: 11px; color: var(--text-secondary); }
+  .leg-label { font-size: 10px; color: var(--text-secondary); font-family: 'DM Mono', monospace; }
 
   /* ── Charts area ── */
   .charts {
-    padding: 28px 32px;
+    padding: 16px 20px;
     display: flex;
     flex-direction: column;
-    gap: 0;
     background: var(--bg);
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
   }
 
+  /* Each chart card takes equal share of available height */
   .chart-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 10px;
     overflow: hidden;
     box-shadow: var(--shadow);
-    margin-bottom: 16px;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
   }
-  .chart-card:last-child { margin-bottom: 0; }
 
   .chart-header {
-    padding: 14px 20px 12px;
+    flex-shrink: 0;
+    padding: 10px 16px 9px;
     border-bottom: 1px solid var(--border-light);
     display: flex;
     align-items: center;
@@ -253,40 +238,26 @@
   }
   .chart-title {
     font-family: 'Playfair Display', serif;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--text-primary);
+    font-size: 13px; font-weight: 500; color: var(--text-primary);
   }
   .chart-subtitle {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 300;
-    letter-spacing: 0.02em;
+    font-size: 10px; color: var(--text-muted); font-weight: 300; letter-spacing: 0.02em;
   }
 
-  canvas { display: block; width: 100%; }
+  /* Canvas fills remaining card height */
+  .canvas-wrap { flex: 1; min-height: 0; position: relative; }
+  .canvas-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
   /* Divider between charts */
   .chart-divider {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 4px 0;
-    padding: 0 4px;
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 2px;
   }
   .chart-divider-line { flex: 1; height: 1px; background: var(--border-light); }
   .chart-divider-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--text-muted);
-    letter-spacing: 0.08em;
-  }
-
-  @media (max-width: 900px) {
-    .main { grid-template-columns: 1fr; }
-    .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
-    .header { padding: 20px 24px 18px; }
-    .charts { padding: 20px 20px; }
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--text-muted); letter-spacing: 0.07em;
   }
 </style>
 </head>
@@ -294,15 +265,15 @@
 
 <header class="header">
   <div class="header-left">
-    <h1>IS-LM <span>&</span> AS-AD Model</h1>
+    <h1>IS-LM <span>&amp;</span> AS-AD Model</h1>
     <p class="subtitle">From the short to the medium run · Intermediate Macroeconomics</p>
   </div>
-  <div class="chapter-tag">Chapter 9 · Blanchard</div>
+  <div class="chapter-tag">Chapter 9</div>
 </header>
 
 <div class="main">
 
-  <!-- ── Sidebar ── -->
+  <!-- Sidebar -->
   <aside class="sidebar">
 
     <div>
@@ -379,7 +350,7 @@
 
   </aside>
 
-  <!-- ── Charts ── -->
+  <!-- Charts -->
   <div class="charts">
 
     <div class="chart-card">
@@ -387,7 +358,7 @@
         <div class="chart-title">IS-LM</div>
         <div class="chart-subtitle">Goods &amp; money market equilibrium</div>
       </div>
-      <canvas id="islm"></canvas>
+      <div class="canvas-wrap"><canvas id="islm"></canvas></div>
     </div>
 
     <div class="chart-divider">
@@ -401,18 +372,18 @@
         <div class="chart-title">AS-AD</div>
         <div class="chart-subtitle">Aggregate supply &amp; demand</div>
       </div>
-      <canvas id="asad"></canvas>
+      <div class="canvas-wrap"><canvas id="asad"></canvas></div>
     </div>
 
   </div>
 </div>
 
 <script>
-// ── Model parameters ──────────────────────────────────────────────────────
+// ── Model ──────────────────────────────────────────────────────────────────
 const b_IS=1.0, b_LM=0.7, kP=0.5, kS=0.8;
 const Y0=0.50, P0=0.45, r0=0.45;
-const a_IS = r0 + b_IS*Y0;           // 0.95
-const a_LM = r0 - kP*P0 - b_LM*Y0;  // -0.125
+const a_IS=r0+b_IS*Y0;          // 0.95
+const a_LM=r0-kP*P0-b_LM*Y0;   // -0.125
 
 function rIS(Y,dIS){return a_IS+(dIS||0)-b_IS*Y;}
 function rLM(Y,P,dLM){return a_LM+kP*P+b_LM*Y+(dLM||0);}
@@ -436,61 +407,47 @@ function dSrasLR(dIS,dLM,Yn){return Plr(dIS,dLM,Yn)-P0;}
 function makeScenario(dIS,lrasShift,desc){
   const Yn=Y0+lrasShift;
   const Y_vsr=Yad(P0,dIS,0), r_vsr=rIS(Y_vsr,dIS);
-  const eq1=adSrasEq(dIS,0,0,Yn);
-  const dLM1=kP*(eq1.P-P0);
+  const eq1=adSrasEq(dIS,0,0,Yn), dLM1=kP*(eq1.P-P0);
   const dSRAS_lr=dSrasLR(dIS,0,Yn);
   const dSRAS2=dSRAS_lr*0.5;
-  const eq2=adSrasEq(dIS,0,dSRAS2,Yn);
-  const dLM2=kP*(eq2.P-P0);
-  const eq3=adSrasEq(dIS,0,dSRAS_lr,Yn);
-  const dLM3=kP*(eq3.P-P0);
-  return{
-    desc,
-    phases:[
-      {dIS,dLM:0,     dSRAS:0,       Yn,lras:lrasShift,showVSRAS:true, eqLabel:"A'",eqY:Y_vsr,eqP:P0,   eqR:r_vsr,        pLabel:"Very short run — prices fixed"},
-      {dIS,dLM:dLM1,  dSRAS:0,       Yn,lras:lrasShift,showVSRAS:false,eqLabel:'B', eqY:eq1.Y,eqP:eq1.P,eqR:rIS(eq1.Y,dIS),pLabel:"Short run — prices adjust, SRAS fixed"},
-      {dIS,dLM:dLM2,  dSRAS:dSRAS2,  Yn,lras:lrasShift,showVSRAS:false,eqLabel:"B'",eqY:eq2.Y,eqP:eq2.P,eqR:rIS(eq2.Y,dIS),pLabel:"Medium run — SRAS shifts up"},
-      {dIS,dLM:dLM3,  dSRAS:dSRAS_lr,Yn,lras:lrasShift,showVSRAS:false,eqLabel:'C', eqY:eq3.Y,eqP:eq3.P,eqR:rIS(eq3.Y,dIS),pLabel:"Long run — SRAS′ through LRAS"},
-    ]
-  };
+  const eq2=adSrasEq(dIS,0,dSRAS2,Yn), dLM2=kP*(eq2.P-P0);
+  const eq3=adSrasEq(dIS,0,dSRAS_lr,Yn), dLM3=kP*(eq3.P-P0);
+  return{desc,phases:[
+    {dIS,dLM:0,    dSRAS:0,       Yn,lras:lrasShift,showVSRAS:true, eqLabel:"A'",eqY:Y_vsr,eqP:P0,   eqR:r_vsr,        pLabel:"Very short run — prices fixed"},
+    {dIS,dLM:dLM1, dSRAS:0,       Yn,lras:lrasShift,showVSRAS:false,eqLabel:'B', eqY:eq1.Y,eqP:eq1.P,eqR:rIS(eq1.Y,dIS),pLabel:"Short run — prices adjust, SRAS fixed"},
+    {dIS,dLM:dLM2, dSRAS:dSRAS2,  Yn,lras:lrasShift,showVSRAS:false,eqLabel:"B'",eqY:eq2.Y,eqP:eq2.P,eqR:rIS(eq2.Y,dIS),pLabel:"Medium run — SRAS shifts up"},
+    {dIS,dLM:dLM3, dSRAS:dSRAS_lr,Yn,lras:lrasShift,showVSRAS:false,eqLabel:'C', eqY:eq3.Y,eqP:eq3.P,eqR:rIS(eq3.Y,dIS),pLabel:"Long run — SRAS′ through LRAS"},
+  ]};
 }
 
 function makeMonetary(dLM_exog,desc){
   const Y_vsr=islmEq(P0,0,dLM_exog).Y, r_vsr=rIS(Y_vsr,0);
-  function adSrasEqMon(dLM_ex,dSRAS,Yn){
-    const coeff=b_IS+b_LM+kP*kS;
-    const rhs=a_IS-a_LM-dLM_ex-kP*(P0+dSRAS-kS*Yn);
-    const Y=rhs/coeff;
-    return{Y,P:Psras(Y,dSRAS,Yn)};
+  function adsm(dLX,dS,Yn){
+    const c=b_IS+b_LM+kP*kS;
+    const r=a_IS-a_LM-dLX-kP*(P0+dS-kS*Yn);
+    const Y=r/c; return{Y,P:Psras(Y,dS,Yn)};
   }
-  const eq1=adSrasEqMon(dLM_exog,0,Y0);
-  const dLM1=dLM_exog+kP*(eq1.P-P0);
-  const Plr_mon=Plr(0,dLM_exog,Y0);
-  const dSRAS_lr=Plr_mon-P0;
+  const eq1=adsm(dLM_exog,0,Y0), dLM1=dLM_exog+kP*(eq1.P-P0);
+  const dSRAS_lr=Plr(0,dLM_exog,Y0)-P0;
   const dSRAS2=dSRAS_lr*0.5;
-  const eq2=adSrasEqMon(dLM_exog,dSRAS2,Y0);
-  const dLM2=dLM_exog+kP*(eq2.P-P0);
-  const eq3=adSrasEqMon(dLM_exog,dSRAS_lr,Y0);
-  const dLM3=dLM_exog+kP*(eq3.P-P0);
-  return{
-    desc,
-    phases:[
-      {dIS:0,dLM:dLM_exog,dSRAS:0,       Yn:Y0,lras:0,showVSRAS:true, eqLabel:"A'",eqY:Y_vsr,eqP:P0,   eqR:r_vsr,        pLabel:"Very short run — prices fixed"},
-      {dIS:0,dLM:dLM1,    dSRAS:0,        Yn:Y0,lras:0,showVSRAS:false,eqLabel:'B', eqY:eq1.Y,eqP:eq1.P,eqR:rIS(eq1.Y,0), pLabel:"Short run — prices adjust, SRAS fixed"},
-      {dIS:0,dLM:dLM2,    dSRAS:dSRAS2,   Yn:Y0,lras:0,showVSRAS:false,eqLabel:"B'",eqY:eq2.Y,eqP:eq2.P,eqR:rIS(eq2.Y,0), pLabel:"Medium run — SRAS shifts"},
-      {dIS:0,dLM:dLM3,    dSRAS:dSRAS_lr, Yn:Y0,lras:0,showVSRAS:false,eqLabel:'C', eqY:eq3.Y,eqP:eq3.P,eqR:rIS(eq3.Y,0), pLabel:"Long run — SRAS′ through LRAS"},
-    ]
-  };
+  const eq2=adsm(dLM_exog,dSRAS2,Y0), dLM2=dLM_exog+kP*(eq2.P-P0);
+  const eq3=adsm(dLM_exog,dSRAS_lr,Y0), dLM3=dLM_exog+kP*(eq3.P-P0);
+  return{desc,phases:[
+    {dIS:0,dLM:dLM_exog,dSRAS:0,       Yn:Y0,lras:0,showVSRAS:true, eqLabel:"A'",eqY:Y_vsr,eqP:P0,   eqR:r_vsr,       pLabel:"Very short run — prices fixed"},
+    {dIS:0,dLM:dLM1,    dSRAS:0,        Yn:Y0,lras:0,showVSRAS:false,eqLabel:'B', eqY:eq1.Y,eqP:eq1.P,eqR:rIS(eq1.Y,0),pLabel:"Short run — prices adjust, SRAS fixed"},
+    {dIS:0,dLM:dLM2,    dSRAS:dSRAS2,   Yn:Y0,lras:0,showVSRAS:false,eqLabel:"B'",eqY:eq2.Y,eqP:eq2.P,eqR:rIS(eq2.Y,0),pLabel:"Medium run — SRAS shifts"},
+    {dIS:0,dLM:dLM3,    dSRAS:dSRAS_lr, Yn:Y0,lras:0,showVSRAS:false,eqLabel:'C', eqY:eq3.Y,eqP:eq3.P,eqR:rIS(eq3.Y,0),pLabel:"Long run — SRAS′ through LRAS"},
+  ]};
 }
 
 const scenarios={
   base:{
-    desc:'Baseline equilibrium. IS∩LM at (Y*, r*). SRAS, AD, and LRAS meet at (Y*, P*). The VSRAS (horizontal dashed) shows that prices are fixed in the very short run.',
+    desc:'Baseline equilibrium. IS∩LM at (Y*, r*). SRAS, AD, and LRAS meet at (Y*, P*). The VSRAS (horizontal dotted) shows prices are fixed in the very short run.',
     phases:[
-      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true, eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
-      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true, eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
-      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true, eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
-      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true, eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
+      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true,eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
+      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true,eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
+      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true,eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
+      {dIS:0,dLM:0,dSRAS:0,Yn:Y0,lras:0,showVSRAS:true,eqLabel:null,eqY:Y0,eqP:P0,eqR:r0,pLabel:'Baseline equilibrium'},
     ]
   },
   g_up:makeScenario(0.20,0,
@@ -521,7 +478,6 @@ function updateAll(){
   document.getElementById('phase-label').textContent=ph.pLabel;
   document.getElementById('phase-num').textContent=phase+' / '+(sc.phases.length-1);
   document.getElementById('sc-desc').textContent=sc.desc;
-  // Update dots
   const dots=document.getElementById('phase-dots');
   dots.innerHTML='';
   sc.phases.forEach((_,i)=>{
@@ -533,79 +489,71 @@ function updateAll(){
   draw();
 }
 
-// ── Drawing ───────────────────────────────────────────────────────────────
-const PAD={l:56,r:28,t:24,b:42};
+// ── Drawing ────────────────────────────────────────────────────────────────
+const PAD={l:52,r:24,t:20,b:36};
 const COL={
   IS:'#2563c7',LM:'#c23b22',
   AD:'#1e7a4d',SRAS:'#c47a1a',LRAS:'#6d28d9',VSRAS:'#9ca3af',
   axis:'rgba(0,0,0,0.20)',grid:'rgba(0,0,0,0.06)',
-  txt:'rgba(0,0,0,0.45)',txt2:'rgba(0,0,0,0.70)',
-  dot:'#111',bg:'#ffffff',corr:'rgba(0,0,0,0.09)',
+  txt:'rgba(0,0,0,0.42)',dot:'#111',bg:'#ffffff',corr:'rgba(0,0,0,0.08)',
 };
 
 function setupCanvas(id){
   const cv=document.getElementById(id);
+  const wrap=cv.parentElement;
   const dpr=window.devicePixelRatio||1;
-  const w=cv.clientWidth;
-  const h=Math.round(w*0.48);
-  cv.style.height=h+'px';
+  const w=wrap.clientWidth, h=wrap.clientHeight;
   if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
   const ctx=cv.getContext('2d');
   ctx.setTransform(dpr,0,0,dpr,0,0);
   ctx.clearRect(0,0,w,h);
   const gw=w-PAD.l-PAD.r, gh=h-PAD.t-PAD.b;
-  return{ctx,w,h,
-    px:u=>PAD.l+u*gw,
-    py:u=>PAD.t+(1-u)*gh,
-    gw,gh};
+  return{ctx,w,h,px:u=>PAD.l+u*gw,py:u=>PAD.t+(1-u)*gh};
 }
 
 function S(ctx,pts,color,dashed,lw){
   if(!pts||pts.length<2)return;
   ctx.save();ctx.strokeStyle=color;ctx.lineWidth=lw||1.8;
-  if(dashed)ctx.setLineDash(typeof dashed==='string'&&dashed==='dot'?[3,4]:[7,5]);
+  if(dashed)ctx.setLineDash(dashed==='dot'?[3,4]:[7,5]);
   ctx.beginPath();pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));
   ctx.stroke();ctx.setLineDash([]);ctx.restore();
 }
 
 function Dot(ctx,x,y,label,above,left){
-  ctx.fillStyle=COL.bg;
-  ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();
-  ctx.fillStyle=COL.dot;
-  ctx.beginPath();ctx.arc(x,y,3.8,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=COL.bg;ctx.beginPath();ctx.arc(x,y,7,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle=COL.dot;ctx.beginPath();ctx.arc(x,y,3.5,0,Math.PI*2);ctx.fill();
   if(!label)return;
-  ctx.fillStyle=COL.dot;
-  ctx.font='500 11px "DM Mono", monospace';
-  ctx.fillText(label,x+(left?-16:8),y+(above?-8:14));
+  ctx.fillStyle=COL.dot;ctx.font='500 11px "DM Mono",monospace';
+  ctx.fillText(label,x+(left?-15:8),y+(above?-8:14));
 }
 
-function Lbl(ctx,txt,x,y,color,size,mono){
-  ctx.fillStyle=color;
-  ctx.font=(mono?'500 ':'500 ')+(size||12)+'px "'+(mono?'DM Mono':'DM Sans')+'", sans-serif';
+function Lbl(ctx,txt,x,y,color,size){
+  ctx.fillStyle=color;ctx.font='500 '+(size||11)+'px "DM Mono",monospace';
   ctx.fillText(txt,x,y);
 }
 
-function drawAxes(ctx,px,py,xLabel,yLabel,xRef,yRef){
+function drawAxes(ctx,px,py,yLbl,yRef){
   ctx.strokeStyle=COL.axis;ctx.lineWidth=1;
   ctx.beginPath();
   ctx.moveTo(px(0),py(1.02));ctx.lineTo(px(0),py(0));
   ctx.moveTo(px(0),py(0));ctx.lineTo(px(1.02),py(0));
   ctx.stroke();
-  // Arrowheads
+  // arrowheads
   ctx.fillStyle=COL.axis;
-  ctx.beginPath();ctx.moveTo(px(0)-4,py(1.02)+8);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+4,py(1.02)+8);ctx.fill();
-  ctx.beginPath();ctx.moveTo(px(1.02)-8,py(0)-4);ctx.lineTo(px(1.02)+2,py(0));ctx.lineTo(px(1.02)-8,py(0)+4);ctx.fill();
-  // Grid lines
+  ctx.beginPath();ctx.moveTo(px(0)-3.5,py(1.02)+7);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+3.5,py(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px(1.02)-7,py(0)-3.5);ctx.lineTo(px(1.02)+2,py(0));ctx.lineTo(px(1.02)-7,py(0)+3.5);ctx.fill();
+  // grid
   ctx.setLineDash([3,3]);ctx.strokeStyle=COL.grid;ctx.lineWidth=0.8;
   ctx.beginPath();
-  ctx.moveTo(px(xRef),py(0));ctx.lineTo(px(xRef),py(1));
+  ctx.moveTo(px(Y0),py(0));ctx.lineTo(px(Y0),py(1));
   ctx.moveTo(px(0),py(yRef));ctx.lineTo(px(1),py(yRef));
   ctx.stroke();ctx.setLineDash([]);
-  // Labels
-  Lbl(ctx,yLabel,px(0)-20,py(0.97),COL.txt,12,true);
-  Lbl(ctx,xLabel,px(0.97),py(0)+18,COL.txt,12,true);
-  Lbl(ctx,xLabel==='Y'?'Y*':'Y*',px(xRef)-5,py(0)+18,COL.txt,10,true);
-  Lbl(ctx,yLabel==='r'?'r*':'P*',px(0)-26,py(yRef)+4,COL.txt,10,true);
+  // labels
+  Lbl(ctx,yLbl,px(0)-18,py(0.96),COL.txt,11);
+  Lbl(ctx,'Y',px(0.97),py(0)+15,COL.txt,11);
+  Lbl(ctx,'Y*',px(Y0)-6,py(0)+15,COL.txt,9);
+  Lbl(ctx,yLbl==='r'?'r*':'P*',px(0)-24,py(yRef)+4,COL.txt,9);
 }
 
 function corrVline(ctx,px,py,x){
@@ -615,7 +563,7 @@ function corrVline(ctx,px,py,x){
 }
 
 function projDash(ctx,x,y,px0,py0){
-  ctx.save();ctx.setLineDash([2,3]);ctx.strokeStyle='rgba(0,0,0,0.10)';ctx.lineWidth=0.8;
+  ctx.save();ctx.setLineDash([2,3]);ctx.strokeStyle='rgba(0,0,0,0.09)';ctx.lineWidth=0.8;
   ctx.beginPath();ctx.moveTo(x,py0);ctx.lineTo(x,y);ctx.moveTo(px0,y);ctx.lineTo(x,y);
   ctx.stroke();ctx.restore();
 }
@@ -624,42 +572,35 @@ const N=120;
 const Us=Array.from({length:N},(_,i)=>0.02+i*0.96/(N-1));
 
 function draw(){
-  const sc=scenarios[curSc];
-  const ph=sc.phases[Math.min(phase,sc.phases.length-1)];
+  const ph=scenarios[curSc].phases[Math.min(phase,scenarios[curSc].phases.length-1)];
   drawISLM(ph);
   drawASAD(ph);
 }
 
 function drawISLM(ph){
   const {ctx,px,py}=setupCanvas('islm');
-  drawAxes(ctx,px,py,'Y','r',Y0,r0);
+  drawAxes(ctx,px,py,'r',r0);
   corrVline(ctx,px,py,ph.eqY);
 
-  // Base IS
-  S(ctx,Us.map(u=>[px(u),py(rIS(u,0))]),COL.IS,false);
-  Lbl(ctx,'IS',px(0.84),py(rIS(0.84,0))-9,COL.IS,11,true);
+  S(ctx,Us.map(u=>[px(u),py(rIS(u,0))]),COL.IS);
+  Lbl(ctx,'IS',px(0.84),py(rIS(0.84,0))-8,COL.IS);
 
-  // Shifted IS
   if(ph.dIS!==0){
     S(ctx,Us.map(u=>[px(u),py(rIS(u,ph.dIS))]),COL.IS+'bb',true);
-    Lbl(ctx,"IS'",px(0.84),py(rIS(0.84,ph.dIS))-9,COL.IS+'bb',11,true);
+    Lbl(ctx,"IS'",px(0.84),py(rIS(0.84,ph.dIS))-8,COL.IS+'bb');
   }
 
-  // Base LM at P0
-  S(ctx,Us.map(u=>[px(u),py(rLM(u,P0,0))]),COL.LM,false);
-  Lbl(ctx,'LM',px(0.10),py(rLM(0.10,P0,0))-9,COL.LM,11,true);
+  S(ctx,Us.map(u=>[px(u),py(rLM(u,P0,0))]),COL.LM);
+  Lbl(ctx,'LM',px(0.10),py(rLM(0.10,P0,0))-8,COL.LM);
 
-  // Shifted LM
   if(ph.dLM!==0){
     S(ctx,Us.map(u=>[px(u),py(rLM(u,P0,ph.dLM))]),COL.LM+'bb',true);
-    Lbl(ctx,"LM'",px(0.10),py(rLM(0.10,P0,ph.dLM))-9,COL.LM+'bb',11,true);
+    Lbl(ctx,"LM'",px(0.10),py(rLM(0.10,P0,ph.dLM))-8,COL.LM+'bb');
   }
 
-  // Base eq A
   const eqA=islmEq(P0,0,0);
   Dot(ctx,px(eqA.Y),py(eqA.r),'A',true,false);
 
-  // Shifted eq
   if(ph.eqLabel){
     const sx=px(ph.eqY),sy=py(ph.eqR);
     if(ph.eqY>0.03&&ph.eqY<0.97&&ph.eqR>0.03&&ph.eqR<0.97){
@@ -671,60 +612,49 @@ function drawISLM(ph){
 
 function drawASAD(ph){
   const {ctx,px,py}=setupCanvas('asad');
-  drawAxes(ctx,px,py,'Y','P',Y0,P0);
+  drawAxes(ctx,px,py,'P',P0);
   corrVline(ctx,px,py,ph.eqY);
 
-  const lrasX=Y0+(ph.lras||0);
-  const Yn=ph.Yn||Y0;
+  const lrasX=Y0+(ph.lras||0), Yn=ph.Yn||Y0;
 
   // LRAS base
   ctx.save();ctx.strokeStyle=COL.LRAS;ctx.lineWidth=1.8;
   ctx.beginPath();ctx.moveTo(px(Y0),py(0.04));ctx.lineTo(px(Y0),py(0.96));ctx.stroke();ctx.restore();
-  Lbl(ctx,'LRAS',px(Y0)+5,py(0.90),COL.LRAS,11,true);
+  Lbl(ctx,'LRAS',px(Y0)+4,py(0.90),COL.LRAS);
 
-  // LRAS shifted
   if(ph.lras&&ph.lras!==0){
     ctx.save();ctx.strokeStyle=COL.LRAS+'aa';ctx.lineWidth=1.8;ctx.setLineDash([7,5]);
     ctx.beginPath();ctx.moveTo(px(lrasX),py(0.04));ctx.lineTo(px(lrasX),py(0.96));ctx.stroke();
     ctx.setLineDash([]);ctx.restore();
-    Lbl(ctx,"LRAS'",px(lrasX)+5,py(0.80),COL.LRAS+'aa',11,true);
+    Lbl(ctx,"LRAS'",px(lrasX)+4,py(0.80),COL.LRAS+'aa');
   }
 
-  // VSRAS
   if(ph.showVSRAS){
     S(ctx,[[px(0.03),py(P0)],[px(0.97),py(P0)]],COL.VSRAS,'dot',1.4);
-    Lbl(ctx,'VSRAS',px(0.03),py(P0)-8,COL.VSRAS,10,true);
+    Lbl(ctx,'VSRAS',px(0.03),py(P0)-7,COL.VSRAS,9);
   }
 
   // Base AD
-  const adPts=Us.map(u=>{const P=0.04+u*0.92;return[px(Yad(P,0,0)),py(P)];});
-  S(ctx,adPts,COL.AD,false);
-  Lbl(ctx,'AD',px(Yad(0.12,0,0))+4,py(0.12)+5,COL.AD,11,true);
+  S(ctx,Us.map(u=>{const P=0.04+u*0.92;return[px(Yad(P,0,0)),py(P)];}),COL.AD);
+  Lbl(ctx,'AD',px(Yad(0.12,0,0))+4,py(0.12)+5,COL.AD);
 
-  // Shifted AD
   if(ph.dIS!==0){
-    const adSPts=Us.map(u=>{const P=0.04+u*0.92;return[px(Yad(P,ph.dIS,0)),py(P)];});
-    S(ctx,adSPts,COL.AD+'bb',true);
-    Lbl(ctx,"AD'",px(Yad(0.12,ph.dIS,0))+4,py(0.12)+5,COL.AD+'bb',11,true);
+    S(ctx,Us.map(u=>{const P=0.04+u*0.92;return[px(Yad(P,ph.dIS,0)),py(P)];}),COL.AD+'bb',true);
+    Lbl(ctx,"AD'",px(Yad(0.12,ph.dIS,0))+4,py(0.12)+5,COL.AD+'bb');
   }
 
   // Base SRAS
-  const srasB=Us.map(u=>[px(u*0.96+0.02),py(Psras(u*0.96+0.02,0,Y0))]);
-  S(ctx,srasB,COL.SRAS,false);
-  {const sY=0.82,sP=Psras(sY,0,Y0);if(sP>0.05&&sP<0.95)Lbl(ctx,'SRAS',px(sY)-4,py(sP)-9,COL.SRAS,11,true);}
+  S(ctx,Us.map(u=>[px(u*0.96+0.02),py(Psras(u*0.96+0.02,0,Y0))]),COL.SRAS);
+  {const sY=0.82,sP=Psras(sY,0,Y0);if(sP>0.05&&sP<0.95)Lbl(ctx,'SRAS',px(sY)-4,py(sP)-8,COL.SRAS);}
 
-  // Shifted SRAS
   if(ph.dSRAS!==0||(ph.lras&&ph.lras!==0&&ph.dSRAS!==0)){
-    const srasS=Us.map(u=>[px(u*0.96+0.02),py(Psras(u*0.96+0.02,ph.dSRAS||0,Yn))]);
-    S(ctx,srasS,COL.SRAS+'bb',true);
-    {const sY=0.82,sP=Psras(sY,ph.dSRAS||0,Yn);if(sP>0.05&&sP<0.95)Lbl(ctx,"SRAS'",px(sY)-4,py(sP)-9,COL.SRAS+'bb',11,true);}
+    S(ctx,Us.map(u=>[px(u*0.96+0.02),py(Psras(u*0.96+0.02,ph.dSRAS||0,Yn))]),COL.SRAS+'bb',true);
+    {const sY=0.82,sP=Psras(sY,ph.dSRAS||0,Yn);if(sP>0.05&&sP<0.95)Lbl(ctx,"SRAS'",px(sY)-4,py(sP)-8,COL.SRAS+'bb');}
   }
 
-  // Base eq A
   const eqA=adSrasEq(0,0,0,Y0);
   Dot(ctx,px(eqA.Y),py(eqA.P),'A',true,false);
 
-  // Very-short-run point on VSRAS
   if(ph.showVSRAS&&ph.eqLabel){
     const YvSR=Yad(P0,ph.dIS||0,0);
     if(Math.abs(YvSR-Y0)>0.01&&YvSR>0.03&&YvSR<0.97){
@@ -733,7 +663,6 @@ function drawASAD(ph){
     }
   }
 
-  // Short/med/long run eq
   if(ph.eqLabel&&!ph.showVSRAS){
     const sx=px(ph.eqY),sy=py(ph.eqP);
     if(ph.eqY>0.03&&ph.eqY<0.97&&ph.eqP>0.03&&ph.eqP<0.97){
@@ -745,12 +674,8 @@ function drawASAD(ph){
   }
 }
 
-// Init
-function init(){
-  updateAll();
-  window.addEventListener('resize',draw);
-}
-init();
+updateAll();
+window.addEventListener('resize',()=>{draw();});
 </script>
 </body>
 </html>
