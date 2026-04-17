@@ -8,81 +8,175 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg: #fafaf8; --surface: #ffffff;
-    --border: #e8e6e0; --border-light: #f0ede8;
-    --text-primary: #1a1916; --text-secondary: #6b6860; --text-muted: #a8a49e;
-    --purple: #5b21b6; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
-  }
-  html, body { height: 100%; overflow: hidden; }
-  body { background: var(--bg); color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-weight: 300; display: flex; flex-direction: column; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #fafaf8; --surface: #ffffff;
+  --border: #e8e6e0; --border-light: #f0ede8;
+  --text-primary: #1a1916; --text-secondary: #6b6860; --text-muted: #a8a49e;
+  --purple: #5b21b6; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
 
-  .header { flex-shrink: 0; border-bottom: 1px solid var(--border); background: var(--surface); padding: 14px 32px 12px; display: flex; align-items: center; gap: 20px; }
-  .header h1 { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 21px; letter-spacing: -0.2px; color: var(--text-primary); }
-  .header h1 span { color: var(--text-muted); font-weight: 400; }
-  .header .subtitle { margin-top: 2px; font-size: 13px; color: var(--text-secondary); font-weight: 300; }
-  .chapter-tag { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); border: 1px solid var(--border); padding: 3px 9px; border-radius: 4px; white-space: nowrap; margin-left: auto; }
+/* ── App shell: centred, max-width ── */
+html {
+  height: 100%;
+  background: #d4d2cc;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+body {
+  width: 100%;
+  max-width: 1340px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  box-shadow: 0 0 60px rgba(0,0,0,0.18);
+}
 
-  .main { flex: 1; min-height: 0; display: grid; grid-template-columns: 282px 1fr; overflow: hidden; }
+/* ── Header ── */
+.header {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 14px 32px 12px;
+  display: flex; align-items: center; gap: 20px;
+}
+.header h1 { font-family: 'Playfair Display', serif; font-weight: 500; font-size: 21px; letter-spacing: -0.2px; }
+.header h1 span { color: var(--text-muted); font-weight: 400; }
+.header .subtitle { margin-top: 2px; font-size: 13px; color: var(--text-secondary); font-weight: 300; }
+.chapter-tag { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); border: 1px solid var(--border); padding: 3px 9px; border-radius: 4px; white-space: nowrap; margin-left: auto; }
 
-  .sidebar { border-right: 1px solid var(--border); background: var(--surface); padding: 14px 13px; display: flex; flex-direction: column; gap: 11px; overflow-y: auto; height: 100%; }
-  .sidebar-section-label { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+/* ── Global tab bar ── */
+.global-tabs {
+  flex-shrink: 0;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 28px;
+}
+.g-tab {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--text-muted); padding: 10px 18px 9px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; transition: all 0.15s; user-select: none;
+  letter-spacing: 0.03em;
+}
+.g-tab:hover { color: var(--text-secondary); }
+.g-tab.active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 
-  .scenario-list { display: flex; flex-direction: column; gap: 2px; }
-  .sc-btn { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border: 1px solid transparent; border-radius: 7px; background: transparent; cursor: pointer; text-align: left; transition: all 0.15s; width: 100%; }
-  .sc-btn:hover { background: var(--bg); border-color: var(--border); }
-  .sc-btn.active { background: var(--text-primary); border-color: var(--text-primary); }
-  .sc-btn .sc-icon { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; background: var(--border-light); flex-shrink: 0; transition: background 0.15s; }
-  .sc-btn.active .sc-icon { background: rgba(255,255,255,0.12); }
-  .sc-btn .sc-name { font-size: 13px; font-weight: 400; color: var(--text-primary); line-height: 1.3; transition: color 0.15s; }
-  .sc-btn.active .sc-name { color: #fff; }
-  .sc-btn .sc-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; transition: color 0.15s; }
-  .sc-btn.active .sc-sub { color: rgba(255,255,255,0.5); }
+/* ── Shared layout: sidebar + charts ── */
+/* Both tabs use the same sidebar+charts grid structure */
+.app-view {
+  flex: 1;
+  min-height: 0;
+  display: none;  /* hidden by default */
+  grid-template-columns: 310px 1fr;
+  overflow: hidden;
+}
+.app-view.active { display: grid; }
 
-  .sub-btns { display: flex; flex-direction: column; gap: 1px; padding-left: 14px; margin-top: 1px; }
-  .sub-btn { font-size: 12px; padding: 4px 8px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; color: var(--text-secondary); text-align: left; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
-  .sub-btn:hover { background: var(--bg); border-color: var(--border); }
-  .sub-btn.active { background: #f0ede8; border-color: var(--border); color: var(--text-primary); font-weight: 500; }
+/* ── Sidebar ── */
+.sidebar {
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 13px;
+  display: flex; flex-direction: column; gap: 11px;
+  overflow-y: auto; height: 100%;
+}
+.sidebar-section-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 5px;
+}
 
-  .phase-block { display: flex; flex-direction: column; gap: 7px; }
-  .phase-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
-  .phase-name { font-size: 13px; font-weight: 400; color: var(--text-primary); line-height: 1.4; flex: 1; }
-  .phase-badge { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
-  .phase-dots { display: flex; gap: 4px; }
-  .phase-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--border); cursor: pointer; transition: background 0.2s; }
-  .phase-dot.active { background: var(--text-primary); }
-  .phase-dot:hover { background: var(--text-secondary); }
-  input[type=range] { width: 100%; -webkit-appearance: none; height: 2px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
-  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--text-primary); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border); transition: transform 0.1s; }
-  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+/* Scenario buttons */
+.scenario-list { display: flex; flex-direction: column; gap: 2px; }
+.sc-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 8px; border: 1px solid transparent; border-radius: 7px;
+  background: transparent; cursor: pointer; text-align: left;
+  transition: all 0.15s; width: 100%;
+}
+.sc-btn:hover { background: var(--bg); border-color: var(--border); }
+.sc-btn.active { background: var(--text-primary); border-color: var(--text-primary); }
+.sc-btn .sc-icon { width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; background: var(--border-light); flex-shrink: 0; transition: background 0.15s; }
+.sc-btn.active .sc-icon { background: rgba(255,255,255,0.12); }
+.sc-btn .sc-name { font-size: 13px; font-weight: 400; color: var(--text-primary); line-height: 1.3; transition: color 0.15s; }
+.sc-btn.active .sc-name { color: #fff; }
+.sc-btn .sc-sub { font-size: 11px; color: var(--text-muted); margin-top: 1px; transition: color 0.15s; }
+.sc-btn.active .sc-sub { color: rgba(255,255,255,0.5); }
 
-  /* Purple interpretation box */
-  .desc-box {
-    background: var(--purple-bg);
-    border: 1px solid var(--purple-border);
-    border-radius: 7px; padding: 10px 11px;
-    font-size: 13px; line-height: 1.75;
-    color: var(--purple); font-weight: 400;
-  }
+.sub-btns { display: flex; flex-direction: column; gap: 1px; padding-left: 14px; margin-top: 1px; }
+.sub-btn { font-size: 11px; padding: 4px 8px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; color: var(--text-secondary); text-align: left; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
+.sub-btn:hover { background: var(--bg); border-color: var(--border); }
+.sub-btn.active { background: #f0ede8; border-color: var(--border); color: var(--text-primary); font-weight: 500; }
 
-  .legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
-  .leg-item { display: flex; align-items: center; gap: 5px; }
-  .leg-swatch { width: 18px; height: 2px; border-radius: 1px; flex-shrink: 0; }
-  .leg-swatch.dashed { background: none !important; }
-  .leg-label { font-size: 12px; color: var(--text-secondary); font-family: 'DM Mono', monospace; }
+/* Phase / run */
+.phase-block { display: flex; flex-direction: column; gap: 7px; }
+.phase-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+.phase-name { font-size: 13px; font-weight: 400; color: var(--text-primary); line-height: 1.4; flex: 1; }
+.phase-badge { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+.phase-dots { display: flex; gap: 4px; }
+.phase-dot { height: 3px; flex: 1; border-radius: 2px; background: var(--border); cursor: pointer; transition: background 0.2s; }
+.phase-dot.active { background: var(--text-primary); }
+.phase-dot:hover { background: var(--text-secondary); }
+input[type=range] { width: 100%; -webkit-appearance: none; height: 2px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--text-primary); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border); transition: transform 0.1s; }
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
 
-  .charts { padding: 14px 18px; display: flex; flex-direction: column; background: var(--bg); height: 100%; min-height: 0; overflow: hidden; }
-  .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); flex: 1; min-height: 0; display: flex; flex-direction: column; }
-  .chart-header { flex-shrink: 0; padding: 9px 15px 8px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
-  .chart-title { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 500; color: var(--text-primary); }
-  .chart-subtitle { font-size: 12px; color: var(--text-muted); font-weight: 300; }
-  .canvas-wrap { flex: 1; min-height: 0; position: relative; }
-  .canvas-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .chart-divider { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 5px 2px; }
-  .chart-divider-line { flex: 1; height: 1px; background: var(--border-light); }
-  .chart-divider-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-muted); letter-spacing: 0.07em; }
+/* Purple desc box */
+.desc-box { background: var(--purple-bg); border: 1px solid var(--purple-border); border-radius: 7px; padding: 10px 11px; font-size: 12px; line-height: 1.75; color: var(--purple); font-weight: 400; }
+
+/* Legend */
+.legend-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+.leg-item { display: flex; align-items: center; gap: 5px; }
+.leg-swatch { width: 18px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+.leg-swatch.dashed { background: none !important; }
+.leg-label { font-size: 11px; color: var(--text-secondary); font-family: 'DM Mono', monospace; }
+
+/* View toggle */
+.view-toggle { display: flex; gap: 4px; }
+.view-btn { flex: 1; padding: 5px 0; font-size: 11px; font-family: 'DM Mono', monospace; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+.view-btn.active { background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
+
+/* ── Charts area ── */
+.charts {
+  padding: 14px 16px;
+  display: flex; flex-direction: column;
+  background: var(--bg); height: 100%; min-height: 0; overflow: hidden;
+}
+.chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.chart-header { flex-shrink: 0; padding: 9px 15px 8px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+.chart-title { font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 500; color: var(--text-primary); }
+.chart-subtitle { font-size: 11px; color: var(--text-muted); font-weight: 300; }
+.canvas-wrap { flex: 1; min-height: 0; position: relative; }
+.canvas-wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.chart-divider { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 5px 2px; }
+.chart-divider-line { flex: 1; height: 1px; background: var(--border-light); }
+.chart-divider-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.07em; }
+
+/* ── Construction tab: 2×2 chart grid ── */
+.construct-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  flex: 1; min-height: 0;
+}
+.construct-explainer {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
 </style>
 </head>
 <body>
@@ -95,12 +189,22 @@
   <div class="chapter-tag">Chapter 9</div>
 </header>
 
-<div class="main">
+<div class="global-tabs">
+  <div class="g-tab active" id="gtab-asad" onclick="setGTab('asad')">IS-LM · AS-AD</div>
+  <div class="g-tab" id="gtab-construct" onclick="setGTab('construct')">IS-LM construction</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     TAB 1 : IS-LM / AS-AD
+════════════════════════════════════════════════════════ -->
+<div class="app-view active" id="view-asad">
+
   <aside class="sidebar">
+
     <div>
       <div class="sidebar-section-label">Scenario</div>
       <div class="scenario-list">
-        <button class="sc-btn active" onclick="setScenario('base',this)">
+        <button class="sc-btn active" id="btn-base" onclick="setScenario('base',this)">
           <div class="sc-icon">⚖</div>
           <div class="sc-text"><div class="sc-name">Baseline equilibrium</div><div class="sc-sub">Y = Y*, P = P*, r = r*</div></div>
         </button>
@@ -113,9 +217,9 @@
           <div class="sc-text"><div class="sc-name">Permanent oil price shock</div><div class="sc-sub">Choose a channel below</div></div>
         </button>
         <div class="sub-btns" id="oil-subs">
-          <button class="sub-btn active" onclick="selectOil('oil_supply',this)">Supply only (LRAS + SRAS)</button>
-          <button class="sub-btn" onclick="selectOil('oil_demand',this)">Demand only (AD via IS)</button>
-          <button class="sub-btn" onclick="selectOil('oil_both',this)">Both supply &amp; demand</button>
+          <button class="sub-btn active" id="sub-oil_supply" onclick="selectOil('oil_supply',this)">Supply only (LRAS + SRAS)</button>
+          <button class="sub-btn" id="sub-oil_demand" onclick="selectOil('oil_demand',this)">Demand only (AD via IS)</button>
+          <button class="sub-btn" id="sub-oil_both" onclick="selectOil('oil_both',this)">Both supply &amp; demand</button>
         </div>
         <button class="sc-btn" id="btn-fiscal" onclick="setScenario('fiscal',this)">
           <div class="sc-icon">↓G</div>
@@ -139,6 +243,14 @@
     </div>
 
     <div>
+      <div class="sidebar-section-label">View</div>
+      <div class="view-toggle">
+        <button class="view-btn active" id="btn-step" onclick="setView('step')">Step by step</button>
+        <button class="view-btn" id="btn-all" onclick="setView('all')">All runs</button>
+      </div>
+    </div>
+
+    <div>
       <div class="sidebar-section-label">Interpretation</div>
       <div class="desc-box" id="sc-desc">Economy at potential output Y*.</div>
     </div>
@@ -158,6 +270,7 @@
         <div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #c47a1a;height:0"></div><span class="leg-label">SRAS′</span></div>
       </div>
     </div>
+
   </aside>
 
   <div class="charts">
@@ -183,7 +296,173 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════
+     TAB 2 : IS-LM CONSTRUCTION
+════════════════════════════════════════════════════════ -->
+<div class="app-view" id="view-construct">
+
+  <aside class="sidebar">
+
+    <div>
+      <div class="sidebar-section-label">Scenario</div>
+      <div class="scenario-list">
+        <button class="sc-btn active" id="c-btn-base" onclick="setScenarioBoth('base',this)">
+          <div class="sc-icon">⚖</div>
+          <div class="sc-text"><div class="sc-name">Baseline equilibrium</div><div class="sc-sub">Y = Y*, r = r*</div></div>
+        </button>
+        <button class="sc-btn" id="c-btn-g_up" onclick="setScenarioBoth('g_up',this)">
+          <div class="sc-icon">↑G</div>
+          <div class="sc-text"><div class="sc-name">Gov. spending increase</div><div class="sc-sub">IS shifts right</div></div>
+        </button>
+        <button class="sc-btn" id="c-btn-oil_supply" onclick="setScenarioBoth('oil_supply',this)">
+          <div class="sc-icon">⛽</div>
+          <div class="sc-text"><div class="sc-name">Permanent oil shock</div><div class="sc-sub">Supply only</div></div>
+        </button>
+        <button class="sc-btn" id="c-btn-fiscal" onclick="setScenarioBoth('fiscal',this)">
+          <div class="sc-icon">↓G</div>
+          <div class="sc-text"><div class="sc-name">Fiscal consolidation</div><div class="sc-sub">IS shifts left</div></div>
+        </button>
+        <button class="sc-btn" id="c-btn-mon_expand" onclick="setScenarioBoth('mon_expand',this)">
+          <div class="sc-icon">🏦</div>
+          <div class="sc-text"><div class="sc-name">Monetary expansion</div><div class="sc-sub">LM shifts down</div></div>
+        </button>
+      </div>
+    </div>
+
+    <div class="phase-block">
+      <div class="sidebar-section-label">Run</div>
+      <div class="phase-header">
+        <div class="phase-name" id="c-phase-label">Baseline</div>
+        <div class="phase-badge" id="c-phase-num">0 / 3</div>
+      </div>
+      <div class="phase-dots" id="c-phase-dots"></div>
+      <input type="range" min="0" max="3" step="1" value="0" id="c-phase-slider" oninput="setPhase(+this.value)">
+    </div>
+
+    <div>
+      <div class="sidebar-section-label">Interpretation</div>
+      <div class="desc-box" id="c-sc-desc">Economy at potential output Y*.</div>
+    </div>
+
+    <div>
+      <div class="sidebar-section-label">How to read</div>
+      <div style="font-size:11px;color:var(--text-secondary);line-height:1.65;">
+        <b style="font-weight:500;">Top-left:</b> Keynesian cross. Higher r → lower I → demand Z shifts down → lower Y equilibrium.<br><br>
+        <b style="font-weight:500;">Bottom-left:</b> IS-LM. Each (r,Y) pair from the two markets.<br><br>
+        <b style="font-weight:500;">Bottom-right:</b> Money market. Higher Y shifts liquidity demand right → higher r for fixed M/P.
+      </div>
+    </div>
+
+  </aside>
+
+  <div class="charts">
+    <div class="construct-grid">
+
+      <!-- Top-left: Goods market -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Goods market</div>
+          <div class="chart-subtitle">Keynesian cross — Z = Y</div>
+        </div>
+        <div class="canvas-wrap"><canvas id="km"></canvas></div>
+      </div>
+
+      <!-- Top-right: Explainer -->
+      <div class="construct-explainer">
+        <div style="text-align:center;font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);line-height:2.1;">
+          <div style="font-size:14px;margin-bottom:10px;color:var(--text-secondary);">↑ r  →  ↓ I  →  ↓ Z  →  ↓ Y</div>
+          <div>IS: locus of (r, Y) where Z = Y</div>
+          <div style="margin-top:12px;font-size:14px;color:var(--text-secondary);">↑ Y  →  ↑ M<sup>d</sup>  →  ↑ r</div>
+          <div>LM: locus of (r, Y) where M/P = L(Y,r)</div>
+        </div>
+      </div>
+
+      <!-- Bottom-left: IS-LM -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">IS-LM</div>
+          <div class="chart-subtitle">Goods &amp; money market equilibrium</div>
+        </div>
+        <div class="canvas-wrap"><canvas id="islm2"></canvas></div>
+      </div>
+
+      <!-- Bottom-right: Money market -->
+      <div class="chart-card">
+        <div class="chart-header">
+          <div class="chart-title">Money market</div>
+          <div class="chart-subtitle">M/P supply &amp; liquidity demand L(Y, r)</div>
+        </div>
+        <div class="canvas-wrap"><canvas id="mm"></canvas></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <script>
+
+
+
+
+
+
+
+// ══════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════════════════════════
+let gTab = 'asad';
+
+function setGTab(tab){
+  gTab = tab;
+  document.getElementById('gtab-asad').classList.toggle('active', tab==='asad');
+  document.getElementById('gtab-construct').classList.toggle('active', tab==='construct');
+  document.getElementById('view-asad').classList.toggle('active', tab==='asad');
+  document.getElementById('view-construct').classList.toggle('active', tab==='construct');
+  if(tab==='construct') setTimeout(()=>{ syncConstructSidebar(); drawConstruct(); }, 30);
+}
+
+// Set scenario from construct tab (syncs both tabs)
+function setScenarioBoth(key, btn){
+  // Update main sidebar buttons
+  document.querySelectorAll('#view-asad .sc-btn').forEach(b=>b.classList.remove('active'));
+  const mainBtn = document.getElementById('btn-'+key) || document.getElementById('btn-base');
+  if(mainBtn) mainBtn.classList.add('active');
+  // Update construct sidebar buttons
+  document.querySelectorAll('#view-construct .sc-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Run the scenario
+  curSc = key; phase = 0;
+  const sc = scenarios[key];
+  document.getElementById('phase-slider').value = 0;
+  document.getElementById('phase-slider').max = sc.phases.length-1;
+  document.getElementById('c-phase-slider').value = 0;
+  document.getElementById('c-phase-slider').max = sc.phases.length-1;
+  syncConstructSidebar();
+  updateAll();
+}
+
+function syncConstructSidebar(){
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  const interp = sc.interp ? sc.interp[Math.min(phase, sc.interp.length-1)] : '';
+  const el = (id) => document.getElementById(id);
+  if(el('c-phase-label')) el('c-phase-label').textContent = ph.pLabel;
+  if(el('c-phase-num'))   el('c-phase-num').textContent   = phase+' / '+(sc.phases.length-1);
+  if(el('c-sc-desc'))     el('c-sc-desc').textContent     = interp;
+  const sl = el('c-phase-slider');
+  if(sl){ sl.max = sc.phases.length-1; sl.value = phase; }
+  const dots = el('c-phase-dots');
+  if(dots){
+    dots.innerHTML='';
+    sc.phases.forEach((_,i)=>{
+      const d=document.createElement('div');
+      d.className='phase-dot'+(i===phase?' active':'');
+      d.onclick=()=>{ setPhase(i); if(el('c-phase-slider')) el('c-phase-slider').value=i; };
+      dots.appendChild(d);
+    });
+  }
+}
+
 // ══════════════════════════════════════════════════════════════
 // MODEL  — steeper slopes
 // IS:  r = a_IS + dIS - b_IS*Y    (b_IS=0.8)
@@ -191,10 +470,10 @@
 // AD:  Y_AD(P) = IS∩LM as P varies → downward sloping
 // SRAS: P = P0 + dSRAS + kS*(Y-Yn)
 // ══════════════════════════════════════════════════════════════
-const b_IS = 0.8,  b_LM = 1.7,  kP = 0.9,  kS = 1.4;
+const b_IS = 1.4,  b_LM = 1.7,  kP = 1.4,  kS = 1.8;
 const Y0 = 0.50,   P0 = 0.45,   r0 = 0.45;
-const a_IS = r0 + b_IS*Y0;           // 1.25
-const a_LM = r0 - kP*P0 - b_LM*Y0;  // -0.325
+const a_IS = r0 + b_IS*Y0;           // 1.15
+const a_LM = r0 - kP*P0 - b_LM*Y0;  // -1.030
 
 function rIS(Y, dIS){ return a_IS + (dIS||0) - b_IS*Y; }
 function rLM(Y, P, dLM_ex){ return a_LM + kP*P + b_LM*Y + (dLM_ex||0); }
@@ -219,45 +498,44 @@ function dSrasLR(dIS, dLM_ex, Yn){ return Plr(dIS, dLM_ex, Yn) - P0; }
 // ══════════════════════════════════════════════════════════════
 const INTERP = {
   base: [
-    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately.",
-    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately.",
-    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately.",
-    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately.",
+    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately. Price expectations are anchored at P*.",
+    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately. Price expectations are anchored at P*.",
+    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately. Price expectations are anchored at P*.",
+    "The economy is at full equilibrium: output equals potential Y* and prices are stable at P*. The IS curve shows goods market equilibrium (demand = output); the LM curve shows money market equilibrium. Their crossing pins down Y* and the neutral real interest rate r*. The VSRAS (horizontal line) shows that in the very short run, prices are completely rigid — firms post prices and don't adjust immediately. Price expectations are anchored at P*.",
   ],
   g_up: [
-    "Very short run: G↑ injects demand directly. Via the multiplier (1/(1−c₁)), output rises by more than the initial spending — households spend part of their extra income, which creates more income, and so on. Prices are fixed (VSRAS), so the IS curve shifts right and IS′∩LM gives A′: higher Y, higher r. In the AS-AD diagram, A′ lies on the VSRAS at P*, with Y above Y*.",
-    "Short run: the positive output gap (Y > Y*) tightens the labour market. Firms must hire more workers, bidding up nominal wages. Firms pass higher labour costs into prices, so P rises above P*. Rising P reduces the real money supply M/P, shifting LM up (LM′). The economy moves along AD′ from A′ to B: IS′∩LM′ in the top panel corresponds exactly to AD′∩SRAS in the bottom. Output is still above Y*.",
-    "Medium run: the output gap persists, so wage pressure continues. Workers update their inflation expectations upward and bargain for higher nominal wages in each new round of contracts. This further raises firms' costs and pushes SRAS up again (SRAS′). LM shifts up further as P rises. Output begins falling back toward Y* as the economy moves from B toward C along AD′.",
-    "Long run: expectations fully adjust. SRAS′ has shifted up exactly enough to pass through the intersection of LRAS and AD′ at C. Output is back at Y*, but the real interest rate and price level are permanently higher. The higher r crowds out private investment, partially offsetting the initial G increase — this is the crowding-out effect in the medium run.",
+    "Very short run: G↑ injects demand directly. Via the multiplier (1/(1−c₁)), output rises by more than the initial spending — households spend part of their extra income, which creates more income, and so on. Prices are fixed (VSRAS) and wage expectations don't yet adjust, so the IS curve shifts right and IS′∩LM gives A′: higher Y, higher r. In the AS-AD diagram, A′ lies on the VSRAS at P*, with Y above Y*.",
+    "Short run: the positive output gap (Y > Y*) tightens the labour market — firms bid up nominal wages. Prices rise as firms pass higher costs on. Wage expectations don't yet adjust — workers and firms still base contracts on the old expected price, so the SRAS curve doesn't shift yet; instead the economy moves along the existing SRAS. Rising P reduces M/P, shifting LM up (LM′). The economy moves along AD′ from A′ to B: IS′∩LM′ = AD′∩SRAS. Output is still above Y*.",
+    "Medium run: expected prices rise — workers revise their inflation expectations upward and bargain for higher nominal wages in the next round of contracts. This raises firms' costs, shifting SRAS up (SRAS′). The economy moves off the old SRAS and B shifts up. LM shifts up further as P rises. Output falls back toward Y* as the economy moves from B toward C along AD′.",
+    "Long run: price expectations have fully adjusted to the new price level — expected prices equal actual prices. SRAS′ has shifted up exactly enough to pass through the intersection of LRAS and AD′ at C. Output is back at Y*, but the real interest rate and price level are permanently higher. The higher r crowds out private investment, partially offsetting the initial G increase.",
   ],
   oil_supply: [
-    "Very short run: the oil price shock immediately raises production costs for firms — SRAS shifts up slightly (cost-push) and LRAS shifts left (permanently lower productive capacity). Point A is the original equilibrium. Point A″ is the new intersection of AD and SRAS′: prices tick up slightly and output falls a little. The LM shifts up because the higher price level P reduces the real money supply M/P, raising r. No demand shift occurs — AD stays fixed.",
-    "Short run: firms fully pass the cost increase to prices (SRAS′ shifts further up). The higher price level P reduces M/P, shifting LM′ up — this is a movement along the AD curve (AD itself does not shift since there is no demand change). Output falls and P rises simultaneously: stagflation. The equilibrium B is at AD∩SRAS′ = IS∩LM′.",
-    "Medium run: workers observe higher prices and update their wage expectations upward. In the next round of collective bargaining they demand higher nominal wages to restore real purchasing power, pushing firms' costs up further. SRAS′ shifts up again and LM shifts up further as P keeps rising. Output continues to fall toward the new, lower Y*.",
-    "Long run: SRAS′ has fully shifted to pass through the new LRAS′ (at lower Y*) and AD. The economy settles at C: permanently lower output (Y* fell because oil is scarcer/costlier), permanently higher prices, and a higher real interest rate. This is classic stagflation — the supply-side destruction leaves no way to restore the old Y* without removing the shock.",
+    "Short run: LRAS shifts left (permanently lower productive capacity — oil is a key input). SRAS shifts up slightly due to immediate cost-push: firms face higher oil bills right away and pass some of it on to prices. Wage expectations don't yet adjust — workers' contracts are still anchored to the old price level, so the SRAS shift is small. Point A is the original equilibrium; A″ is the new AD∩SRAS′: prices tick up and output falls slightly. The LM shifts up because higher P reduces M/P.",
+    "Medium run: workers observe persistently higher prices and update their expected price level upward. In the next round of collective bargaining they demand higher nominal wages to restore real purchasing power. This expected-price adjustment pushes SRAS up further. LM shifts up further as P keeps rising. Output continues falling toward the new, lower Y*.",
+    "Long run: price expectations have fully adjusted. SRAS′ has shifted up exactly enough to pass through the new LRAS′ (at lower Y*) and AD. The economy settles at C: permanently lower output (Y* fell because oil raises production costs permanently), permanently higher prices, higher real interest rate. Classic stagflation — the supply-side destruction cannot be undone without removing the oil shock.",
   ],
   oil_demand: [
-    "Very short run: higher oil prices squeeze household budgets (less income for other goods) and raise firms' energy costs, reducing investment. This contracts aggregate demand — IS shifts left and AD shifts left. Prices are fixed (VSRAS), so IS′∩LM gives A′: lower Y, lower r. In the AS-AD diagram, A′ is on VSRAS at P*, with Y below Y*.",
-    "Short run: the negative output gap (Y < Y*) loosens the labour market — unemployment rises above natural rate. Firms face less wage pressure; prices fall slightly. Lower P raises M/P, shifting LM down (LM′). Economy moves along AD′ from A′ to B: IS′∩LM′ = AD′∩SRAS. Output is still below Y*.",
-    "Medium run: the output gap persists, unemployment stays above natural rate. Workers lower their wage expectations — in the next contracts they accept lower nominal wages, reducing firms' costs. SRAS shifts down (SRAS′). LM shifts down further as P falls. Output rises back toward Y*.",
-    "Long run: SRAS′ has shifted down to pass through LRAS∩AD′ at C. Output is fully back to Y*, but prices and the real interest rate are permanently lower. The oil demand shock is contractionary in the short run but self-correcting in the long run via deflation and downward wage adjustment.",
+    "Very short run: higher oil prices squeeze household budgets (less income for other goods) and raise firms' energy costs, reducing investment. IS shifts left and AD shifts left. Prices are fixed (VSRAS) and wage expectations don't yet adjust, so IS′∩LM gives A′: lower Y, lower r. In the AS-AD diagram, A′ is on VSRAS at P*, with Y below Y*.",
+    "Short run: the negative output gap (Y < Y*) loosens the labour market — unemployment rises above the natural rate. Actual prices fall slightly as firms face less demand. Wage expectations don't yet adjust — workers' contract expectations are still anchored to the old price level, so the SRAS doesn't shift yet; instead the economy moves along the existing SRAS. Lower P raises M/P, shifting LM down (LM′). Equilibrium B: IS′∩LM′ = AD′∩SRAS. Output still below Y*.",
+    "Medium run: the persistent output gap leads workers to revise their expected price level downward — they accept lower nominal wages in new contracts, expecting prices to stay low. Lower expected wages reduce firms' costs, shifting SRAS down (SRAS′). LM shifts down further as P falls. Output rises back toward Y* along AD′.",
+    "Long run: expected prices have fully adjusted downward. SRAS′ has shifted down to pass through LRAS∩AD′ at C. Output is fully back to Y*, but prices and the real interest rate are permanently lower. The oil demand shock is contractionary in the short run but self-correcting in the long run via deflation and downward wage expectation adjustment.",
   ],
   oil_both: [
-    "Short run — three equilibria: A is the original. A′ is the pure demand impact (IS′∩LM at P* on VSRAS): oil reduces spending and investment, output falls, prices unchanged. A″ is the true combined short-run equilibrium (AD′∩SRAS′): the supply-side cost-push also shifts SRAS slightly up, so prices tick above P* while output falls further. The LM shifts up because rising P reduces M/P. The gap A′→A″ shows how much additional price pressure comes from cost-push alone.",
-    "Medium run: workers observe higher prices and update their nominal wage expectations upward — in the next bargaining round they demand higher wages, raising firms' costs and shifting SRAS further up. The output gap is measured against the new, lower Y* (the LRAS′ position). Output Y is already near the new Y*, so there is little downward wage pressure — the cost-push from the supply shock dominates and prices keep rising. LM shifts up further as P rises.",
-    "Long run: SRAS′ fully aligns with LRAS′ at C (intersection with AD′). Output settles permanently at the new, lower Y* — the supply shock has permanently destroyed productive capacity. The price level is permanently higher: a permanent oil price shock produces stagflation — lower output and higher prices. The demand contraction partially reduces the price increase but cannot restore the old Y*.",
+    "Short run — three equilibria: A is the original. A′ is the pure demand impact (IS′∩LM at P* on VSRAS): oil reduces spending and investment, output falls, prices unchanged — wage expectations don't yet adjust. A″ is the true combined short-run equilibrium (AD′∩SRAS′): the supply-side cost-push also shifts SRAS slightly up, so prices tick above P* while output falls further. The LM shifts up because rising P reduces M/P. The gap A′→A″ shows how much additional price pressure comes from cost-push alone.",
+    "Medium run: workers observe persistently higher prices and update their expected price level upward — in the next round of wage bargaining they demand higher nominal wages, raising firms' costs and shifting SRAS further up. The output gap is measured against the new, lower Y* (the LRAS′ position). Output Y is already close to the new Y*, so there is little downward wage pressure from the demand side — the cost-push expectation adjustment dominates and prices keep rising. LM shifts up further as P rises.",
+    "Long run: price expectations have fully adjusted. SRAS′ aligns with LRAS′ at C (intersection with AD′). Output settles permanently at the new, lower Y* — the supply shock has permanently destroyed productive capacity. The price level is permanently higher: a permanent oil price shock produces stagflation — lower output and higher prices. The demand contraction partially dampens the price increase but cannot restore the old Y*.",
   ],
   fiscal: [
-    "Very short run: G↓ directly withdraws demand. Via the reverse multiplier, output falls by more than the initial cut — lower incomes reduce household spending, which lowers incomes further. Prices are fixed (VSRAS), so IS shifts left and IS′∩LM gives A′: lower Y, lower r. In AS-AD, A′ is on VSRAS at P*, with Y below Y*.",
-    "Short run: the negative output gap (Y < Y*) puts upward slack in the labour market. Unemployment rises, reducing wage pressure — prices fall slightly. Lower P raises M/P, shifting LM down (LM′). Economy moves along AD′ from A′ to B: IS′∩LM′ = AD′∩SRAS. The interest rate falls, which partially offsets the fiscal contraction by stimulating private investment (crowding-in).",
-    "Medium run: persistent slack keeps unemployment above natural rate. Workers accept lower nominal wages in new contracts — firms' costs fall, SRAS shifts down (SRAS′). LM shifts down further as P falls. Output rises back toward Y* along AD′.",
-    "Long run: SRAS′ passes through LRAS∩AD′ at C. Output is fully restored to Y*, but prices and the real interest rate are permanently lower. Fiscal consolidation is neutral in the long run: the initial output loss is recovered via deflation and falling interest rates — the interest rate channel replaces the government spending channel.",
+    "Very short run: G↓ directly withdraws demand. Via the reverse multiplier, output falls by more than the initial cut. Prices are fixed (VSRAS) and wage expectations don't yet adjust, so IS shifts left and IS′∩LM gives A′: lower Y, lower r. In AS-AD, A′ is on VSRAS at P*, with Y below Y*.",
+    "Short run: the negative output gap (Y < Y*) puts upward slack in the labour market — unemployment rises. Actual prices fall slightly. Wage expectations don't yet adjust — workers' contracts are still anchored to the old expected price, so the SRAS doesn't shift yet; the economy moves along the existing SRAS. Lower P raises M/P, shifting LM down (LM′). Economy moves along AD′ from A′ to B: IS′∩LM′ = AD′∩SRAS. The interest rate falls, partially stimulating private investment (crowding-in).",
+    "Medium run: persistent slack leads workers to revise their expected price level downward — they accept lower nominal wages in new contracts. This expected-price adjustment reduces firms' costs and shifts SRAS down (SRAS′). LM shifts down further as P falls. Output rises back toward Y* along AD′.",
+    "Long run: expected prices have fully adjusted. SRAS′ passes through LRAS∩AD′ at C. Output is fully restored to Y*, but prices and the real interest rate are permanently lower. Fiscal consolidation is neutral in the long run: the output loss is recovered via deflation and falling interest rates — the interest rate channel replaces the government spending channel.",
   ],
   mon_expand: [
-    "Very short run: the central bank lowers r̄, shifting LM down exogenously. This is not caused by a price change — it directly shifts AD rightward (more demand at every price level), because cheaper credit stimulates investment and consumption. With prices fixed (VSRAS), IS∩LM′ gives A′: higher Y, lower r. In AS-AD, A′ is on VSRAS and on the new AD′ (same P, higher Y).",
-    "Short run: the positive output gap (Y > Y*) tightens the labour market — firms compete for workers, pushing nominal wages up. Firms pass higher costs into prices, so P rises. Rising P reduces M/P, shifting LM partly back up (movement along AD′, not an additional AD shift). Equilibrium B is at IS∩LM′ = AD′∩SRAS. Note: the exogenous LM shift remains, only the P-induced component moves back.",
-    "Medium run: output is still above Y*, maintaining wage pressure. Workers update inflation expectations upward and demand higher wages in the next round of bargaining — SRAS shifts up (SRAS′). LM shifts up further as P keeps rising. Output falls back toward Y*. Inflation is the price of the short-run boom.",
-    "Long run: SRAS′ has fully adjusted to pass through LRAS∩AD′ at C. Output returns to Y*. The price level is permanently higher — the monetary expansion has only created inflation, not permanently higher output. This is the neutrality of money in the long run: real variables (Y, r) are determined by the real side, not by the money supply.",
+    "Very short run: the central bank lowers r̄, shifting LM down exogenously. This directly shifts AD rightward (cheaper credit stimulates investment and consumption). Prices are fixed (VSRAS) and wage expectations don't yet adjust, so IS∩LM′ gives A′: higher Y, lower r. In AS-AD, A′ is on VSRAS and on the new AD′ (same P, higher Y).",
+    "Short run: the positive output gap (Y > Y*) tightens the labour market — nominal wages rise. Prices rise as firms pass higher costs on. Wage expectations don't yet adjust — workers' contracts are still based on the old expected price, so the SRAS doesn't shift yet; the economy moves along the existing SRAS. Rising P reduces M/P, shifting LM partly back up (movement along AD′). Equilibrium B: IS∩LM′ = AD′∩SRAS.",
+    "Medium run: workers observe persistently higher prices and revise their expected price level upward — they demand higher nominal wages in the next round of bargaining. This expected-price adjustment raises firms' costs and shifts SRAS up (SRAS′). LM shifts up further as P keeps rising. Output falls back toward Y*. Inflation is the price of the short-run boom.",
+    "Long run: price expectations have fully adjusted to the new higher price level. SRAS′ passes through LRAS∩AD′ at C. Output returns to Y*. The price level is permanently higher — the monetary expansion has only created inflation, not permanently higher output. This is the neutrality of money in the long run: real variables (Y, r) are determined by the real side, not by the money supply.",
   ],
 };
 
@@ -298,37 +576,29 @@ function makeMonetary(dLM_ex_shock){
 // then more in subsequent phases, alongside LM.
 function makeOilSupply(){
   const Yn = Y0 - 0.10;
-  // VSR: supply only — no IS/AD shift.
-  // A  = baseline AD∩SRAS (unchanged by shock on impact).
-  // A″ = AD∩SRAS′(small) — cost-push already raises prices slightly.
-  // (A′ would coincide with A since no demand shift, so we show A and A″.)
-  const dSRAS_vsr = 0.04;
-  const eq_vsr = adSrasEq(0, 0, dSRAS_vsr, Yn);  // A″
-  const dP_vsr = kP*(eq_vsr.P - P0);
-  // SR: SRAS shifted more
-  const dSRAS_sr = 0.12;
-  const eq1 = adSrasEq(0, 0, dSRAS_sr, Yn), dP1 = kP*(eq1.P-P0);
+  // Short run (VSR+SR combined):
+  //   A  = original equilibrium (drawn by default)
+  //   A″ = AD∩SRAS′(small) — immediate cost-push raises prices slightly, LRAS shifts left
+  //   (A′ coincides with A since no IS/AD shift, so only A and A″ shown)
+  const dSRAS_sr = 0.04;   // small initial cost-push shift
+  const eq_sr = adSrasEq(0, 0, dSRAS_sr, Yn);
+  const dP_sr = kP*(eq_sr.P - P0);
   // MR
   const dSLR = dSrasLR(0, 0, Yn);
-  const dSRAS_mr = dSLR*0.6;
-  const eq2 = adSrasEq(0, 0, dSRAS_mr, Yn), dP2 = kP*(eq2.P-P0);
+  const dSRAS_mr = dSLR*0.55;
+  const eq_mr = adSrasEq(0, 0, dSRAS_mr, Yn), dP_mr = kP*(eq_mr.P-P0);
   // LR
-  const eq3 = adSrasEq(0, 0, dSLR, Yn), dP3 = kP*(eq3.P-P0);
+  const eq_lr = adSrasEq(0, 0, dSLR, Yn), dP_lr = kP*(eq_lr.P-P0);
   return { interp: INTERP.oil_supply, phases:[
-    // VSR: show A (base) already in drawASAD; eqLabel=null (no extra primary dot),
-    // eq2=A″ (AD∩SRAS′small). In IS-LM: IS∩LM unchanged (no dLM yet), so IS-LM eq stays at A.
-    { dIS:0, dLM_ex:0, dLM_P:dP_vsr, dSRAS:dSRAS_vsr, Yn, lras:-0.10, showVSRAS:true,
+    { dIS:0, dLM_ex:0, dLM_P:dP_sr, dSRAS:dSRAS_sr, Yn, lras:-0.10, showVSRAS:true,
       eqLabel:null, eqY:Y0, eqP:P0, eqR:r0,
-      eq2Label:"A''", eq2Y:eq_vsr.Y, eq2P:eq_vsr.P, eq2R:rIS(eq_vsr.Y,0),
-      pLabel:"Very short run — cost-push, prices tick up" },
-    { dIS:0, dLM_ex:0, dLM_P:dP1, dSRAS:dSRAS_sr, Yn, lras:-0.10, showVSRAS:false,
-      eqLabel:'B', eqY:eq1.Y, eqP:eq1.P, eqR:rIS(eq1.Y,0),
-      pLabel:"Short run — SRAS shifts with costs" },
-    { dIS:0, dLM_ex:0, dLM_P:dP2, dSRAS:dSRAS_mr, Yn, lras:-0.10, showVSRAS:false,
-      eqLabel:"B'", eqY:eq2.Y, eqP:eq2.P, eqR:rIS(eq2.Y,0),
+      eq2Label:"A''", eq2Y:eq_sr.Y, eq2P:eq_sr.P, eq2R:rIS(eq_sr.Y,0),
+      pLabel:"Short run — cost-push, prices tick up" },
+    { dIS:0, dLM_ex:0, dLM_P:dP_mr, dSRAS:dSRAS_mr, Yn, lras:-0.10, showVSRAS:false,
+      eqLabel:'B', eqY:eq_mr.Y, eqP:eq_mr.P, eqR:rIS(eq_mr.Y,0),
       pLabel:"Medium run — expectations adjust" },
-    { dIS:0, dLM_ex:0, dLM_P:dP3, dSRAS:dSLR, Yn, lras:-0.10, showVSRAS:false,
-      eqLabel:'C', eqY:eq3.Y, eqP:eq3.P, eqR:rIS(eq3.Y,0),
+    { dIS:0, dLM_ex:0, dLM_P:dP_lr, dSRAS:dSLR, Yn, lras:-0.10, showVSRAS:false,
+      eqLabel:'C', eqY:eq_lr.Y, eqP:eq_lr.P, eqR:rIS(eq_lr.Y,0),
       pLabel:"Long run — SRAS′ through new LRAS" },
   ]};
 }
@@ -381,7 +651,14 @@ const scenarios = {
 // ══════════════════════════════════════════════════════════════
 // UI
 // ══════════════════════════════════════════════════════════════
-let curSc = 'base', phase = 0;
+let curSc = 'base', phase = 0, viewMode = 'step';
+
+function setView(mode){
+  viewMode = mode;
+  document.getElementById('btn-step').classList.toggle('active', mode==='step');
+  document.getElementById('btn-all').classList.toggle('active', mode==='all');
+  draw();
+}
 
 function setScenario(key, btn){
   curSc = key; phase = 0;
@@ -419,6 +696,7 @@ function updateAll(){
     dots.appendChild(d);
   });
   draw();
+  syncConstructSidebar();
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -460,6 +738,14 @@ function Lbl(ctx,txt,x,y,color,size){
   ctx.fillStyle=color;ctx.font='500 '+(size||13)+'px "DM Mono",monospace';
   ctx.fillText(txt,x,y);
 }
+
+// Clip context to the plot area (inside axes), preventing curves from overwriting axes
+function clipToPlot(ctx, pad, w, h){
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  ctx.beginPath();
+  ctx.rect(pad.l, pad.t, gw, gh);
+  ctx.clip();
+}
 function drawAxes(ctx,px,py,yLbl,yRef){
   ctx.strokeStyle=COL.axis;ctx.lineWidth=1;
   ctx.beginPath();
@@ -491,15 +777,149 @@ function projDash(ctx,x,y,px0,py0){
 const N=120, Us=Array.from({length:N},(_,i)=>0.02+i*0.96/(N-1));
 
 function draw(){
-  const ph=scenarios[curSc].phases[Math.min(phase,scenarios[curSc].phases.length-1)];
-  drawISLM(ph); drawASAD(ph);
+  if(viewMode === 'all'){
+    drawAllRuns();
+  } else {
+    const ph=scenarios[curSc].phases[Math.min(phase,scenarios[curSc].phases.length-1)];
+    drawISLM(ph); drawASAD(ph);
+  }
+  if(gTab==='construct') drawConstruct();
+}
+
+function drawAllRuns(){
+  const sc = scenarios[curSc];
+  const phases = sc.phases;
+  const n = phases.length;
+  const lastPh = phases[n-1];
+
+  // IS-LM: draw full diagram for last phase (all base+shifted curves), then add all dots
+  const islm = setupCanvas('islm');
+  const ctx_i = islm.ctx, px_i = islm.px, py_i = islm.py;
+  drawAxes(ctx_i, px_i, py_i, 'r', r0);
+  corrVline(ctx_i, px_i, py_i, lastPh.eqY);
+  const dLM_last = (lastPh.dLM_ex||0)+(lastPh.dLM_P||0);
+  ctx_i.save(); clipToPlot(ctx_i, PAD, islm.w, islm.h);
+  S(ctx_i, Us.map(u=>[px_i(u),py_i(rIS(u,0))]), COL.IS);
+  Lbl(ctx_i,'IS',px_i(0.82),py_i(rIS(0.82,0))-8,COL.IS);
+  if(lastPh.dIS!==0){
+    S(ctx_i, Us.map(u=>[px_i(u),py_i(rIS(u,lastPh.dIS))]), COL.IS+'bb', true);
+    Lbl(ctx_i,"IS'",px_i(0.82),py_i(rIS(0.82,lastPh.dIS))-8,COL.IS+'bb');
+  }
+  S(ctx_i, Us.map(u=>[px_i(u),py_i(rLM(u,P0,0))]), COL.LM);
+  Lbl(ctx_i,'LM',px_i(0.10),py_i(rLM(0.10,P0,0))-8,COL.LM);
+  // Draw ALL intermediate LM positions (each phase may have a different dLM)
+  const alphas = n===3 ? [0.45,0.70,1.0] : [0.35,0.55,0.75,1.0];
+  const drawnLMs = new Set([0]);
+  phases.forEach((ph,i)=>{
+    const dLM = (ph.dLM_ex||0)+(ph.dLM_P||0);
+    const key = Math.round(dLM*1000);
+    if(drawnLMs.has(key)) return;
+    drawnLMs.add(key);
+    ctx_i.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    S(ctx_i, Us.map(u=>[px_i(u),py_i(rLM(u,P0,dLM))]), COL.LM+'bb', true);
+    ctx_i.globalAlpha = 1.0;
+  });
+  if(Math.abs(dLM_last)>0.001)
+    Lbl(ctx_i,"LM'",px_i(0.10),py_i(rLM(0.10,P0,dLM_last))-8,COL.LM+'bb');
+  ctx_i.restore();
+  // Base eq A
+  const eqA_i = islmEq(P0,0,0);
+  Dot(ctx_i,px_i(eqA_i.Y),py_i(eqA_i.r),'A',true,false);
+  // All phase dots with increasing opacity
+  // alphas already declared above
+  phases.forEach((ph,i)=>{
+    if(!ph.eqLabel) return;
+    ctx_i.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    const sx=px_i(ph.eqY), sy=py_i(ph.eqR);
+    if(ph.eqY>0.03&&ph.eqY<0.97&&ph.eqR>0.03&&ph.eqR<0.97){
+      projDash(ctx_i,sx,sy,px_i(0),py_i(0));
+      Dot(ctx_i,sx,sy,ph.eqLabel,ph.eqR>r0,ph.eqY>0.80);
+    }
+    if(ph.eq2Label){
+      const s2x=px_i(ph.eq2Y),s2y=py_i(ph.eq2R);
+      if(ph.eq2Y>0.03&&ph.eq2Y<0.97&&ph.eq2R>0.03&&ph.eq2R<0.97){
+        Dot(ctx_i,s2x,s2y,ph.eq2Label,ph.eq2R<r0,ph.eq2Y>0.80);
+      }
+    }
+    ctx_i.globalAlpha=1.0;
+  });
+
+  // AS-AD: draw full diagram for last phase, then add intermediate SRAS lines + all dots
+  const asad = setupCanvas('asad');
+  const ctx_a = asad.ctx, px_a = asad.px, py_a = asad.py, asad_w = asad.w, asad_h = asad.h;
+  drawAxes(ctx_a, px_a, py_a, 'P', P0);
+  corrVline(ctx_a, px_a, py_a, lastPh.eqY);
+  ctx_a.save(); clipToPlot(ctx_a, PAD, asad.w, asad.h);
+  const lrasX = Y0+(lastPh.lras||0), Yn_last = lastPh.Yn||Y0;
+  const dIS_ad = lastPh.dIS||0, dLM_ex_ad = lastPh.dLM_ex||0;
+  // LRAS
+  ctx_a.save();ctx_a.strokeStyle=COL.LRAS;ctx_a.lineWidth=1.8;
+  ctx_a.beginPath();ctx_a.moveTo(px_a(Y0),py_a(0.04));ctx_a.lineTo(px_a(Y0),py_a(0.96));ctx_a.stroke();ctx_a.restore();
+  Lbl(ctx_a,'LRAS',px_a(Y0)+4,py_a(0.90),COL.LRAS);
+  if(lastPh.lras&&lastPh.lras!==0){
+    ctx_a.save();ctx_a.strokeStyle=COL.LRAS+'aa';ctx_a.lineWidth=1.8;ctx_a.setLineDash([7,5]);
+    ctx_a.beginPath();ctx_a.moveTo(px_a(lrasX),py_a(0.04));ctx_a.lineTo(px_a(lrasX),py_a(0.96));ctx_a.stroke();
+    ctx_a.setLineDash([]);ctx_a.restore();
+    Lbl(ctx_a,"LRAS'",px_a(lrasX)+4,py_a(0.80),COL.LRAS+'aa');
+  }
+  // VSRAS (show if any phase has it)
+  if(phases.some(p=>p.showVSRAS)){
+    S(ctx_a,[[px_a(0.03),py_a(P0)],[px_a(0.97),py_a(P0)]],COL.VSRAS,'dot',1.4);
+    Lbl(ctx_a,'VSRAS',px_a(0.03),py_a(P0)-7,COL.VSRAS,11);
+  }
+  // AD base and shifted
+  S(ctx_a,Us.map(u=>{const P=0.04+u*0.92;return[px_a(Yad(P,0,0)),py_a(P)];}),COL.AD);
+  Lbl(ctx_a,'AD',px_a(Yad(0.12,0,0))+4,py_a(0.12)+5,COL.AD);
+  if(Math.abs(dIS_ad)>0.001||Math.abs(dLM_ex_ad)>0.001){
+    S(ctx_a,Us.map(u=>{const P=0.04+u*0.92;return[px_a(Yad(P,dIS_ad,dLM_ex_ad)),py_a(P)];}),COL.AD+'bb',true);
+    Lbl(ctx_a,"AD'",px_a(Yad(0.12,dIS_ad,dLM_ex_ad))+4,py_a(0.12)+5,COL.AD+'bb');
+  }
+  // Base SRAS solid
+  S(ctx_a,Us.map(u=>[px_a(u*0.96+0.02),py_a(Psras(u*0.96+0.02,0,Y0))]),COL.SRAS);
+  {const sY=0.82,sP=Psras(sY,0,Y0);if(sP>0.05&&sP<0.95)Lbl(ctx_a,'SRAS',px_a(sY)-4,py_a(sP)-8,COL.SRAS);}
+  // Intermediate SRAS phases (faded)
+  phases.forEach((ph,i)=>{
+    if(Math.abs(ph.dSRAS||0)<0.001) return;
+    const Yn=ph.Yn||Y0;
+    const isLast = i===n-1;
+    ctx_a.globalAlpha = isLast ? 1.0 : alphas[Math.min(i,alphas.length-1)]*0.7;
+    S(ctx_a,Us.map(u=>[px_a(u*0.96+0.02),py_a(Psras(u*0.96+0.02,ph.dSRAS,Yn))]),COL.SRAS+'bb',true,isLast?1.8:1.2);
+    ctx_a.globalAlpha=1.0;
+  });
+  {const ph=lastPh; if(Math.abs(ph.dSRAS||0)>0.001){const sY=0.82,sP=Psras(sY,ph.dSRAS,ph.Yn||Y0);if(sP>0.05&&sP<0.95)Lbl(ctx_a,"SRAS'",px_a(sY)-4,py_a(sP)-8,COL.SRAS+'bb');}}
+  ctx_a.restore();
+  // Base eq A
+  const eqA_a = adSrasEq(0,0,0,Y0);
+  Dot(ctx_a,px_a(eqA_a.Y),py_a(eqA_a.P),'A',true,false);
+  // All phase dots
+  phases.forEach((ph,i)=>{
+    ctx_a.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    if(ph.eqLabel){
+      const useVSR = ph.showVSRAS && Math.abs((ph.eqP||P0)-P0)<0.005;
+      const ey = useVSR ? P0 : (ph.eqP||P0);
+      const ex = useVSR ? Yad(P0,ph.dIS||0,ph.dLM_ex||0) : ph.eqY;
+      if(ex>0.03&&ex<0.97&&ey>0.03&&ey<0.97){
+        projDash(ctx_a,px_a(ex),py_a(ey),px_a(0),py_a(0));
+        Dot(ctx_a,px_a(ex),py_a(ey),ph.eqLabel,ey<P0,ex<0.30);
+      }
+    }
+    if(ph.eq2Label){
+      const e2x=ph.eq2Y, e2y=ph.eq2P;
+      if(e2x>0.03&&e2x<0.97&&e2y>0.03&&e2y<0.97){
+        projDash(ctx_a,px_a(e2x),py_a(e2y),px_a(0),py_a(0));
+        Dot(ctx_a,px_a(e2x),py_a(e2y),ph.eq2Label,true,e2x<0.30);
+      }
+    }
+    ctx_a.globalAlpha=1.0;
+  });
 }
 
 function drawISLM(ph){
-  const{ctx,px,py}=setupCanvas('islm');
+  const{ctx,w,h,px,py}=setupCanvas('islm');
   drawAxes(ctx,px,py,'r',r0);
   corrVline(ctx,px,py,ph.eqY);
   const dLM_total=(ph.dLM_ex||0)+(ph.dLM_P||0);
+  ctx.save(); clipToPlot(ctx, PAD, w, h);
 
   S(ctx,Us.map(u=>[px(u),py(rIS(u,0))]),COL.IS);
   Lbl(ctx,'IS',px(0.82),py(rIS(0.82,0))-8,COL.IS);
@@ -513,6 +933,7 @@ function drawISLM(ph){
     S(ctx,Us.map(u=>[px(u),py(rLM(u,P0,dLM_total))]),COL.LM+'bb',true);
     Lbl(ctx,"LM'",px(0.10),py(rLM(0.10,P0,dLM_total))-8,COL.LM+'bb');
   }
+  ctx.restore();
   const eqA=islmEq(P0,0,0);
   Dot(ctx,px(eqA.Y),py(eqA.r),'A',true,false);
   // Primary shifted equilibrium
@@ -534,10 +955,11 @@ function drawISLM(ph){
 }
 
 function drawASAD(ph){
-  const{ctx,px,py}=setupCanvas('asad');
+  const{ctx,w,h,px,py}=setupCanvas('asad');
   drawAxes(ctx,px,py,'P',P0);
   corrVline(ctx,px,py,ph.eqY);
   const lrasX=Y0+(ph.lras||0), Yn=ph.Yn||Y0;
+  ctx.save(); clipToPlot(ctx, PAD, w, h);
   const dIS_ad=ph.dIS||0, dLM_ex_ad=ph.dLM_ex||0;
 
   // LRAS base
@@ -604,8 +1026,408 @@ function drawASAD(ph){
   }
 }
 
+// ══════════════════════════════════════════════════════════════
+// CONSTRUCTION VIEW DRAWING
+// Goods market (Keynesian cross) top-left
+// IS-LM (re-draw) bottom-left  — Y-axis aligned with goods market above
+// Money market bottom-right    — r-axis aligned with IS-LM to the left
+// ══════════════════════════════════════════════════════════════
+
+// Model for construction view (baseline only)
+// Keynesian cross:
+//   Z = c0 + c1*(1-t)*Y + I(r) + G
+//   c1=0.6, t=0.2, so MPC_net = 0.6*0.8=0.48, multiplier=1/(1-0.48)≈1.92
+// We show two demand lines for two interest rates r0 and r0+dr
+const c1=0.6, t_tax=0.2, mpc=c1*(1-t_tax); // 0.48
+// Z intercept at r0: Z0 = autonomous spending
+// We want equilibrium Y at Y0=0.5 when r=r0
+// Z = A0 + mpc*Y, at eq: Y = A0/(1-mpc) → A0 = Y0*(1-mpc) = 0.5*0.52 = 0.26
+const A0_base = Y0*(1-mpc); // 0.26
+// For a higher r (r0+0.15), investment falls: ΔI = -b*Δr, b=investment sensitivity
+// IS slope: dY/dr = -b/(1-mpc). With b_IS=kIS... use model: IS: r=a_IS-b_IS*Y
+// So ΔY = -b_IS^{-1}*... let's keep it simple: second line shifts intercept down by 0.08
+const dA_high_r = -0.08; // reduction in autonomous spending when r is higher
+
+// Money market: M/P = L(Y,r) = k*Y - h*r
+// At equilibrium: M/P = k*Y0 - h*r0
+// Use k=1.0, h=1/b_LM (money demand slope)
+// L(Y,r): for given Y, r = (k*Y - M_P)/h — upward sloping in (r, M/P) space
+// We show two L curves for Y=Y0 and Y=Y_high
+const kMD=1.0, hMD=0.6; // money demand params
+const M_P_base = kMD*Y0 - hMD*r0; // 0.5 - 0.27 = 0.23
+
+function drawConstruct(){
+  drawKM();    // Keynesian cross
+  drawISLM_c(); // IS-LM (same as main but on canvas islm2)
+  drawMM();    // Money market
+}
+
+// ── Keynesian Cross ──────────────────────────────────────────
+function drawKM(){
+  const cv = document.getElementById('km');
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+
+  // Current phase
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+
+  // The IS curve shift (dIS) corresponds to a change in autonomous spending A0.
+  // IS: r = a_IS + dIS - b_IS*Y  →  at given r, Y = (a_IS+dIS-r)/b_IS
+  // In Keynesian cross: Z = A0 + mpc*Y, equilibrium Y = A0/(1-mpc)
+  // A0_base gives baseline Y0. A shift dIS maps to: dA0 = dIS / (1/(1-mpc)) * (1-mpc) = dIS*(1-mpc)
+  // More precisely: IS shift dIS → ΔY_IS = dIS/(b_IS+b_LM) * (b_IS+b_LM)/b_IS ... 
+  // Simpler: the equilibrium Y from the phase IS the answer. We set A0_shifted so that
+  // A0_shifted/(1-mpc) = ph.eqY  →  A0_shifted = ph.eqY * (1-mpc)
+  // This makes the Keynesian cross exactly consistent with the IS-LM equilibrium Y.
+  const A0_curr = ph.eqY * (1 - mpc);   // shifted autonomous spending consistent with phase eq
+  const A0_base_km = Y0 * (1 - mpc);    // baseline
+
+  // For the construction tab's illustrative second line (showing r effect):
+  // We also show what happens when r=r0 (base line) vs r=ph.eqR (current r)
+  // In Keynesian cross, a change in r changes investment → shifts A0 by -b*Δr
+  // where b is IS investment sensitivity. From IS: ΔA0 = -b_IS * ΔY_at_fixed_r...
+  // Actually: Z = c0 + c1*(1-t)*Y + I(r) + G. I(r) = I0 - b_IS_inv * r
+  // At eq: Y = A0_curr/(1-mpc), A0_curr includes G and I(r_current)
+  // Base Z at r* (baseline): A0_base_km
+  // Current Z (shifted by policy): A0_curr
+
+  // Axes
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0));    ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+
+  // 45-degree line Y=Z
+  ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(px_(0),py_(0)); ctx.lineTo(px_(1),py_(1)); ctx.stroke();
+  ctx.setLineDash([]);
+  Lbl(ctx,'Z=Y',px_(0.86),py_(0.89),'rgba(0,0,0,0.25)',10);
+  ctx.save(); clipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
+
+  // Base demand line: Z = A0_base_km + mpc*Y
+  const Zb = u => A0_base_km + mpc*u;
+  ctx.strokeStyle=COL.IS; ctx.lineWidth=1.8;
+  ctx.beginPath(); [0,1].forEach((u,i)=>{ i?ctx.lineTo(px_(u),py_(Zb(u))):ctx.moveTo(px_(u),py_(Zb(u))); }); ctx.stroke();
+  Lbl(ctx,'Z',px_(0.80),py_(Zb(0.80))+14,COL.IS,11);
+
+  // Shifted demand line (if scenario changes autonomous spending)
+  const shifted = Math.abs(A0_curr - A0_base_km) > 0.005;
+  if(shifted){
+    const Zs = u => A0_curr + mpc*u;
+    ctx.strokeStyle=COL.IS+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+    ctx.beginPath(); [0,1].forEach((u,i)=>{ i?ctx.lineTo(px_(u),py_(Zs(u))):ctx.moveTo(px_(u),py_(Zs(u))); }); ctx.stroke();
+    ctx.setLineDash([]);
+    const lbl = A0_curr > A0_base_km ? "Z' (↑G or ↓r)" : "Z' (↓G or ↑r)";
+    Lbl(ctx,lbl,px_(0.72),py_(Zs(0.72))+14,COL.IS+'bb',10);
+  }
+
+  // Base equilibrium A: Y0 on Z=Y line
+  const Yeq_base = A0_base_km/(1-mpc);  // = Y0
+  ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+  ctx.beginPath();
+  ctx.moveTo(px_(Yeq_base),py_(0)); ctx.lineTo(px_(Yeq_base),py_(Yeq_base));
+  ctx.moveTo(px_(0),py_(Yeq_base)); ctx.lineTo(px_(Yeq_base),py_(Yeq_base));
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px_(Yeq_base),py_(Yeq_base),7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(Yeq_base),py_(Yeq_base),3.5,0,Math.PI*2); ctx.fill();
+  Lbl(ctx,'A',px_(Yeq_base)+6,py_(Yeq_base)-8,COL.dot,11);
+
+  // Shifted equilibrium (phase equilibrium Y)
+  if(shifted){
+    const Yeq_curr = A0_curr/(1-mpc);  // = ph.eqY
+    ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+    ctx.beginPath();
+    ctx.moveTo(px_(Yeq_curr),py_(0)); ctx.lineTo(px_(Yeq_curr),py_(Yeq_curr));
+    ctx.moveTo(px_(0),py_(Yeq_curr)); ctx.lineTo(px_(Yeq_curr),py_(Yeq_curr));
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px_(Yeq_curr),py_(Yeq_curr),7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(Yeq_curr),py_(Yeq_curr),3.5,0,Math.PI*2); ctx.fill();
+    const eqLbl = ph.eqLabel || "A'";
+    Lbl(ctx, eqLbl, px_(Yeq_curr)+(Yeq_curr>Yeq_base?6:-14), py_(Yeq_curr)-8, COL.dot, 11);
+    Lbl(ctx, "Y'", px_(Yeq_curr)-5, py_(0)+15, COL.txt, 9);
+  }
+
+  ctx.restore();
+  // Axis labels
+  Lbl(ctx,'Z',px_(0)-18,py_(0.96),COL.txt,11);
+  Lbl(ctx,'Y',px_(0.97),py_(0)+15,COL.txt,11);
+  Lbl(ctx,'Y*',px_(Yeq_base)-5,py_(0)+15,COL.txt,9);
+  // Multiplier note
+  ctx.fillStyle='rgba(0,0,0,0.30)'; ctx.font='10px "DM Sans",sans-serif';
+  ctx.fillText('Multiplier: 1/(1\u2212c\u2081(1\u2212t)) \u2248'+(1/(1-mpc)).toFixed(2),px_(0.02),py_(0.97));
+}
+
+
+// ── IS-LM (construction tab) — mirrors drawISLM with current phase ──────────
+function drawISLM_c(){
+  const cv = document.getElementById('islm2');
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+
+  // Get current phase
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  const dLM_total = (ph.dLM_ex||0)+(ph.dLM_P||0);
+
+  // Axes
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0));    ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+
+  // Grid
+  ctx.setLineDash([3,3]); ctx.strokeStyle=COL.grid; ctx.lineWidth=0.8;
+  ctx.beginPath();
+  ctx.moveTo(px_(Y0),py_(0)); ctx.lineTo(px_(Y0),py_(1));
+  ctx.moveTo(px_(0),py_(r0)); ctx.lineTo(px_(1),py_(r0));
+  ctx.stroke(); ctx.setLineDash([]);
+
+  const Us2=Array.from({length:120},(_,i)=>0.02+i*0.96/119);
+  ctx.save(); clipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
+
+  // Correspondence vertical line at equilibrium Y
+  ctx.save(); ctx.strokeStyle=COL.corr; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(px_(ph.eqY),py_(0.02)); ctx.lineTo(px_(ph.eqY),py_(0.98));
+  ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+
+  // Base IS
+  ctx.strokeStyle=COL.IS; ctx.lineWidth=1.8;
+  ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(rIS(u,0)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+  Lbl(ctx,'IS',px_(0.82),py_(rIS(0.82,0))-8,COL.IS,11);
+
+  // Shifted IS
+  if(ph.dIS!==0){
+    ctx.strokeStyle=COL.IS+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+    ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(rIS(u,ph.dIS)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+    ctx.setLineDash([]);
+    Lbl(ctx,"IS'",px_(0.82),py_(rIS(0.82,ph.dIS))-8,COL.IS+'bb',11);
+  }
+
+  // Base LM at P0
+  ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
+  ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(rLM(u,P0,0)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+  Lbl(ctx,'LM',px_(0.10),py_(rLM(0.10,P0,0))-8,COL.LM,11);
+
+  // Shifted LM
+  if(Math.abs(dLM_total)>0.001){
+    ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+    ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(rLM(u,P0,dLM_total)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+    ctx.setLineDash([]);
+    Lbl(ctx,"LM'",px_(0.10),py_(rLM(0.10,P0,dLM_total))-8,COL.LM+'bb',11);
+  }
+
+  ctx.restore();
+  // Axis labels
+  Lbl(ctx,'r',px_(0)-18,py_(0.96),COL.txt,11);
+  Lbl(ctx,'Y',px_(0.97),py_(0)+15,COL.txt,11);
+  Lbl(ctx,'Y*',px_(Y0)-5,py_(0)+15,COL.txt,9);
+  Lbl(ctx,'r*',px_(0)-24,py_(r0)+4,COL.txt,9);
+
+  ctx.restore();
+  // Base equilibrium A
+  const eqA = islmEq(P0,0,0);
+  ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(px_(eqA.Y),py_(eqA.r),7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(eqA.Y),py_(eqA.r),3.5,0,Math.PI*2); ctx.fill();
+  Lbl(ctx,'A',px_(eqA.Y)+7,py_(eqA.r)-7,COL.dot,11);
+
+  // Shifted equilibrium (IS' ∩ LM')
+  if(ph.eqLabel){
+    const sx=px_(ph.eqY), sy=py_(ph.eqR);
+    if(ph.eqY>0.03&&ph.eqY<0.97&&ph.eqR>0.03&&ph.eqR<0.97){
+      // projection dashes
+      ctx.save(); ctx.setLineDash([2,3]); ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(sx,py_(0)); ctx.lineTo(sx,sy); ctx.moveTo(px_(0),sy); ctx.lineTo(sx,sy);
+      ctx.stroke(); ctx.restore();
+      ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(sx,sy,3.5,0,Math.PI*2); ctx.fill();
+      Lbl(ctx,ph.eqLabel,sx+(ph.eqY>0.80?-15:7),sy+(ph.eqR>r0?-8:13),COL.dot,11);
+    }
+  }
+}
+
+// ── Money Market ─────────────────────────────────────────────
+// Horizontal axis: real money M/P (supply fixed vertical, demand downward in r)
+// For LM: L(Y,r)=kMD*Y - hMD*r  → r = (kMD*Y - M/P)/hMD  (upward in Y-r space)
+// Here draw as: x-axis = M/P, y-axis = r (shared with IS-LM on the left)
+function drawMM(){
+  const cv = document.getElementById('mm');
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  // Money market: x-axis = M/P (real money), y-axis = r
+  // Money demand: L(Y,r) = kMD*Y - hMD*r  →  for given M/P supply:  r = (kMD*Y - M/P)/hMD
+  // Money supply: vertical line at M_P (real = M/P; shifts if P changes or CB changes M)
+  // 
+  // Phase mapping:
+  //   dLM_ex > 0 → autonomous LM shift UP → effectively real M/P fell (tighter money)
+  //                MS shifts LEFT (lower real money supply)
+  //   dLM_ex < 0 → LM shifts DOWN → real M/P rose (looser money)
+  //                MS shifts RIGHT
+  //   dLM_P  > 0 → price P rose → real M/P = M/P_nom fell → MS shifts LEFT
+  // Total autonomous shift of MS: -(dLM_ex + dLM_P) / kP  (in M/P units)
+  // Because rLM = a_LM + kP*P + b_LM*Y + dLM_ex, and kP enters as the price effect.
+  // For display: we define M_P_curr = M_P_base - (dLM_ex + dLM_P)/kP
+  //   (a higher dLM means less real money → MS shifts left)
+  // The equilibrium Y from the phase determines which L curve to show.
+
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  // Key fix: derive M/P at equilibrium from ph.eqY and ph.eqR directly.
+  // This guarantees the dot lies exactly on BOTH the L curve AND the MS line.
+  // Proof: L(ph.eqY, ph.eqR) = kMD*ph.eqY - hMD*ph.eqR = M_P_eq_ph  (on L curve)
+  //        MS drawn at M_P_eq_ph                                        (on MS line)
+  const M_P_eq_ph = kMD * ph.eqY - hMD * ph.eqR;
+  const shiftedEq = Math.abs(ph.eqY - Y0) > 0.01 || Math.abs(ph.eqR - r0) > 0.01;
+
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const MP_max=0.8;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+  const pMP=v=>px_(Math.max(0,Math.min(1,v/MP_max)));
+  const pr_=v=>py_(v);  // same r scale as IS-LM so r-axes align
+
+  // Axes
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0));    ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+
+  // Clip curves to plot area
+  ctx.save(); clipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
+
+  // Draw liquidity demand curve L(Y_val): for each r, x = kMD*Y - hMD*r
+  const drawLD = (Y_val, color, dashed, label) => {
+    ctx.strokeStyle=color; ctx.lineWidth=1.8;
+    if(dashed) ctx.setLineDash([7,5]);
+    ctx.beginPath(); let started=false;
+    for(let i=0;i<=100;i++){
+      const r_val=0.02+i*0.96/100;
+      const MP_val=kMD*Y_val - hMD*r_val;
+      if(MP_val<0||MP_val>MP_max) continue;
+      const x=pMP(MP_val), y=pr_(r_val);
+      if(!started){ctx.moveTo(x,y);started=true;}else{ctx.lineTo(x,y);}
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    // Label near upper-left of curve (high r = low M/P side)
+    const r_lbl=0.65, MP_lbl=kMD*Y_val-hMD*r_lbl;
+    if(MP_lbl>0.01&&MP_lbl<MP_max-0.01)
+      Lbl(ctx,label,pMP(MP_lbl)+4,pr_(r_lbl)-6,color,11);
+  };
+
+  // Base L(Y*)
+  drawLD(Y0, COL.LM, false, 'L(Y*)');
+
+  // Shifted L(Y_eq) — only if Y changed
+  const shiftedY = Math.abs(ph.eqY - Y0) > 0.01;
+  if(shiftedY){
+    const lbl_ld = ph.eqY > Y0 ? "L(Y')" : "L(Y')";
+    drawLD(ph.eqY, COL.LM+'bb', true, lbl_ld);
+  }
+
+  // Base MS: vertical line at M_P_base
+  const MS0_x = pMP(M_P_base);
+  ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(MS0_x,pr_(0.96)); ctx.lineTo(MS0_x,pr_(0.02)); ctx.stroke();
+
+  // Shifted MS: vertical at M_P_eq_ph (exactly where L(ph.eqY) meets pr_(ph.eqR))
+  const shiftedMS = shiftedEq && Math.abs(M_P_eq_ph - M_P_base) > 0.005;
+  if(shiftedMS){
+    const MS1_x = pMP(M_P_eq_ph);
+    ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+    ctx.beginPath(); ctx.moveTo(MS1_x,pr_(0.96)); ctx.lineTo(MS1_x,pr_(0.02)); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  ctx.restore();  // end clip — labels drawn outside so they aren't clipped
+
+  // MS labels
+  Lbl(ctx,'MS', MS0_x+3, pr_(0.97), COL.LM, 11);
+  if(shiftedMS) Lbl(ctx,"MS'", pMP(M_P_eq_ph)+3, pr_(0.97), COL.LM+'bb', 11);
+
+  // Base equilibrium A: L(Y*) ∩ MS at r*
+  // By construction: kMD*Y0 - hMD*r0 = M_P_base  ✓
+  const eq_r0 = (kMD*Y0 - M_P_base)/hMD;  // = r0
+  ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+  ctx.beginPath(); ctx.moveTo(pMP(0),pr_(eq_r0)); ctx.lineTo(MS0_x,pr_(eq_r0)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(MS0_x,pr_(eq_r0),7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(MS0_x,pr_(eq_r0),3.5,0,Math.PI*2); ctx.fill();
+  Lbl(ctx,'A', MS0_x+7, pr_(eq_r0)-7, COL.dot, 11);
+
+  // Shifted equilibrium A': L(ph.eqY) ∩ MS' — dot placed at (pMP(M_P_eq_ph), pr_(ph.eqR))
+  // L(ph.eqY, ph.eqR) = kMD*ph.eqY - hMD*ph.eqR = M_P_eq_ph  → on L curve ✓
+  // MS' is at M_P_eq_ph                                          → on MS line ✓
+  if(shiftedEq){
+    const MS_eq_x = pMP(M_P_eq_ph);
+    const r_eq = ph.eqR;
+    if(r_eq>0.02&&r_eq<0.96&&M_P_eq_ph>0.01&&M_P_eq_ph<MP_max-0.01){
+      ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(pMP(0),pr_(r_eq)); ctx.lineTo(MS_eq_x,pr_(r_eq)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(MS_eq_x,pr_(r_eq),7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(MS_eq_x,pr_(r_eq),3.5,0,Math.PI*2); ctx.fill();
+      const eqLbl2 = ph.eqLabel || "A'";
+      Lbl(ctx, eqLbl2, MS_eq_x+7, pr_(r_eq)-7, COL.dot, 11);
+      Lbl(ctx, "r'", px_(0)-22, pr_(r_eq)+4, COL.txt, 9);
+    }
+  }
+
+  // Axis labels
+  Lbl(ctx,'r',     px_(0)-18,          py_(0.96),      COL.txt, 11);
+  Lbl(ctx,'M/P',   px_(0.82),          py_(0)+15,      COL.txt, 11);
+  Lbl(ctx,'r*',    px_(0)-24,          pr_(eq_r0)+4,   COL.txt, 9);
+  if(M_P_base>0&&M_P_base<MP_max)
+    Lbl(ctx,'(M/P)*', pMP(M_P_base)-10, py_(0)+14, COL.txt, 8);
+}
+
+
 updateAll();
-window.addEventListener('resize',()=>draw());
+window.addEventListener('resize',()=>{ draw(); if(gTab==='construct') drawConstruct(); });
+
+
+
+
+
+
 </script>
 </body>
 </html>
