@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>IS-LM · PC App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+:root{--nav-h:0px;}
+html,body{margin:0;padding:0;height:100%;background:#d4d2cc;}
+body{overflow:hidden;}
+.panel{display:block;height:100%;}
+</style>
+</head>
+<body>
+<div class="panel active" id="panel-islm-asad">
+  <style>
+#panel-islm-asad .asad-app *, #panel-islm-asad .asad-app *::before, #panel-islm-asad .asad-app *::after{ box-sizing: border-box; margin: 0; padding: 0; }
+#panel-islm-asad .asad-app{
+  --bg: #fafaf8; --surface: #ffffff;
+  --border: #e8e6e0; --border-light: #f0ede8;
+  --text-primary: #1a1916; --text-secondary: #6b6860; --text-muted: #a8a49e;
+  --purple: #5b21b6; --purple-bg: #f5f3ff; --purple-border: #ddd6fe;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+
+#panel-islm-asad .asad-app{
+  height: 100%;
+  background: #d4d2cc;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+}
+#panel-islm-asad .asad-app{
+  width: 100%;
+  max-width: 1340px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  box-shadow: 0 0 60px rgba(0,0,0,0.18);
+}
+
+
+#panel-islm-asad .asad-app .header{
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 14px 32px 12px;
+  display: flex; align-items: center; gap: 20px;
+}
+#panel-islm-asad .asad-app .header h1{ font-family: 'Playfair Display', serif; font-weight: 500; font-size: 21px; letter-spacing: -0.2px; }
+#panel-islm-asad .asad-app .header h1 span{ color: var(--text-muted); font-weight: 400; }
+#panel-islm-asad .asad-app .header .subtitle{ margin-top: 2px; font-size: 13px; color: var(--text-secondary); font-weight: 300; }
+#panel-islm-asad .asad-app .header-badge{ margin-left:auto; display:flex; align-items:center; gap:12px; }
+#panel-islm-asad .asad-app .header-badge img{ height:34px; width:auto; display:block; }
+#panel-islm-asad .asad-app .chapter-tag{ font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-muted); border: 1px solid var(--border); padding: 5px 10px; border-radius: 4px; white-space: nowrap; }
+
+
+#panel-islm-asad .asad-app .global-tabs{
+  flex-shrink: 0;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0 28px;
+}
+#panel-islm-asad .asad-app .g-tab{
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  color: var(--text-muted); padding: 10px 18px 9px;
+  border-bottom: 2px solid transparent;
+  cursor: pointer; transition: all 0.15s; user-select: none;
+  letter-spacing: 0.03em;
+}
+#panel-islm-asad .asad-app .g-tab:hover{ color: var(--text-secondary); }
+#panel-islm-asad .asad-app .g-tab.active{ color: var(--text-primary); border-bottom-color: var(--text-primary); }
+
+
+
+#panel-islm-asad .asad-app .app-view{
+  flex: 1;
+  min-height: 0;
+  display: none;  
+  grid-template-columns: 310px 1fr;
+  overflow: hidden;
+}
+#panel-islm-asad .asad-app .app-view.active{ display: grid; }
+
+
+#panel-islm-asad .asad-app .sidebar{
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 13px;
+  display: flex; flex-direction: column; gap: 11px;
+  overflow-y: auto; height: 100%;
+}
+#panel-islm-asad .asad-app .sidebar-section-label{
+  font-family: 'DM Mono', monospace; font-size: 9px; font-weight: 500;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-muted); margin-bottom: 5px;
+}
+
+
+#panel-islm-asad .asad-app .scenario-list{ display: flex; flex-direction: column; gap: 2px; }
+#panel-islm-asad .asad-app .sc-btn{
+  display: flex; align-items: center; gap: 7px;
+  padding: 6px 8px; border: 1px solid transparent; border-radius: 7px;
+  background: transparent; cursor: pointer; text-align: left;
+  transition: all 0.15s; width: 100%;
+}
+#panel-islm-asad .asad-app .sc-btn:hover{ background: var(--bg); border-color: var(--border); }
+#panel-islm-asad .asad-app .sc-btn.active{ background: var(--text-primary); border-color: var(--text-primary); }
+#panel-islm-asad .asad-app .sc-btn .sc-icon{ width: 22px; height: 22px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; background: var(--border-light); flex-shrink: 0; transition: background 0.15s; }
+#panel-islm-asad .asad-app .sc-btn.active .sc-icon{ background: rgba(255,255,255,0.12); }
+#panel-islm-asad .asad-app .sc-btn .sc-name{ font-size: 13px; font-weight: 400; color: var(--text-primary); line-height: 1.3; transition: color 0.15s; }
+#panel-islm-asad .asad-app .sc-btn.active .sc-name{ color: #fff; }
+#panel-islm-asad .asad-app .sc-btn .sc-sub{ font-size: 11px; color: var(--text-muted); margin-top: 1px; transition: color 0.15s; }
+#panel-islm-asad .asad-app .sc-btn.active .sc-sub{ color: rgba(255,255,255,0.5); }
+
+#panel-islm-asad .asad-app .sub-btns{ display: flex; flex-direction: column; gap: 1px; padding-left: 14px; margin-top: 1px; }
+#panel-islm-asad .asad-app .sub-btn{ font-size: 11px; padding: 4px 8px; border: 1px solid transparent; border-radius: 5px; background: transparent; cursor: pointer; color: var(--text-secondary); text-align: left; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
+#panel-islm-asad .asad-app .sub-btn:hover{ background: var(--bg); border-color: var(--border); }
+#panel-islm-asad .asad-app .sub-btn.active{ background: #f0ede8; border-color: var(--border); color: var(--text-primary); font-weight: 500; }
+
+
+#panel-islm-asad .asad-app .phase-block{ display: flex; flex-direction: column; gap: 7px; }
+#panel-islm-asad .asad-app .phase-header{ display: flex; align-items: flex-start; justify-content: space-between; gap: 6px; }
+#panel-islm-asad .asad-app .phase-name{ font-size: 13px; font-weight: 400; color: var(--text-primary); line-height: 1.4; flex: 1; }
+#panel-islm-asad .asad-app .phase-badge{ font-family: 'DM Mono', monospace; font-size: 9px; color: var(--text-muted); background: var(--bg); border: 1px solid var(--border); padding: 2px 6px; border-radius: 4px; flex-shrink: 0; }
+#panel-islm-asad .asad-app .phase-dots{ display: flex; gap: 4px; }
+#panel-islm-asad .asad-app .phase-dot{ height: 3px; flex: 1; border-radius: 2px; background: var(--border); cursor: pointer; transition: background 0.2s; }
+#panel-islm-asad .asad-app .phase-dot.active{ background: var(--text-primary); }
+#panel-islm-asad .asad-app .phase-dot:hover{ background: var(--text-secondary); }
+#panel-islm-asad .asad-app input[type=range]{ width: 100%; -webkit-appearance: none; height: 2px; background: var(--border); border-radius: 2px; outline: none; cursor: pointer; }
+#panel-islm-asad .asad-app input[type=range]::-webkit-slider-thumb{ -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: var(--text-primary); border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border); transition: transform 0.1s; }
+#panel-islm-asad .asad-app input[type=range]::-webkit-slider-thumb:hover{ transform: scale(1.15); }
+
+
+#panel-islm-asad .asad-app .desc-box{ background: var(--purple-bg); border: 1px solid var(--purple-border); border-radius: 7px; padding: 10px 11px; font-size: 12px; line-height: 1.75; color: var(--purple); font-weight: 400; }
+
+
+#panel-islm-asad .asad-app .legend-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; }
+#panel-islm-asad .asad-app .leg-item{ display: flex; align-items: center; gap: 5px; }
+#panel-islm-asad .asad-app .leg-swatch{ width: 18px; height: 2px; border-radius: 1px; flex-shrink: 0; }
+#panel-islm-asad .asad-app .leg-swatch.dashed{ background: none !important; }
+#panel-islm-asad .asad-app .leg-label{ font-size: 11px; color: var(--text-secondary); font-family: 'DM Mono', monospace; }
+
+
+#panel-islm-asad .asad-app .view-toggle{ display: flex; gap: 4px; }
+#panel-islm-asad .asad-app .view-btn{ flex: 1; padding: 5px 0; font-size: 11px; font-family: 'DM Mono', monospace; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; }
+#panel-islm-asad .asad-app .view-btn.active{ background: var(--text-primary); color: #fff; border-color: var(--text-primary); }
+
+
+#panel-islm-asad .asad-app .charts{
+  padding: 14px 16px;
+  display: flex; flex-direction: column;
+  background: var(--bg); height: 100%; min-height: 0; overflow: hidden;
+}
+#panel-islm-asad .asad-app .chart-card{ background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); flex: 1; min-height: 0; display: flex; flex-direction: column; }
+#panel-islm-asad .asad-app .chart-header{ flex-shrink: 0; padding: 9px 15px 8px; border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between; }
+#panel-islm-asad .asad-app .chart-title{ font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 500; color: var(--text-primary); }
+#panel-islm-asad .asad-app .chart-subtitle{ font-size: 11px; color: var(--text-muted); font-weight: 300; }
+#panel-islm-asad .asad-app .canvas-wrap{ flex: 1; min-height: 0; position: relative; }
+#panel-islm-asad .asad-app .canvas-wrap canvas{ position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+#panel-islm-asad .asad-app .chart-divider{ flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 5px 2px; }
+#panel-islm-asad .asad-app .chart-divider-line{ flex: 1; height: 1px; background: var(--border-light); }
+#panel-islm-asad .asad-app .chart-divider-label{ font-family: 'DM Mono', monospace; font-size: 10px; color: var(--text-muted); letter-spacing: 0.07em; }
+
+
+#panel-islm-asad .asad-app .construct-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 10px;
+  flex: 1; min-height: 0;
+}
+#panel-islm-asad .asad-app .construct-explainer{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+#panel-islm-asad .asad-app .main-grid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap:10px;
+  flex:1; min-height:0;
+}
+#panel-islm-asad .asad-app .info-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display:flex; flex-direction:column; gap:10px;
+  min-height:0; overflow:auto;
+}
+#panel-islm-asad .asad-app .info-title{
+  font-family:'Playfair Display',serif;
+  font-size:14px; font-weight:500; color:var(--text-primary);
+}
+#panel-islm-asad .asad-app .info-subtitle{
+  font-size:11px; color:var(--text-muted); font-weight:300; margin-top:-4px;
+}
+#panel-islm-asad .asad-app .info-body{
+  font-size:12px; line-height:1.75; color:var(--text-secondary);
+}
+#panel-islm-asad .asad-app .info-body .desc-box{
+  background: var(--purple-bg);
+  border: 1px solid var(--purple-border);
+  border-radius: 8px;
+  padding: 10px 11px;
+  color: var(--purple);
+  font-size:13px; line-height:1.82; font-weight:400;
+}
+#panel-islm-asad .asad-app .equation-card{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display:flex; flex-direction:column; gap:10px;
+  min-height:0; overflow:auto;
+}
+#panel-islm-asad .asad-app .eq-list{ display:flex; flex-direction:column; gap:9px; }
+#panel-islm-asad .asad-app .eq-line{
+  font-family:'DM Mono',monospace;
+  font-size:12px;
+  line-height:1.7;
+  color:var(--text-primary);
+  white-space:normal;
+}
+#panel-islm-asad .asad-app .eq-tag{
+  display:inline-block;
+  min-width:34px;
+  color:var(--text-muted);
+}
+#panel-islm-asad .asad-app .eq-hl{
+  color:#b42318;
+  font-weight:700;
+}
+#panel-islm-asad .asad-app .eq-note{
+  font-size:11px;
+  color:var(--text-secondary);
+  line-height:1.65;
+}
+#panel-islm-asad .asad-app .play-btn{
+  flex: 1;
+  padding: 5px 0;
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  border: 1px solid #c8b7f0;
+  border-radius: 6px;
+  background: #faf7ff;
+  color: var(--purple);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+#panel-islm-asad .asad-app .play-btn.active{
+  background: var(--purple);
+  color: #fff;
+  border-color: var(--purple);
+}
+#panel-islm-asad .asad-app .mini-note{ font-size:11px; color:var(--text-secondary); line-height:1.7; }
+#panel-islm-asad .asad-app{width:100%;min-height:calc(100vh - var(--nav-h));height:calc(100vh - var(--nav-h));margin:0 auto;}
+
+  </style>
+  <div class="asad-app">
+<header class="header">
+<div>
+<h1>IS-LM <span>&amp;</span> PC Model</h1>
+</div>
+<div class="header-badge"><div class="chapter-tag">Generated by Alexandre Gaillard, Brown</div><img src="https://logos-world.net/wp-content/uploads/2022/11/Brown-University-Symbol.png" alt="Brown University"></div>
+</header>
+<div class="global-tabs">
+<div class="g-tab active" id="asad-gtab-asad" onclick="asadSetGTab('asad-asad')">IS-LM · PC</div>
+<div class="g-tab" id="asad-gtab-construct" onclick="asadSetGTab('construct')">IS-LM construction</div>
+<div class="g-tab" id="asad-gtab-pcconstruct" onclick="asadSetGTab('pcconstruct')">PC construction</div>
+</div>
+<!-- ══════════════════════════════════════════════════════
+     TAB 1 : IS-LM / AS-AD
+════════════════════════════════════════════════════════ -->
+<div class="app-view active" id="asad-view-asad">
+<aside class="sidebar">
+<div>
+<div class="sidebar-section-label">Scenario</div>
+<div class="scenario-list">
+<button class="sc-btn active" id="asad-btn-base" onclick="asadSetScenario('base',this)">
+<div class="sc-icon">⚖</div>
+<div class="sc-text"><div class="sc-name">Baseline equilibrium</div><div class="sc-sub">Y = Y*, excess inflation = 0, r = r*</div></div>
+</button>
+<button class="sc-btn" id="asad-btn-g_up" onclick="asadSetScenario('g_up',this)">
+<div class="sc-icon">↑G</div>
+<div class="sc-text"><div class="sc-name">Gov. spending increase</div><div class="sc-sub">Demand shock · IS shifts right</div></div>
+</button>
+<button class="sc-btn" id="asad-btn-oil_supply" onclick="asadSetScenario('oil_supply',this)">
+<div class="sc-icon">⛽</div>
+<div class="sc-text"><div class="sc-name">Permanent oil price shock</div><div class="sc-sub">Choose a channel below</div></div>
+</button>
+<div class="sub-btns" id="asad-oil-subs">
+<button class="sub-btn active" id="asad-sub-oil_supply" onclick="asadSelectOil('oil_supply',this)">Supply only (PC shifts left)</button>
+<button class="sub-btn" id="asad-sub-oil_demand" onclick="asadSelectOil('oil_demand',this)">Demand only (IS shifts left)</button>
+<button class="sub-btn" id="asad-sub-oil_both" onclick="asadSelectOil('oil_both',this)">Both supply &amp; demand</button>
+</div>
+<button class="sc-btn" id="asad-btn-markup" onclick="asadSetScenario('markup',this)">
+<div class="sc-icon">↑m</div>
+<div class="sc-text"><div class="sc-name">Higher markup shock</div><div class="sc-sub">PC shifts left · like a supply shock</div></div>
+</button>
+<button class="sc-btn" id="asad-btn-fiscal" onclick="asadSetScenario('fiscal',this)">
+<div class="sc-icon">↑T</div>
+<div class="sc-text"><div class="sc-name">Fiscal consolidation</div><div class="sc-sub">Higher taxes reduce demand</div></div>
+</button>
+<button class="sc-btn" id="asad-btn-mon_expand" onclick="asadSetScenario('mon_expand',this)">
+<div class="sc-icon">🏦</div>
+<div class="sc-text"><div class="sc-name">Monetary expansion</div><div class="sc-sub">LM shifts down · policy rate lower</div></div>
+</button>
+<button class="sc-btn" id="asad-btn-deflation" onclick="asadSetScenario('deflation',this)">
+<div class="sc-icon">🧊</div>
+<div class="sc-text"><div class="sc-name">Deflation spiral</div><div class="sc-sub">ZLB · deflation raises the real rate</div></div>
+</button>
+</div>
+</div>
+<div class="phase-block">
+<div class="sidebar-section-label">Run</div>
+<div class="phase-header">
+<div class="phase-name" id="asad-phase-label">Baseline</div>
+<div class="phase-badge" id="asad-phase-num">0 / 3</div>
+</div>
+<div class="phase-dots" id="asad-phase-dots"></div>
+<input id="asad-phase-slider" max="3" min="0" oninput="asadSetPhase(+this.value)" step="1" type="range" value="0"/>
+</div>
+<div>
+<div class="sidebar-section-label">View</div>
+<div class="view-toggle">
+<button class="view-btn active" id="asad-btn-step" onclick="asadSetView('step')">Step by step</button>
+<button class="view-btn" id="asad-btn-all" onclick="asadSetView('all')">All runs</button>
+<button class="play-btn" id="asad-btn-play" onclick="asadTogglePlay()">Play</button>
+</div>
+</div>
+<div>
+<div class="sidebar-section-label">Legend</div>
+<div class="legend-grid">
+<div class="leg-item"><div class="leg-swatch" style="background:#2563c7"></div><span class="leg-label">IS</span></div>
+<div class="leg-item"><div class="leg-swatch" style="background:#c23b22"></div><span class="leg-label">LM</span></div>
+<div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #2563c7;height:0"></div><span class="leg-label">IS′</span></div>
+<div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #c23b22;height:0"></div><span class="leg-label">LM′</span></div>
+<div class="leg-item"><div class="leg-swatch" style="background:#1e7a4d"></div><span class="leg-label">PC</span></div>
+<div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #1e7a4d;height:0"></div><span class="leg-label">PC′</span></div>
+</div>
+</div>
+</aside>
+<div class="charts main-grid">
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">IS-LM</div>
+<div class="chart-subtitle">Goods &amp; money market equilibrium</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-islm"></canvas></div>
+</div>
+<div class="info-card">
+<div class="info-title">Interpretation</div>
+<div class="info-subtitle">Short run to medium run</div>
+<div class="info-body"><div class="desc-box" id="asad-sc-desc">Economy at potential output Y*.</div></div>
+</div>
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">Phillips curve</div>
+<div class="chart-subtitle">Output gap &amp; excess inflation</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-asad"></canvas></div>
+</div>
+<div class="equation-card">
+<div class="info-title">Key equations</div>
+<div class="info-subtitle">Shock-sensitive terms in red</div>
+<div class="eq-list" id="asad-eq-box"></div>
+</div>
+</div>
+</div>
+<!-- ══════════════════════════════════════════════════════
+     TAB 2 : IS-LM CONSTRUCTION
+════════════════════════════════════════════════════════ -->
+<div class="app-view" id="asad-view-construct">
+<aside class="sidebar">
+<div>
+<div class="sidebar-section-label">Scenario</div>
+<div class="scenario-list">
+<button class="sc-btn active" id="asad-c-btn-base" onclick="asadSetScenarioBoth('base',this)">
+<div class="sc-icon">⚖</div>
+<div class="sc-text"><div class="sc-name">Baseline equilibrium</div><div class="sc-sub">Y = Y*, r = r*</div></div>
+</button>
+<button class="sc-btn" id="asad-c-btn-g_up" onclick="asadSetScenarioBoth('g_up',this)">
+<div class="sc-icon">↑G</div>
+<div class="sc-text"><div class="sc-name">Gov. spending increase</div><div class="sc-sub">IS shifts right</div></div>
+</button>
+<button class="sc-btn" id="asad-c-btn-oil_supply" onclick="asadSetScenarioBoth('oil_supply',this)">
+<div class="sc-icon">⛽</div>
+<div class="sc-text"><div class="sc-name">Permanent oil shock</div><div class="sc-sub">Choose a channel below</div></div>
+</button>
+<div class="sub-btns" id="asad-c-oil-subs">
+<button class="sub-btn active" id="asad-c-sub-oil_supply" onclick="asadSelectOil('oil_supply',this)">Supply only (PC shifts left)</button>
+<button class="sub-btn" id="asad-c-sub-oil_demand" onclick="asadSelectOil('oil_demand',this)">Demand only (IS shifts left)</button>
+<button class="sub-btn" id="asad-c-sub-oil_both" onclick="asadSelectOil('oil_both',this)">Both supply &amp; demand</button>
+</div>
+<button class="sc-btn" id="asad-c-btn-markup" onclick="asadSetScenarioBoth('markup',this)">
+<div class="sc-icon">↑m</div>
+<div class="sc-text"><div class="sc-name">Higher markup shock</div><div class="sc-sub">Like a supply shock · PC shifts left</div></div>
+</button>
+<button class="sc-btn" id="asad-c-btn-fiscal" onclick="asadSetScenarioBoth('fiscal',this)">
+<div class="sc-icon">↑T</div>
+<div class="sc-text"><div class="sc-name">Fiscal consolidation</div><div class="sc-sub">Higher taxes reduce demand</div></div>
+</button>
+<button class="sc-btn" id="asad-c-btn-mon_expand" onclick="asadSetScenarioBoth('mon_expand',this)">
+<div class="sc-icon">🏦</div>
+<div class="sc-text"><div class="sc-name">Monetary expansion</div><div class="sc-sub">LM shifts down</div></div>
+</button>
+<button class="sc-btn" id="asad-c-btn-deflation" onclick="asadSetScenarioBoth('deflation',this)">
+<div class="sc-icon">🧊</div>
+<div class="sc-text"><div class="sc-name">Deflation spiral</div><div class="sc-sub">ZLB · real rate rises with deflation</div></div>
+</button>
+</div>
+</div>
+<div class="phase-block">
+<div class="sidebar-section-label">Run</div>
+<div class="phase-header">
+<div class="phase-name" id="asad-c-phase-label">Baseline</div>
+<div class="phase-badge" id="asad-c-phase-num">0 / 3</div>
+</div>
+<div class="phase-dots" id="asad-c-phase-dots"></div>
+<input id="asad-c-phase-slider" max="3" min="0" oninput="asadSetPhase(+this.value)" step="1" type="range" value="0"/>
+</div>
+<div>
+<div class="sidebar-section-label">View</div>
+<div class="view-toggle">
+<button class="view-btn active" id="asad-c-btn-step" onclick="asadSetView('step')">Step by step</button>
+<button class="view-btn" id="asad-c-btn-all" onclick="asadSetView('all')">All runs</button>
+<button class="play-btn" id="asad-c-btn-play" onclick="asadTogglePlay()">Play</button>
+</div>
+</div>
+<div>
+<div class="sidebar-section-label">How to read</div>
+<div style="font-size:11px;color:var(--text-secondary);line-height:1.65;">
+<b style="font-weight:500;">Top-left:</b> Keynesian cross. A lower policy rate raises investment, shifts demand Z up, and increases output.<br/><br/>
+<b style="font-weight:500;">Bottom-left:</b> IS-LM. The central bank chooses the real rate, so LM is flat.<br/><br/>
+<b style="font-weight:500;">Bottom-right:</b> Money market. Outside the deflation spiral, the central bank shifts M/P so the equilibrium real rate equals the chosen policy rate. At the ZLB, the nominal rate is fixed at zero and deflation raises the real rate.<br/><br/>
+<b style="font-weight:500;">Curve logic:</b> Lower r̄ raises investment and shifts demand in the goods market. Higher output shifts liquidity demand to the right. In normal times the money stock adjusts to deliver r̄; in the deflation spiral, the nominal policy rate cannot fall further.
+      </div>
+</div>
+</aside>
+<div class="charts">
+<div class="construct-grid">
+<!-- Top-left: Goods market -->
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">Goods market</div>
+<div class="chart-subtitle">Keynesian cross — Z = Y</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-km"></canvas></div>
+</div>
+<!-- Top-right: Interpretation -->
+<div class="info-card">
+<div class="info-title">Interpretation</div>
+<div class="info-subtitle">Scenario walkthrough</div>
+<div class="info-body"><div class="desc-box" id="asad-c-sc-desc">Economy at potential output Y*.</div></div>
+</div>
+<!-- Bottom-left: IS-LM -->
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">IS-LM</div>
+<div class="chart-subtitle">Goods &amp; money market equilibrium</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-islm2"></canvas></div>
+</div>
+<!-- Bottom-right: Money market -->
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">Money market</div>
+<div class="chart-subtitle">Policy-rate implementation in the money market</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-mm"></canvas></div>
+</div>
+</div>
+</div>
+</div>
+<div class="app-view" id="asad-view-pcconstruct">
+<aside class="sidebar">
+<div>
+<div class="sidebar-section-label">Scenario</div>
+<div class="scenario-list">
+<button class="sc-btn active" id="asad-pc-btn-base" onclick="asadSetScenarioBoth('base',this)">
+<div class="sc-icon">⚖</div>
+<div class="sc-text"><div class="sc-name">Baseline equilibrium</div><div class="sc-sub">WS = PS and excess inflation is zero</div></div>
+</button>
+<button class="sc-btn" id="asad-pc-btn-g_up" onclick="asadSetScenarioBoth('g_up',this)">
+<div class="sc-icon">↑G</div>
+<div class="sc-text"><div class="sc-name">Gov. spending increase</div><div class="sc-sub">Positive excess inflation shifts WS</div></div>
+</button>
+<button class="sc-btn" id="asad-pc-btn-oil_supply" onclick="asadSetScenarioBoth('oil_supply',this)">
+<div class="sc-icon">⛽</div>
+<div class="sc-text"><div class="sc-name">Permanent oil shock</div><div class="sc-sub">Choose a channel below</div></div>
+</button>
+<div class="sub-btns" id="asad-pc-oil-subs">
+<button class="sub-btn active" id="asad-pc-sub-oil_supply" onclick="asadSelectOil('oil_supply',this)">Supply only (PS shifts down)</button>
+<button class="sub-btn" id="asad-pc-sub-oil_demand" onclick="asadSelectOil('oil_demand',this)">Demand only (WS shifts)</button>
+<button class="sub-btn" id="asad-pc-sub-oil_both" onclick="asadSelectOil('oil_both',this)">Both supply &amp; demand</button>
+</div>
+<button class="sc-btn" id="asad-pc-btn-markup" onclick="asadSetScenarioBoth('markup',this)">
+<div class="sc-icon">↑m</div>
+<div class="sc-text"><div class="sc-name">Higher markup shock</div><div class="sc-sub">PS shifts down and PC shifts</div></div>
+</button>
+<button class="sc-btn" id="asad-pc-btn-fiscal" onclick="asadSetScenarioBoth('fiscal',this)">
+<div class="sc-icon">↑T</div>
+<div class="sc-text"><div class="sc-name">Fiscal consolidation</div><div class="sc-sub">Higher taxes lower demand and WS</div></div>
+</button>
+<button class="sc-btn" id="asad-pc-btn-mon_expand" onclick="asadSetScenarioBoth('mon_expand',this)">
+<div class="sc-icon">🏦</div>
+<div class="sc-text"><div class="sc-name">Monetary expansion</div><div class="sc-sub">Positive excess inflation shifts WS</div></div>
+</button>
+<button class="sc-btn" id="asad-pc-btn-deflation" onclick="asadSetScenarioBoth('deflation',this)">
+<div class="sc-icon">🧊</div>
+<div class="sc-text"><div class="sc-name">Deflation spiral</div><div class="sc-sub">Negative excess inflation shifts WS up</div></div>
+</button>
+</div>
+</div>
+<div class="phase-block">
+<div class="sidebar-section-label">Run</div>
+<div class="phase-header">
+<div class="phase-name" id="asad-pc-phase-label">Baseline</div>
+<div class="phase-badge" id="asad-pc-phase-num">0 / 0</div>
+</div>
+<div class="phase-dots" id="asad-pc-phase-dots"></div>
+<input id="asad-pc-phase-slider" max="0" min="0" oninput="asadSetPhase(+this.value)" step="1" type="range" value="0"/>
+</div>
+<div>
+<div class="sidebar-section-label">View</div>
+<div class="view-toggle">
+<button class="view-btn active" id="asad-pc-btn-step" onclick="asadSetView('step')">Step by step</button>
+<button class="view-btn" id="asad-pc-btn-all" onclick="asadSetView('all')">All runs</button>
+<button class="play-btn" id="asad-pc-btn-play" onclick="asadTogglePlay()">Play</button>
+</div>
+</div>
+<div>
+<div class="sidebar-section-label">Legend</div>
+<div class="legend-grid">
+<div class="leg-item"><div class="leg-swatch" style="background:#2563c7"></div><span class="leg-label">WS</span></div>
+<div class="leg-item"><div class="leg-swatch" style="background:#c23b22"></div><span class="leg-label">PS</span></div>
+<div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #2563c7;height:0"></div><span class="leg-label">WS′</span></div>
+<div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #c23b22;height:0"></div><span class="leg-label">PS′</span></div>
+<div class="leg-item"><div class="leg-swatch" style="background:#1e7a4d"></div><span class="leg-label">PC</span></div>
+<div class="leg-item"><div class="leg-swatch dashed" style="border-bottom:2px dashed #1e7a4d;height:0"></div><span class="leg-label">PC′</span></div>
+</div>
+</div>
+<div>
+<div class="sidebar-section-label">How to read</div>
+<div style="font-size:11px;color:var(--text-secondary);line-height:1.65;">
+<b style="font-weight:500;">Top-left:</b> the labor market. Excess inflation moves WS because $W/P \approx [1-(\pi-\pi^e)]F(u,z)$. Supply or markup shocks move PS downward.
+<br/><br/>
+<b style="font-weight:500;">Bottom-left:</b> the Phillips curve. A WS shift moves the economy along the PC. A PS shift raises the natural unemployment rate and shifts the PC to the right.
+<br/><br/>
+<b style="font-weight:500;">Mapping:</b> Demand shocks mainly change excess inflation and move WS. Supply or markup shocks change price setting and therefore shift natural unemployment and the whole PC.
+</div>
+</div>
+</aside>
+<div class="charts">
+<div class="construct-grid">
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">Labor market</div>
+<div class="chart-subtitle">Wage setting and price setting</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-lmkt"></canvas></div>
+</div>
+<div class="info-card">
+<div class="info-title">Interpretation</div>
+<div class="info-subtitle">WS-PS to PC mapping</div>
+<div class="info-body"><div class="desc-box" id="asad-pc-desc">At the natural rate of unemployment, wage-setting and price-setting intersect, and excess inflation is zero.</div></div>
+</div>
+<div class="chart-card">
+<div class="chart-header">
+<div class="chart-title">Phillips curve construction</div>
+<div class="chart-subtitle">Unemployment and excess inflation</div>
+</div>
+<div class="canvas-wrap"><canvas id="asad-pcbuild"></canvas></div>
+</div>
+<div class="equation-card">
+<div class="info-title">WS–PS equations</div>
+<div class="info-subtitle">Shock-sensitive terms in red</div>
+<div class="eq-list" id="asad-pc-eq-box"></div>
+</div>
+</div>
+</div>
+</div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     CODE / DATA
+═══════════════════════════════════════════ -->
+<script>
+(function(){
+// ══════════════════════════════════════════════════════════════
+// TAB SWITCHING
+// ══════════════════════════════════════════════════════════════
+let gTab = 'asad-asad';
+
+function asadSetGTab(tab){
+  gTab = tab;
+  document.getElementById('asad-gtab-asad').classList.toggle('active', tab==='asad-asad');
+  document.getElementById('asad-gtab-construct').classList.toggle('active', tab==='construct');
+  document.getElementById('asad-gtab-pcconstruct').classList.toggle('active', tab==='pcconstruct');
+  document.getElementById('asad-view-asad').classList.toggle('active', tab==='asad-asad');
+  document.getElementById('asad-view-construct').classList.toggle('active', tab==='construct');
+  document.getElementById('asad-view-pcconstruct').classList.toggle('active', tab==='pcconstruct');
+  asadSyncScenarioButtons();
+  asadSyncConstructSidebar();
+  asadSyncPCConstructSidebar();
+  setTimeout(()=>{ asadDraw(); }, 30);
+}
+
+function asadPCConstructDesc(sc, ph){
+  const exPi = ph.eqPi || 0;
+  const supplyShift = Math.abs((ph.Yn||Y0)-Y0) > 0.002;
+  if(curSc==='base') return 'At the natural rate of unemployment, WS and PS intersect, and excess inflation is zero.';
+  if(supplyShift && Math.abs(exPi) > 0.002){
+    return exPi > 0
+      ? 'The supply or markup shock shifts PS down, raising the natural unemployment rate. Because excess inflation is positive, WS also shifts down. The point moves onto the shifted Phillips curve.'
+      : 'The supply shock shifts PS down, raising the natural unemployment rate. Because excess inflation is negative, WS shifts up. The point lies below the shifted Phillips curve target.';
+  }
+  if(supplyShift) return 'PS shifts down, which raises the natural unemployment rate and shifts the Phillips curve to the right. With excess inflation back at zero, WS returns to its baseline position.';
+  if(Math.abs(exPi) > 0.002){
+    return exPi > 0
+      ? 'Positive excess inflation shifts WS down through W/P ≈ [1 − (π − πᵉ)]F(u,z). PS is unchanged, so unemployment falls below its natural rate and the economy moves up along the Phillips curve.'
+      : 'Negative excess inflation shifts WS up through W/P ≈ [1 − (π − πᵉ)]F(u,z). PS is unchanged, so unemployment rises above its natural rate and the economy moves down along the Phillips curve.';
+  }
+  return 'WS and PS intersect at the natural unemployment rate, so excess inflation is zero.';
+}
+
+function asadSyncScenarioButtons(){
+  const oilKeys = ['oil_supply','oil_demand','oil_both'];
+  document.querySelectorAll('#asad-view-asad .sc-btn, #asad-view-construct .sc-btn, #asad-view-pcconstruct .sc-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#asad-view-asad .sub-btn, #asad-view-construct .sub-btn, #asad-view-pcconstruct .sub-btn').forEach(b=>b.classList.remove('active'));
+  if(oilKeys.includes(curSc)){
+    ['asad-btn-oil_supply','asad-c-btn-oil_supply','asad-pc-btn-oil_supply'].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('active'); });
+    ['asad-sub-'+curSc,'asad-c-sub-'+curSc,'asad-pc-sub-'+curSc].forEach(id=>{ const el=document.getElementById(id); if(el) el.classList.add('active'); });
+  } else {
+    ['asad-btn-','asad-c-btn-','asad-pc-btn-'].forEach(pref=>{ const el=document.getElementById(pref + curSc); if(el) el.classList.add('active'); });
+  }
+}
+
+function asadResetPhaseControls(){
+  const sc = scenarios[curSc];
+  ['asad-phase-slider','asad-c-phase-slider','asad-pc-phase-slider'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.value = 0; el.max = sc.phases.length-1; }
+  });
+}
+
+function asadSetScenarioBoth(key, btn){
+  curSc = key;
+  phase = 0;
+  asadResetPhaseControls();
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
+function asadSetScenarioBoth(key, btn){
+  asadStopPlay();
+  curSc = key;
+  phase = 0;
+  asadResetPhaseControls();
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
+function asadSetScenario(key, btn){
+  curSc = key; phase = 0;
+  asadResetPhaseControls();
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
+function asadSelectOil(key, btn){
+  curSc = key; phase = 0;
+  asadResetPhaseControls();
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
+function asadSetPhase(v){ phase=v; asadUpdateAll(); }
+function asadUpdateAll(){
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  document.getElementById('asad-phase-label').textContent = ph.pLabel;
+  document.getElementById('asad-phase-num').textContent = phase+' / '+(sc.phases.length-1);
+  document.getElementById('asad-sc-desc').textContent = sc.interp[Math.min(phase, sc.interp.length-1)] || sc.interp[0] || '';
+  const dots = document.getElementById('asad-phase-dots'); dots.innerHTML='';
+  sc.phases.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='phase-dot'+(i===phase?' active':'');
+    d.onclick=()=>{ asadSetPhase(i); document.getElementById('asad-phase-slider').value=i; };
+    dots.appendChild(d);
+  });
+  asadDraw();
+  asadSyncConstructSidebar();
+  asadSyncPCConstructSidebar();
+}
+
+function asadSyncPCConstructSidebar(){
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  const el = (id) => document.getElementById(id);
+  if(el('asad-pc-phase-label')) el('asad-pc-phase-label').textContent = ph.pLabel;
+  if(el('asad-pc-phase-num')) el('asad-pc-phase-num').textContent = phase+' / '+(sc.phases.length-1);
+  if(el('asad-pc-desc')) el('asad-pc-desc').textContent = asadPCConstructDesc(sc, ph);
+  const sl = el('asad-pc-phase-slider');
+  if(sl){ sl.max = sc.phases.length-1; sl.value = phase; }
+  const dots = el('asad-pc-phase-dots');
+  if(dots){
+    dots.innerHTML='';
+    sc.phases.forEach((_,i)=>{
+      const d=document.createElement('div');
+      d.className='phase-dot'+(i===phase?' active':'');
+      d.onclick=()=>{ asadSetPhase(i); if(el('asad-pc-phase-slider')) el('asad-pc-phase-slider').value=i; };
+      dots.appendChild(d);
+    });
+  }
+}
+
+function asadSyncConstructSidebar(){
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  const interp = sc.interp ? sc.interp[Math.min(phase, sc.interp.length-1)] : '';
+  const el = (id) => document.getElementById(id);
+  if(el('asad-c-phase-label')) el('asad-c-phase-label').textContent = ph.pLabel;
+  if(el('asad-c-phase-num'))   el('asad-c-phase-num').textContent   = phase+' / '+(sc.phases.length-1);
+  if(el('asad-c-sc-desc'))     el('asad-c-sc-desc').textContent     = interp;
+  const sl = el('asad-c-phase-slider');
+  if(sl){ sl.max = sc.phases.length-1; sl.value = phase; }
+  const dots = el('asad-c-phase-dots');
+  if(dots){
+    dots.innerHTML='';
+    sc.phases.forEach((_,i)=>{
+      const d=document.createElement('div');
+      d.className='phase-dot'+(i===phase?' active':'');
+      d.onclick=()=>{ asadSetPhase(i); if(el('asad-c-phase-slider')) el('asad-c-phase-slider').value=i; };
+      dots.appendChild(d);
+    });
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODEL — IS-LM-PC
+// IS: downward sloping in (Y,r)
+// LM: flat, set by the central bank
+// PC: excess inflation as a function of the output gap
+// Inspired by the lecture slides for Chapter 9.
+// ══════════════════════════════════════════════════════════════
+const Y0 = 0.50, r0 = 0.45;
+const bIS = 1.15, kPC = 0.55;
+const aIS = r0 + bIS*Y0;
+const piMin = -0.20, piMax = 0.16;
+const kMD=1.0, hMD=0.6;
+const M_P_base = kMD*Y0 - hMD*r0;
+const PAD={l:54,r:24,t:20,b:36};
+const COL={
+  IS:'#2563c7', LM:'#c23b22', PC:'#1e7a4d', pot:'#6d28d9',
+  axis:'rgba(0,0,0,0.20)', grid:'rgba(0,0,0,0.06)', txt:'rgba(0,0,0,0.42)',
+  dot:'#111', bg:'#ffffff', corr:'rgba(0,0,0,0.08)'
+};
+const N=120, Us=Array.from({length:N},(_,i)=>0.02+i*0.96/(N-1));
+
+function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+function asadRIS(Y, dIS){ return aIS + (dIS||0) - bIS*Y; }
+function asadEqY(rBar, dIS){ return clamp((aIS + (dIS||0) - rBar)/bIS, 0.02, 0.98); }
+function asadPC(Y, Yn){ return kPC*(Y - Yn); }
+function asadPiU(pi){ return (pi - piMin) / (piMax - piMin); }
+
+function mkPhase({dIS=0, rBar=r0, iBar=rBar, Yn=Y0, pLabel='', baseIslmLabel='A', basePcLabel='A', islmPoints=[], pcPoints=[]}){
+  const eqY = asadEqY(rBar, dIS);
+  const eqPi = asadPC(eqY, Yn);
+  return { dIS, rBar, iBar, Yn, pLabel, baseIslmLabel, basePcLabel, islmPoints, pcPoints, eqY, eqR:rBar, eqPi };
+}
+
+const INTERP = {
+  base: [
+    "The economy is at the natural level of output. The IS curve pins down demand, the central bank sets the real interest rate through a flat LM curve, and the Phillips curve implies zero excess inflation at natural output.",
+  ],
+  g_up: [
+    "Short run: government spending raises demand, and that initial impulse is further amplified by the multiplier. With the policy rate initially unchanged, output rises above natural output. Unemployment falls below the natural rate, workers bargain for higher nominal wages, firms pass those labor-cost pressures into prices, and excess inflation turns positive on the Phillips curve.",
+    "Adjustment: because output is above natural output, unemployment falls below the natural rate. Workers bargain for higher nominal wages, firms pass those labor-cost pressures into prices, and the central bank responds by raising the real interest rate, so the flat LM line shifts up.",
+    "Medium run: the central bank raises the real rate enough to close the output gap. Output returns to natural output and excess inflation goes back to zero.",
+  ],
+  fiscal: [
+    "Short run: fiscal consolidation is modeled here as higher taxes, which reduce disposable income and demand, and that contraction is further amplified by the multiplier. With the policy rate initially unchanged, output falls below natural output. Unemployment rises above the natural rate, wage bargaining weakens, firms face less labor-cost pressure, and excess inflation turns negative.",
+    "Adjustment: because output is below natural output, unemployment rises above the natural rate. Wage bargaining weakens, price pressure softens, and the central bank lowers the real interest rate, so the flat LM line shifts down and output starts recovering.",
+    "Medium run: output is back at natural output and excess inflation is zero, but the real interest rate is lower.",
+  ],
+  mon_expand: [
+    "Short run: a monetary expansion lowers the policy rate. The flat LM line shifts down, investment rises, demand expands, and output increases above natural output. Unemployment falls below the natural rate, workers bargain for higher wages, firms raise prices, and excess inflation becomes positive.",
+    "Adjustment: because output is above natural output, unemployment is below the natural rate and workers bargain for higher wages. To prevent inflation from drifting above target, the central bank starts raising the real rate again.",
+    "Medium run: output returns to natural output and excess inflation is back to zero.",
+  ],
+  deflation: [
+    "A negative demand shock hits when the nominal rate is constrained by the zero lower bound. The central bank cannot cut the nominal rate enough, so output falls below natural output. Unemployment rises above the natural rate, wage bargaining weakens, price pressure falls, and excess inflation turns negative.",
+    "As deflation becomes more entrenched, expected inflation falls further. Because the nominal rate is stuck at zero, the real rate rises mechanically, the LM(ZLB) line moves up in real terms, demand weakens again, and unemployment stays above the natural rate.",
+    "The mechanism feeds on itself: weak demand keeps unemployment high, wage bargaining remains weak, deflation deepens, and the higher real rate depresses demand further.",
+  ],
+  oil_supply: [
+    "Short run: a permanent increase in oil prices raises firms' costs and lowers natural output, so the Phillips curve shifts left right away. At the initial output level, excess inflation jumps up even before demand has moved much.",
+    "Adjustment: because the central bank wants to bring inflation back to target, it raises the real rate. Demand weakens, output falls toward the new lower natural output, and excess inflation declines.",
+    "Medium run: output is at the new lower natural output and excess inflation is zero. The economy goes through stagflation on the way: lower output with temporarily higher inflation.",
+  ],
+  oil_demand: [
+    "Short run: if higher oil prices mainly depress household purchasing power, consumption falls and IS shifts left. Output falls below natural output. Unemployment rises above the natural rate, wage bargaining weakens, firms face less labor-cost pressure, and excess inflation becomes negative.",
+    "Adjustment: because output is below natural output, unemployment rises above the natural rate, wage bargaining weakens, and the central bank lowers the real rate. Output moves back toward natural output while excess inflation returns toward zero.",
+    "Medium run: output is back at natural output and excess inflation is zero.",
+  ],
+  oil_both: [
+    "Short run: the oil shock both depresses demand and lowers natural output. IS shifts left and the Phillips curve shifts left. Demand weakness pushes unemployment up and softens wage bargaining, but the drop in natural output makes the labor market effectively tighter relative to the new benchmark, so inflation may still rise because the adverse supply effect dominates the weaker demand effect.",
+    "Adjustment: the central bank raises the real rate to bring inflation back toward target. Demand weakens further, output moves toward the new lower natural output, and excess inflation falls.",
+    "Medium run: output is at the new lower natural output and excess inflation is zero. The economy experiences a stagflationary transition.",
+  ],
+  markup: [
+    "Short run: a higher markup lowers the price-setting real wage and reduces natural output. In the IS-LM diagram, output and the real rate are initially unchanged, but relative to the new lower natural output the labor market is tighter, wage pressure is stronger, and the Phillips curve shifts left so inflation jumps up immediately.",
+    "Adjustment: because inflation is now above target at the old level of output, the central bank raises the real rate. Demand weakens, output falls toward the new lower natural output, and excess inflation declines.",
+    "Medium run: output is at the new lower natural output and excess inflation is zero. The higher markup acts like a permanent adverse supply shock.",
+  ],
+};
+
+function asadMakeDemandScenario(dIS, key){
+  const y1 = asadEqY(r0, dIS), pi1 = asadPC(y1, Y0);
+  const r2 = r0 + 0.55*(asadRIS(Y0, dIS) - r0);
+  const y2 = asadEqY(r2, dIS), pi2 = asadPC(y2, Y0);
+  const r3 = asadRIS(Y0, dIS);
+  return { interp: INTERP[key], phases:[
+    mkPhase({dIS, rBar:r0, Yn:Y0, pLabel:'Short run — output gap opens', islmPoints:[{label:"A'",x:y1,y:r0}], pcPoints:[{label:"A'",x:y1,y:pi1}]}),
+    mkPhase({dIS, rBar:r2, Yn:Y0, pLabel:'Adjustment — central bank reacts', islmPoints:[{label:'B',x:y2,y:r2}], pcPoints:[{label:'B',x:y2,y:pi2}]}),
+    mkPhase({dIS, rBar:r3, Yn:Y0, pLabel:'Medium run — back at natural output', islmPoints:[{label:"A''",x:Y0,y:r3}], pcPoints:[{label:"A''",x:Y0,y:0}]})
+  ]};
+}
+
+function asadMakeMonetaryScenario(){
+  const r1 = r0 - 0.12;
+  const y1 = asadEqY(r1, 0), pi1 = asadPC(y1, Y0);
+  const r2 = r0 - 0.05;
+  const y2 = asadEqY(r2, 0), pi2 = asadPC(y2, Y0);
+  return { interp: INTERP.mon_expand, phases:[
+    mkPhase({dIS:0, rBar:r1, Yn:Y0, pLabel:'Short run — policy rate lower', islmPoints:[{label:"A'",x:y1,y:r1}], pcPoints:[{label:"A'",x:y1,y:pi1}]}),
+    mkPhase({dIS:0, rBar:r2, Yn:Y0, pLabel:'Adjustment — central bank leans against inflation', islmPoints:[{label:'B',x:y2,y:r2}], pcPoints:[{label:'B',x:y2,y:pi2}]}),
+    mkPhase({dIS:0, rBar:r0, Yn:Y0, pLabel:'Medium run — back at natural output', islmPoints:[{label:"A''",x:Y0,y:r0}], pcPoints:[{label:"A''",x:Y0,y:0}]})
+  ]};
+}
+
+function asadMakeDeflationScenario(){
+  const dIS = -0.18;
+  const r1 = r0 + 0.03;
+  const y1 = asadEqY(r1, dIS), pi1 = asadPC(y1, Y0);
+  const r2 = r0 + 0.11;
+  const y2 = asadEqY(r2, dIS), pi2 = asadPC(y2, Y0);
+  const r3 = r0 + 0.18;
+  const y3 = asadEqY(r3, dIS), pi3 = asadPC(y3, Y0);
+  return { interp: INTERP.deflation, phases:[
+    mkPhase({dIS, rBar:r1, iBar:0, Yn:Y0, pLabel:'ZLB binds — recession and deflation', islmPoints:[{label:"A'",x:y1,y:r1}], pcPoints:[{label:"A'",x:y1,y:pi1}]}),
+    mkPhase({dIS, rBar:r2, iBar:0, Yn:Y0, pLabel:'Deflation raises the real rate', islmPoints:[{label:'B',x:y2,y:r2}], pcPoints:[{label:'B',x:y2,y:pi2}]}),
+    mkPhase({dIS, rBar:r3, iBar:0, Yn:Y0, pLabel:'Spiral deepens', islmPoints:[{label:"C",x:y3,y:r3}], pcPoints:[{label:"C",x:y3,y:pi3}]})
+  ]};
+}
+
+function asadMakeOilSupplyScenario(){
+  const Yn1 = Y0 - 0.10;
+  const pi1 = asadPC(Y0, Yn1);
+  const r2 = r0 + 0.05;
+  const y2 = asadEqY(r2, 0), pi2 = asadPC(y2, Yn1);
+  const r3 = asadRIS(Yn1, 0);
+  return { interp: INTERP.oil_supply, phases:[
+    mkPhase({dIS:0, rBar:r0, Yn:Yn1, pLabel:'Short run — PC shifts left', baseIslmLabel:"A,A'", basePcLabel:'A', islmPoints:[], pcPoints:[{label:"A'",x:Y0,y:pi1}]}),
+    mkPhase({dIS:0, rBar:r2, Yn:Yn1, pLabel:'Adjustment — central bank raises the real rate', baseIslmLabel:"A,A'", basePcLabel:'A', islmPoints:[{label:"A''",x:y2,y:r2}], pcPoints:[{label:"A'",x:Y0,y:pi1},{label:"A''",x:y2,y:pi2}]}),
+    mkPhase({dIS:0, rBar:r3, Yn:Yn1, pLabel:'Medium run — lower natural output', baseIslmLabel:"A,A'", basePcLabel:'A', islmPoints:[{label:"A''",x:Yn1,y:r3}], pcPoints:[{label:"A'",x:Y0,y:pi1},{label:"A''",x:Yn1,y:0}]})
+  ]};
+}
+
+function asadMakeOilBothScenario(){
+  const Yn1 = Y0 - 0.10;
+  const dIS = -0.06;
+  const y1 = asadEqY(r0, dIS), pi1 = asadPC(y1, Yn1);
+  const r2 = r0 + 0.03;
+  const y2 = asadEqY(r2, dIS), pi2 = asadPC(y2, Yn1);
+  const r3 = asadRIS(Yn1, dIS);
+  return { interp: INTERP.oil_both, phases:[
+    mkPhase({dIS, rBar:r0, Yn:Yn1, pLabel:'Short run — stagflationary mix', islmPoints:[{label:"A'",x:y1,y:r0}], pcPoints:[{label:"A'",x:y1,y:pi1}]}),
+    mkPhase({dIS, rBar:r2, Yn:Yn1, pLabel:'Adjustment — central bank raises the real rate', islmPoints:[{label:'B',x:y2,y:r2}], pcPoints:[{label:'B',x:y2,y:pi2}]}),
+    mkPhase({dIS, rBar:r3, Yn:Yn1, pLabel:'Medium run — new lower natural output', islmPoints:[{label:"A''",x:Yn1,y:r3}], pcPoints:[{label:"A''",x:Yn1,y:0}]})
+  ]};
+}
+
+function asadMakeMarkupScenario(){
+  const Yn1 = Y0 - 0.10;
+  const pi1 = asadPC(Y0, Yn1);
+  const r2 = r0 + 0.05;
+  const y2 = asadEqY(r2, 0), pi2 = asadPC(y2, Yn1);
+  const r3 = asadRIS(Yn1, 0);
+  return { interp: INTERP.markup, phases:[
+    mkPhase({dIS:0, rBar:r0, Yn:Yn1, pLabel:'Short run — PC shifts left', baseIslmLabel:"A,A'", basePcLabel:'A', islmPoints:[], pcPoints:[{label:"A'",x:Y0,y:pi1}]}),
+    mkPhase({dIS:0, rBar:r2, Yn:Yn1, pLabel:'Adjustment — central bank raises the real rate', baseIslmLabel:"A,A'", basePcLabel:'A', islmPoints:[{label:"A''",x:y2,y:r2}], pcPoints:[{label:"A'",x:Y0,y:pi1},{label:"A''",x:y2,y:pi2}]}),
+    mkPhase({dIS:0, rBar:r3, Yn:Yn1, pLabel:'Medium run — lower natural output', baseIslmLabel:"A,A'", basePcLabel:'A', islmPoints:[{label:"A''",x:Yn1,y:r3}], pcPoints:[{label:"A'",x:Y0,y:pi1},{label:"A''",x:Yn1,y:0}]})
+  ]};
+}
+
+const scenarios = {
+  base: { interp: INTERP.base, phases:[ mkPhase({pLabel:'Baseline equilibrium'}) ] },
+  g_up: asadMakeDemandScenario(0.20, 'g_up'),
+  oil_supply: asadMakeOilSupplyScenario(),
+  oil_demand: asadMakeDemandScenario(-0.16, 'oil_demand'),
+  oil_both: asadMakeOilBothScenario(),
+  markup: asadMakeMarkupScenario(),
+  fiscal: asadMakeDemandScenario(-0.20, 'fiscal'),
+  mon_expand: asadMakeMonetaryScenario(),
+  deflation: asadMakeDeflationScenario(),
+};
+
+// ══════════════════════════════════════════════════════════════
+// UI
+// ══════════════════════════════════════════════════════════════
+let curSc = 'base', phase = 0, viewMode = 'step';
+let playTimer = null, playRAF = null, isPlaying = false, animState = null;
+const PLAY_STEP_MS = 5000, PLAY_MOVE_MS = 2000;
+
+function asadStopPlay(){
+  isPlaying = false;
+  if(playTimer){ clearTimeout(playTimer); playTimer = null; }
+  if(playRAF){ cancelAnimationFrame(playRAF); playRAF = null; }
+  animState = null;
+  ['asad-btn-play','asad-c-btn-play','asad-pc-btn-play'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.remove('active');
+  });
+}
+function asadSyncViewButtons(){
+  ['asad-btn-step','asad-c-btn-step','asad-pc-btn-step'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.toggle('active', viewMode==='step');
+  });
+  ['asad-btn-all','asad-c-btn-all','asad-pc-btn-all'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.toggle('active', viewMode==='all');
+  });
+  ['asad-btn-play','asad-c-btn-play','asad-pc-btn-play'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.classList.toggle('active', isPlaying);
+  });
+}
+function asadSetView(mode){
+  viewMode = mode;
+  if(mode!=='step') asadStopPlay();
+  asadSyncViewButtons();
+  asadDraw();
+}
+function asadInterpPoint(fromPts, toPts, t, fallbackLabel){
+  const a = (fromPts && fromPts[0]) ? fromPts[0] : null;
+  const b = (toPts && toPts[0]) ? toPts[0] : null;
+  if(!a && !b) return [];
+  if(a && !b) return [{label:fallbackLabel || a.label, x:a.x, y:a.y}];
+  if(!a && b) return [{label:b.label, x:b.x, y:b.y}];
+  return [{
+    label: b.label || fallbackLabel || a.label,
+    x: a.x + (b.x-a.x)*t,
+    y: a.y + (b.y-a.y)*t
+  }];
+}
+function asadInterpPhase(p0, p1, t){
+  return {
+    dIS: p0.dIS + (p1.dIS-p0.dIS)*t,
+    rBar: p0.rBar + (p1.rBar-p0.rBar)*t,
+    iBar: (p0.iBar===undefined?p0.rBar:p0.iBar) + (((p1.iBar===undefined?p1.rBar:p1.iBar) - (p0.iBar===undefined?p0.rBar:p0.iBar))*t),
+    Yn: p0.Yn + (p1.Yn-p0.Yn)*t,
+    pLabel: p1.pLabel,
+    baseIslmLabel: p1.baseIslmLabel || p0.baseIslmLabel || 'A',
+    basePcLabel: p1.basePcLabel || p0.basePcLabel || 'A',
+    eqY: p0.eqY + (p1.eqY-p0.eqY)*t,
+    eqR: p0.eqR + (p1.eqR-p0.eqR)*t,
+    eqPi: p0.eqPi + (p1.eqPi-p0.eqPi)*t,
+    islmPoints: asadInterpPoint(p0.islmPoints, p1.islmPoints, t, (p1.islmPoints&&p1.islmPoints[0]&&p1.islmPoints[0].label) || "A'"),
+    pcPoints: asadInterpPoint(p0.pcPoints, p1.pcPoints, t, (p1.pcPoints&&p1.pcPoints[0]&&p1.pcPoints[0].label) || "A'")
+  };
+}
+function asadAnimateToPhase(fromIdx, toIdx){
+  const sc = scenarios[curSc];
+  const fromP = sc.phases[Math.min(fromIdx, sc.phases.length-1)];
+  const toP = sc.phases[Math.min(toIdx, sc.phases.length-1)];
+  const start = performance.now();
+  animState = {sc, fromP, toP, start};
+  function tick(now){
+    if(!animState || !isPlaying) return;
+    const t = Math.min(1, (now - start)/PLAY_MOVE_MS);
+    animState.t = t;
+    asadDraw();
+    if(t < 1){
+      playRAF = requestAnimationFrame(tick);
+    } else {
+      animState = null;
+      playRAF = null;
+      asadDraw();
+    }
+  }
+  playRAF = requestAnimationFrame(tick);
+}
+function asadPlayLoop(){
+  if(!isPlaying) return;
+  const sc = scenarios[curSc];
+  const next = phase >= sc.phases.length-1 ? 0 : phase + 1;
+  const prev = phase;
+  phase = next;
+  asadUpdateAll(true);
+  if(sc.phases.length>1) asadAnimateToPhase(prev, next);
+  playTimer = setTimeout(asadPlayLoop, PLAY_STEP_MS);
+}
+function asadTogglePlay(){
+  if(isPlaying){ asadStopPlay(); asadSyncViewButtons(); asadDraw(); return; }
+  viewMode = 'step';
+  isPlaying = true;
+  asadSyncViewButtons();
+  asadPlayLoop();
+}
+function asadScenarioShockTags(){
+  const t = {G:false,T:false,oilC:false,rbar:false,Yn:false,m:false,oilCost:false,zlb:false};
+  if(curSc==='g_up') t.G = true;
+  else if(curSc==='fiscal') t.T = true;
+  else if(curSc==='mon_expand') t.rbar = true;
+  else if(curSc==='deflation'){ t.rbar = true; t.zlb = true; }
+  else if(curSc==='oil_supply'){ t.oilCost = true; t.Yn = true; }
+  else if(curSc==='oil_demand'){ t.oilC = true; }
+  else if(curSc==='oil_both'){ t.oilC = true; t.oilCost = true; t.Yn = true; }
+  else if(curSc==='markup'){ t.m = true; t.Yn = true; }
+  return t;
+}
+function asadEquationNote(){
+  if(curSc==='g_up') return 'Government spending raises demand, and the total effect is further amplified by the multiplier. Because Y > Yⁿ, unemployment falls below the natural rate, workers bargain for higher wages, and excess inflation turns positive.';
+  if(curSc==='fiscal') return 'Higher taxes reduce disposable income and demand. Because Y < Yⁿ, unemployment rises above the natural rate, wage bargaining weakens, and excess inflation turns negative.';
+  if(curSc==='mon_expand') return 'A lower policy rate raises investment and demand. Because Y > Yⁿ, unemployment falls below the natural rate, workers bargain for higher wages, and the central bank later raises r̄ to bring inflation back.';
+  if(curSc==='deflation') return 'With ī stuck at 0, falling expected inflation raises the real rate r = ī − πᵉ. Demand weakens further, unemployment stays above the natural rate, and weak wage bargaining feeds the deflation spiral.';
+  if(curSc==='oil_supply') return 'Higher oil costs worsen price setting, raise natural unemployment, and lower natural output. At the old level of output this creates positive excess inflation even before the central bank reacts.';
+  if(curSc==='oil_demand') return 'Higher oil prices squeeze household purchasing power, so consumption and demand fall. Because Y < Yⁿ, unemployment rises above the natural rate, wage bargaining weakens, and excess inflation turns negative.';
+  if(curSc==='oil_both') return 'Oil prices both reduce demand and worsen price setting. Demand shifts left, but natural output also falls, so inflation can rise even while output declines.';
+  if(curSc==='markup') return 'A higher markup lowers the price-setting real wage, raises natural unemployment, and lowers natural output. At the old level of output this makes excess inflation positive, so the central bank raises r̄.';
+  return 'At Y = Yⁿ, unemployment is at its natural rate, wage bargaining is consistent with price setting, and excess inflation is zero.';
+}
+function asadRenderEquations(){
+  const box = document.getElementById('asad-eq-box');
+  if(!box) return;
+  const t = asadScenarioShockTags();
+  const extra = t.zlb
+    ? '<div class="eq-line"><span class="eq-tag">ZLB</span><span><span class="eq-hl">ī = 0</span>, so if expected inflation falls, <span class="eq-hl">r = ī − πᵉ</span> rises and demand weakens further.</span></div>'
+    : '';
+  box.innerHTML = `
+    <div class="eq-line"><span class="eq-tag">IS</span><span>Y = C(Y − <span class="${t.T?'eq-hl':''}">T</span>, <span class="${t.oilC?'eq-hl':''}">p<sup>oil</sup></span>) + I(Y,r) + <span class="${t.G?'eq-hl':''}">G</span></span></div>
+    <div class="eq-line"><span class="eq-tag">LM</span><span>In this framework the central bank sets <span class="${t.rbar?'eq-hl':''}">r = r̄</span></span></div>
+    <div class="eq-line"><span class="eq-tag">PC</span><span>π − πᵀ = κ (Y − <span class="${t.Yn?'eq-hl':''}">Yⁿ</span>)</span></div>
+    <div class="eq-line"><span class="eq-tag">Natural&nbsp;</span><span>uⁿ = [<span class="${t.m?'eq-hl':''}">m</span> + z + <span class="${t.oilCost?'eq-hl':''}">Cost<sup>oil</sup></span>] / α, &nbsp; Yⁿ = L(1 − uⁿ)</span></div>
+    ${extra}
+    <div class="eq-note">${asadEquationNote()}</div>
+  `;
+}
+function asadPCShockTags(){
+  const t = {ws:false, ps:false, m:false, oil:false};
+  if(curSc==='g_up' || curSc==='fiscal' || curSc==='mon_expand' || curSc==='deflation' || curSc==='oil_demand') t.ws = true;
+  if(curSc==='oil_supply'){ t.ps = true; t.oil = true; }
+  if(curSc==='oil_both'){ t.ws = true; t.ps = true; t.oil = true; }
+  if(curSc==='markup'){ t.ps = true; t.m = true; }
+  return t;
+}
+function asadRenderPCEquations(){
+  const box = document.getElementById('asad-pc-eq-box');
+  if(!box) return;
+  const t = asadPCShockTags();
+  box.innerHTML = `
+    <div class="eq-line"><span class="eq-tag">WS</span><span>W/P ≈ [1 − <span class="${t.ws?'eq-hl':''}">(π − πᵉ)</span>] F(u,z)</span></div>
+    <div class="eq-line"><span class="eq-tag">PS</span><span>W/P = 1 / [1 + <span class="${t.m?'eq-hl':''}">m</span> + <span class="${t.oil?'eq-hl':''}">Cost<sup>oil</sup></span>]</span></div>
+    <div class="eq-line"><span class="eq-tag">Natural&nbsp;</span><span>uⁿ = [<span class="${t.m?'eq-hl':''}">m</span> + z + <span class="${t.oil?'eq-hl':''}">Cost<sup>oil</sup></span>] / α</span></div>
+    <div class="eq-note">Demand or monetary shocks mainly change excess inflation, so they move WS and the economy travels along the Phillips curve. Supply or markup shocks lower the price-setting real wage, shift PS, raise uⁿ, and shift the whole Phillips curve.</div>
+  `;
+}
+function asadSetScenario(key, btn){
+  asadStopPlay();
+  curSc = key; phase = 0;
+  asadResetPhaseControls();
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
+function asadSelectOil(key, btn){
+  asadStopPlay();
+  curSc = key; phase = 0;
+  asadResetPhaseControls();
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
+function asadSetPhase(v){
+  asadStopPlay();
+  phase=v; asadUpdateAll();
+}
+function asadUpdateAll(fromPlay){
+  const sc = scenarios[curSc];
+  const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
+  document.getElementById('asad-phase-label').textContent = ph.pLabel;
+  document.getElementById('asad-phase-num').textContent = phase+' / '+(sc.phases.length-1);
+  document.getElementById('asad-sc-desc').textContent = sc.interp[Math.min(phase, sc.interp.length-1)] || sc.interp[0] || '';
+  const dots = document.getElementById('asad-phase-dots'); dots.innerHTML='';
+  sc.phases.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='phase-dot'+(i===phase?' active':'');
+    d.onclick=()=>{ asadSetPhase(i); document.getElementById('asad-phase-slider').value=i; };
+    dots.appendChild(d);
+  });
+  asadRenderEquations();
+  asadRenderPCEquations();
+  asadSyncViewButtons();
+  asadDraw();
+  asadSyncConstructSidebar();
+  asadSyncPCConstructSidebar();
+}
+// ══════════════════════════════════════════════════════════════
+// DRAWING HELPERS
+// ══════════════════════════════════════════════════════════════
+function asadSetupCanvas(id){
+  const cv=document.getElementById(id), wrap=cv.parentElement;
+  const dpr=window.devicePixelRatio||1, w=wrap.clientWidth, h=wrap.clientHeight;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx=cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+  const gw=w-PAD.l-PAD.r, gh=h-PAD.t-PAD.b;
+  return{ctx,w,h,px:u=>PAD.l+u*gw,py:u=>PAD.t+(1-u)*gh};
+}
+function asadS(ctx,pts,color,dashed,lw){
+  if(!pts||pts.length<2) return;
+  ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=lw||1.8;
+  if(dashed) ctx.setLineDash(dashed==='dot'?[3,4]:[7,5]);
+  ctx.beginPath(); pts.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y)); ctx.stroke();
+  ctx.setLineDash([]); ctx.restore();
+}
+function asadLbl(ctx,txt,x,y,color,size,bounds){
+  ctx.font='500 '+(size||13)+'px "DM Mono",monospace';
+  let drawX=x, drawY=y;
+  if(bounds){
+    const m=bounds.margin||6, tw=ctx.measureText(txt).width;
+    drawX=Math.max(bounds.left+m, Math.min(x, bounds.right-tw-m));
+    drawY=Math.max(bounds.top+12, Math.min(y, bounds.bottom-6));
+  }
+  ctx.save();
+  ctx.lineJoin='round'; ctx.lineWidth=4; ctx.strokeStyle='rgba(255,255,255,0.92)'; ctx.strokeText(txt,drawX,drawY);
+  ctx.fillStyle=color; ctx.fillText(txt,drawX,drawY); ctx.restore();
+}
+function asadDot(ctx,x,y,label,above,left){
+  ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(x,y,7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(x,y,3.5,0,Math.PI*2); ctx.fill();
+  if(label){ ctx.fillStyle=COL.dot; ctx.font='500 13px "DM Mono",monospace'; ctx.fillText(label, x+(left?-15:8), y+(above?-8:14)); }
+}
+function asadClipToPlot(ctx,pad,w,h){ const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b; ctx.beginPath(); ctx.rect(pad.l,pad.t,gw,gh); ctx.clip(); }
+function asadProjDash(ctx,x,y,px0,py0){
+  ctx.save(); ctx.setLineDash([2,3]); ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(x,py0); ctx.lineTo(x,y); ctx.moveTo(px0,y); ctx.lineTo(x,y); ctx.stroke(); ctx.restore();
+}
+function asadVerticalAxisTitle(ctx, txt, x, y, color, size){
+  ctx.save();
+  ctx.translate(x,y); ctx.rotate(-Math.PI/2);
+  ctx.fillStyle=color; ctx.font='500 '+(size||11)+'px "DM Sans",sans-serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(txt,0,0); ctx.restore();
+}
+function asadPotentialVertical(ctx, px, py, xVal, label, dashed, alpha){
+  ctx.save();
+  ctx.strokeStyle=COL.pot; ctx.lineWidth=1.5; ctx.globalAlpha=(alpha===undefined?1:alpha);
+  if(dashed) ctx.setLineDash([7,5]);
+  ctx.beginPath(); ctx.moveTo(px(xVal),py(0)); ctx.lineTo(px(xVal),py(1)); ctx.stroke();
+  ctx.restore();
+  asadLbl(ctx,label,px(xVal)-8,py(0)+15,COL.pot,10);
+}
+function asadDrawInflationBrace(ctx, px, pyPi, ph, bounds){
+  const pi = ph.eqPi;
+  if(Math.abs(pi) < 0.008) return;
+  const xBrace = clamp(ph.eqY + 0.045, 0.10, 0.86);
+  const bx = px(xBrace);
+  const y0 = pyPi(0), y1 = pyPi(pi);
+  const top = Math.min(y0,y1), bot = Math.max(y0,y1), mid=(top+bot)/2;
+  const w = 10;
+  ctx.save();
+  ctx.strokeStyle='rgba(30,122,77,0.78)'; ctx.lineWidth=1.6;
+  ctx.beginPath();
+  ctx.moveTo(bx, top);
+  ctx.bezierCurveTo(bx+w, top, bx+w, mid-7, bx, mid);
+  ctx.bezierCurveTo(bx+w, mid+7, bx+w, bot, bx, bot);
+  ctx.stroke();
+  ctx.restore();
+  asadLbl(ctx, pi>0 ? 'above target' : 'below target', bx+7, mid+3, COL.PC, 10, bounds);
+}
+
+function asadDrawAxesISLM(ctx,px,py,yRef,yn){
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px(0),py(1.02)); ctx.lineTo(px(0),py(0)); ctx.moveTo(px(0),py(0)); ctx.lineTo(px(1.02),py(0)); ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px(0)-3.5,py(1.02)+7);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+3.5,py(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px(1.02)-7,py(0)-3.5);ctx.lineTo(px(1.02)+2,py(0));ctx.lineTo(px(1.02)-7,py(0)+3.5);ctx.fill();
+  ctx.save(); ctx.setLineDash([3,3]); ctx.strokeStyle=COL.grid; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(px(0),py(yRef)); ctx.lineTo(px(1),py(yRef)); ctx.stroke(); ctx.restore();
+  asadPotentialVertical(ctx, px, py, Y0, 'Yn', false, Math.abs((yn||Y0)-Y0)>0.002 ? 0.55 : 1);
+  if(Math.abs((yn||Y0)-Y0)>0.002) asadPotentialVertical(ctx, px, py, yn, "Yn'", true, 1);
+  asadLbl(ctx,'r',px(0)-18,py(0.96),COL.txt,13);
+  asadLbl(ctx,'Y',px(0.97),py(0)+15,COL.txt,13);
+  asadLbl(ctx,'r*',px(0)-24,py(r0)+4,COL.txt,10);
+}
+function asadDrawAxesPC(ctx,px,py,yn){
+  const zeroU = asadPiU(0);
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px(0),py(1.02)); ctx.lineTo(px(0),py(0)); ctx.moveTo(px(0),py(zeroU)); ctx.lineTo(px(1.02),py(zeroU)); ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px(0)-3.5,py(1.02)+7);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+3.5,py(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px(1.02)-7,py(zeroU)-3.5);ctx.lineTo(px(1.02)+2,py(zeroU));ctx.lineTo(px(1.02)-7,py(zeroU)+3.5);ctx.fill();
+  ctx.save(); ctx.setLineDash([3,3]); ctx.strokeStyle=COL.grid; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(px(0),py(zeroU)); ctx.lineTo(px(1),py(zeroU)); ctx.stroke(); ctx.restore();
+  asadPotentialVertical(ctx, px, py, Y0, 'Yn', false, Math.abs((yn||Y0)-Y0)>0.002 ? 0.55 : 1);
+  if(Math.abs((yn||Y0)-Y0)>0.002) asadPotentialVertical(ctx, px, py, yn, "Yn'", true, 1);
+  asadVerticalAxisTitle(ctx, 'Excess inflation, π − πᵀ', px(0)-42, (py(0)+py(1))/2, COL.txt, 11);
+  asadLbl(ctx,'Y',px(0.97),py(zeroU)+15,COL.txt,13);
+  asadLbl(ctx,'0',px(0)-18,py(zeroU)+4,COL.txt,11);
+}
+function asadDrawAxesKM(ctx,px,py,yn){
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px(0),py(1.02)); ctx.lineTo(px(0),py(0)); ctx.moveTo(px(0),py(0)); ctx.lineTo(px(1.02),py(0)); ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px(0)-3.5,py(1.02)+7);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+3.5,py(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px(1.02)-7,py(0)-3.5);ctx.lineTo(px(1.02)+2,py(0));ctx.lineTo(px(1.02)-7,py(0)+3.5);ctx.fill();
+  asadPotentialVertical(ctx, px, py, Y0, 'Yn', false, Math.abs((yn||Y0)-Y0)>0.002 ? 0.55 : 1);
+  if(Math.abs((yn||Y0)-Y0)>0.002) asadPotentialVertical(ctx, px, py, yn, "Yn'", true, 1);
+  asadLbl(ctx,'Z',px(0)-18,py(0.96),COL.txt,13);
+  asadLbl(ctx,'Y',px(0.97),py(0)+15,COL.txt,13);
+}
+
+function drawHorizontal(ctx,px,py,y,color,dashed,lw){ asadS(ctx, [[px(0.03),py(y)],[px(0.97),py(y)]], color, dashed, lw); }
+
+function drawBaseAndPhasePoints(ctx, px, pyFn, ph, pointType){
+  const baseLabel = pointType==='islm' ? (ph.baseIslmLabel || 'A') : (ph.basePcLabel || 'A');
+  const baseY = pointType==='islm' ? r0 : 0;
+  asadDot(ctx, px(Y0), pyFn(baseY), baseLabel, true, false);
+  const pts = pointType==='islm' ? ph.islmPoints : ph.pcPoints;
+  pts.forEach((pt)=>{
+    if(Math.abs(pt.x-Y0)<0.004 && Math.abs(pt.y-baseY)<0.004 && pt.label===baseLabel) return;
+    asadProjDash(ctx, px(pt.x), pyFn(pt.y), px(0), pyFn(0));
+    asadDot(ctx, px(pt.x), pyFn(pt.y), pt.label, pt.y>baseY, pt.x>0.80);
+  });
+}
+
+function asadDrawISLMCanvas(id, sc, ph, allMode){
+  const {ctx,w,h,px,py} = asadSetupCanvas(id);
+  asadDrawAxesISLM(ctx, px, py, r0, ph.Yn);
+  ctx.save(); asadClipToPlot(ctx, PAD, w, h);
+  asadS(ctx, Us.map(u=>[px(u),py(asadRIS(u,0))]), COL.IS);
+  asadLbl(ctx,'IS',px(0.82),py(asadRIS(0.82,0))-10,COL.IS,12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  const needIS = allMode ? sc.phases.some(p=>Math.abs(p.dIS)>0.001) : Math.abs(ph.dIS)>0.001;
+  if(needIS){
+    const dISLast = allMode ? sc.phases[sc.phases.length-1].dIS : ph.dIS;
+    asadS(ctx, Us.map(u=>[px(u),py(asadRIS(u,dISLast))]), COL.IS+'bb', true);
+    asadLbl(ctx,"IS'",px(0.82),py(asadRIS(0.82,dISLast))-10,COL.IS+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  drawHorizontal(ctx, px, py, r0, COL.LM, false, 1.8);
+  asadLbl(ctx,'LM',px(0.92),py(r0)-8,COL.LM,12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  if(allMode){
+    const alphas = sc.phases.length===1 ? [1] : (sc.phases.length===3 ? [0.45,0.72,1] : [0.35,0.55,0.75,1]);
+    const seen = new Set([Math.round(r0*1000)]);
+    sc.phases.forEach((p,i)=>{
+      const key = Math.round(p.rBar*1000); if(seen.has(key)) return; seen.add(key);
+      ctx.save(); ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)]; drawHorizontal(ctx, px, py, p.rBar, COL.LM+'bb', true, 1.6); ctx.restore();
+    });
+    const lastShift = sc.phases[sc.phases.length-1].rBar;
+    if(Math.abs(lastShift-r0)>0.001) asadLbl(ctx,"LM'",px(0.92),py(lastShift)-8,COL.LM+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  } else if(Math.abs(ph.rBar-r0)>0.001){
+    drawHorizontal(ctx, px, py, ph.rBar, COL.LM+'bb', true, 1.8);
+    asadLbl(ctx,"LM'",px(0.92),py(ph.rBar)-8,COL.LM+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  ctx.restore();
+  if(allMode){
+    const alphas = sc.phases.length===1 ? [1] : (sc.phases.length===3 ? [0.45,0.72,1] : [0.35,0.55,0.75,1]);
+    asadDot(ctx, px(Y0), py(r0), 'A', true, false);
+    sc.phases.forEach((p,i)=>{
+      ctx.save(); ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+      (p.islmPoints||[]).forEach(pt=>{ asadProjDash(ctx, px(pt.x), py(pt.y), px(0), py(0)); asadDot(ctx, px(pt.x), py(pt.y), pt.label, pt.y>r0, pt.x>0.80); });
+      ctx.restore();
+    });
+  } else {
+    drawBaseAndPhasePoints(ctx, px, py, ph, 'islm');
+  }
+}
+
+function asadDrawPCCanvas(id, sc, ph, allMode){
+  const {ctx,w,h,px,py} = asadSetupCanvas(id);
+  const pyPi = val => py(asadPiU(val));
+  asadDrawAxesPC(ctx, px, py, ph.Yn);
+  ctx.save(); asadClipToPlot(ctx, PAD, w, h);
+  asadS(ctx, Us.map(u=>[px(u), pyPi(asadPC(u, Y0))]), COL.PC);
+  asadLbl(ctx,'PC',px(0.83),pyPi(asadPC(0.83,Y0))-8,COL.PC,12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  const needPCShift = allMode ? sc.phases.some(p=>Math.abs(p.Yn-Y0)>0.001) : Math.abs(ph.Yn-Y0)>0.001;
+  if(needPCShift){
+    const YnLast = allMode ? sc.phases[sc.phases.length-1].Yn : ph.Yn;
+    asadS(ctx, Us.map(u=>[px(u), pyPi(asadPC(u, YnLast))]), COL.PC+'bb', true);
+    asadLbl(ctx,"PC'",px(0.72),pyPi(asadPC(0.72,YnLast))-8,COL.PC+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  ctx.restore();
+  if(allMode){
+    const alphas = sc.phases.length===1 ? [1] : (sc.phases.length===3 ? [0.45,0.72,1] : [0.35,0.55,0.75,1]);
+    asadDot(ctx, px(Y0), pyPi(0), 'A', true, false);
+    sc.phases.forEach((p,i)=>{
+      ctx.save(); ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+      (p.pcPoints||[]).forEach(pt=>{ asadProjDash(ctx, px(pt.x), pyPi(pt.y), px(0), pyPi(0)); asadDot(ctx, px(pt.x), pyPi(pt.y), pt.label, pt.y>0, pt.x>0.80); });
+      ctx.restore();
+    });
+  } else {
+    drawBaseAndPhasePoints(ctx, px, pyPi, ph, 'pc');
+  }
+  asadDrawInflationBrace(ctx, px, pyPi, ph, {left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+}
+
+function asadDrawKMCanvas(id, sc, ph, allMode){
+  const cv = document.getElementById(id);
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.parentElement.clientWidth, h = cv.parentElement.clientHeight;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+  const pad={l:52,r:20,t:20,b:38}; const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const px=u=>pad.l+u*gw, py=u=>pad.t+(1-u)*gh;
+  asadDrawAxesKM(ctx, px, py, ph.Yn);
+  ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(px(0),py(0)); ctx.lineTo(px(1),py(1)); ctx.stroke(); ctx.setLineDash([]);
+  asadLbl(ctx,'Z=Y',px(0.86),py(0.89),'rgba(0,0,0,0.25)',10);
+  ctx.save(); asadClipToPlot(ctx, pad, w, h);
+  const c1=0.6, t_tax=0.2, mpc=c1*(1-t_tax);
+  const A0_base = Y0*(1-mpc);
+  const baseLine = u => A0_base + mpc*u;
+  asadS(ctx, [[px(0),py(baseLine(0))],[px(1),py(baseLine(1))]], COL.IS, false, 1.8);
+  asadLbl(ctx,'Z',px(0.80),py(baseLine(0.80))+14,COL.IS,11,{left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b});
+  const phases = allMode ? sc.phases : [ph];
+  const alphas = phases.length===1 ? [1] : (phases.length===3 ? [0.45,0.72,1] : [0.35,0.55,0.75,1]);
+  phases.forEach((p,i)=>{
+    const A0_curr = p.eqY*(1-mpc);
+    if(Math.abs(A0_curr - A0_base) < 0.005) return;
+    ctx.save(); ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    asadS(ctx, [[px(0),py(A0_curr)],[px(1),py(A0_curr + mpc)]], COL.IS+'bb', true, 1.8); ctx.restore();
+  });
+  if(phases.some(p=>Math.abs(p.eqY - Y0) > 0.01)){
+    const A0_last = phases[phases.length-1].eqY*(1-mpc);
+    asadLbl(ctx,"Z'",px(0.74),py(A0_last + mpc*0.74)+14,COL.IS+'bb',11,{left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b});
+  }
+  ctx.restore();
+  asadDot(ctx, px(Y0), py(Y0), 'A', true, false);
+  phases.forEach((p,i)=>{
+    if(Math.abs(p.eqY - Y0) < 0.01) return;
+    ctx.save(); ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    const label = (p.islmPoints && p.islmPoints[0] && p.islmPoints[0].label) || 'A\'';
+    asadDot(ctx, px(p.eqY), py(p.eqY), label, true, p.eqY>0.80); ctx.restore();
+  });
+}
+
+function asadDrawMMCanvas(id, sc, ph, allMode){
+  const cv = document.getElementById(id);
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.parentElement.clientWidth, h = cv.parentElement.clientHeight;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,w,h);
+
+  const phases = allMode ? sc.phases : [ph];
+  const alphas = phases.length===1 ? [1] : (phases.length===3 ? [0.45,0.72,1] : [0.35,0.55,0.75,1]);
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const MP_max=0.82;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+  const pMP=v=>px_(Math.max(0,Math.min(1,v/MP_max)));
+  const pRate=v=>py_(Math.max(0,Math.min(1,v)));
+  const isDeflation = (curSc==='deflation');
+
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0)); ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+
+  const drawLD = (Y_val, color, dashed, label, alpha=1) => {
+    ctx.save(); ctx.globalAlpha=alpha; ctx.strokeStyle=color; ctx.lineWidth=1.8;
+    if(dashed) ctx.setLineDash([7,5]);
+    ctx.beginPath(); let started=false;
+    for(let j=0;j<=100;j++){
+      const rate=j/100;
+      const MP_val=kMD*Y_val - hMD*rate;
+      if(MP_val<0||MP_val>MP_max) continue;
+      const x=pMP(MP_val), y=pRate(rate);
+      if(!started){ctx.moveTo(x,y);started=true;}else{ctx.lineTo(x,y);}
+    }
+    ctx.stroke(); ctx.restore();
+    const rate_lbl=0.42, MP_lbl=kMD*Y_val-hMD*rate_lbl;
+    if(MP_lbl>0.01&&MP_lbl<MP_max-0.01) asadLbl(ctx,label,pMP(MP_lbl)+4,pRate(rate_lbl)-6,color,11);
+  };
+
+  const baseRate = isDeflation ? 0.0 : r0;
+  ctx.save(); asadClipToPlot(ctx, pad, w, h);
+  drawLD(Y0, COL.LM, false, 'L(Yⁿ)', Math.abs((ph.Yn||Y0)-Y0)>0.002 ? 0.55 : 1);
+  if(Math.abs((ph.Yn||Y0)-Y0)>0.002){
+    drawLD(ph.Yn, COL.pot, true, "L(Yⁿ')", 0.95);
+  }
+
+  if(isDeflation){
+    ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
+    ctx.beginPath(); ctx.moveTo(pMP(0.01),pRate(baseRate)); ctx.lineTo(pMP(MP_max),pRate(baseRate)); ctx.stroke();
+  } else {
+    const baseMP = kMD*Y0 - hMD*baseRate;
+    ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
+    ctx.beginPath(); ctx.moveTo(pMP(baseMP),pRate(0.01)); ctx.lineTo(pMP(baseMP),pRate(1.0)); ctx.stroke();
+    asadLbl(ctx,'(M/P)ˢ', pMP(baseMP)+6, pRate(Math.min(0.62, Math.max(0.54, r0+0.12)))-2, COL.LM, 10, {left:pad.l,right:w-pad.r,top:pad.t,bottom:h-pad.b});
+    ctx.save(); ctx.setLineDash([6,5]); ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.1;
+    ctx.beginPath(); ctx.moveTo(pMP(0.01),pRate(baseRate)); ctx.lineTo(pMP(MP_max),pRate(baseRate)); ctx.stroke(); ctx.restore();
+  }
+
+  const seenLD = new Set();
+  const seenRate = new Set([Math.round(baseRate*1000)]);
+  const seenMP = new Set();
+  phases.forEach((p,i)=>{
+    const a=alphas[Math.min(i,alphas.length-1)];
+    const yv=p.eqY, rate=(isDeflation ? (p.iBar===undefined?p.rBar:p.iBar) : p.rBar);
+    const ykey=Math.round(yv*1000), rkey=Math.round(rate*1000);
+    if(Math.abs(yv-Y0)>0.01 && !seenLD.has(ykey)){ seenLD.add(ykey); drawLD(yv, COL.LM+'bb', true, "L(Y')", a); }
+    if(isDeflation){
+      if(Math.abs(rate-baseRate)>0.002 && !seenRate.has(rkey)){
+        seenRate.add(rkey);
+        ctx.save(); ctx.globalAlpha=a; ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+        ctx.beginPath(); ctx.moveTo(pMP(0.01),pRate(rate)); ctx.lineTo(pMP(MP_max),pRate(rate)); ctx.stroke(); ctx.restore();
+      }
+    } else {
+      const mp = kMD*yv - hMD*rate;
+      const mkey=Math.round(mp*1000);
+      if((Math.abs(rate-baseRate)>0.002 || Math.abs(yv-Y0)>0.01) && !seenMP.has(mkey)){
+        seenMP.add(mkey);
+        ctx.save(); ctx.globalAlpha=a; ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+        ctx.beginPath(); ctx.moveTo(pMP(mp),pRate(0.01)); ctx.lineTo(pMP(mp),pRate(1.0)); ctx.stroke(); ctx.restore();
+      }
+    }
+  });
+  ctx.restore();
+
+  if(isDeflation){
+    asadLbl(ctx, 'ī = 0 (ZLB)', pMP(MP_max)-74, pRate(baseRate)-6, COL.LM, 10);
+  } else {
+    asadLbl(ctx, 'r̄', pMP(Math.min(MP_max, kMD*Y0-hMD*baseRate))+8, pRate(baseRate)-6, COL.LM, 10);
+  }
+
+  const currentRate = isDeflation ? (ph.iBar===undefined?ph.rBar:ph.iBar) : ph.rBar;
+  if(isDeflation && phases.some(p => Math.abs((p.iBar===undefined?p.rBar:p.iBar)-baseRate) > 0.002)){
+    asadLbl(ctx,"ī'", pMP(MP_max)-28, pRate(currentRate)-6, COL.LM+'bb', 10);
+  }
+
+  const baseMP = kMD*Y0 - hMD*baseRate;
+  asadProjDash(ctx, pMP(baseMP), pRate(baseRate), pMP(0), pRate(0));
+  asadDot(ctx, pMP(baseMP), pRate(baseRate), 'A', true, false);
+  phases.forEach((p,i)=>{
+    const a=alphas[Math.min(i,alphas.length-1)];
+    const rate=isDeflation ? (p.iBar===undefined?p.rBar:p.iBar) : p.rBar;
+    const yv=p.eqY, mp=kMD*yv-hMD*rate;
+    if(Math.abs(yv-Y0)<0.01 && Math.abs(rate-baseRate)<0.002) return;
+    ctx.save(); ctx.globalAlpha=a;
+    asadProjDash(ctx, pMP(mp), pRate(rate), pMP(0), pRate(0));
+    const label = (p.islmPoints && p.islmPoints[0] && p.islmPoints[0].label) || "A'";
+    asadDot(ctx, pMP(mp), pRate(rate), label, rate>baseRate, false);
+    ctx.restore();
+  });
+
+  asadLbl(ctx, isDeflation ? 'i' : 'r', px_(0)-18, py_(0.96), COL.txt, 11);
+  asadLbl(ctx,'M/P', px_(0.80), py_(0)+15, COL.txt, 11);
+  asadLbl(ctx,'0', px_(0)-14, pRate(0)+4, COL.txt, 10);
+  if(isDeflation) asadLbl(ctx,'real rate rises because r = i − πᵉ', pMP(0.18), pRate(0.12), COL.txt, 9);
+}
+
+function asadDrawAxesLaborMarket(ctx, px, py, uN, uNp){
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px(0),py(1.02)); ctx.lineTo(px(0),py(0)); ctx.moveTo(px(0),py(0)); ctx.lineTo(px(1.02),py(0)); ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px(0)-3.5,py(1.02)+7);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+3.5,py(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px(1.02)-7,py(0)-3.5);ctx.lineTo(px(1.02)+2,py(0));ctx.lineTo(px(1.02)-7,py(0)+3.5);ctx.fill();
+  asadLbl(ctx,'W/P',px(0)-28,py(0.96),COL.txt,12);
+  asadLbl(ctx,'u',px(0.97),py(0)+15,COL.txt,13);
+  ctx.save(); ctx.setLineDash([3,3]); ctx.strokeStyle=COL.grid; ctx.lineWidth=0.8;
+  ctx.beginPath(); ctx.moveTo(px(0),py(0.68)); ctx.lineTo(px(1),py(0.68)); ctx.stroke(); ctx.restore();
+  asadPotentialVertical(ctx, px, py, uN, 'uⁿ', false, Math.abs((uNp||uN)-uN)>0.002 ? 0.55 : 1);
+  if(Math.abs((uNp||uN)-uN)>0.002) asadPotentialVertical(ctx, px, py, uNp, "uⁿ'", true, 1);
+}
+function asadDrawAxesPCu(ctx, px, py, uN, uNp, piMap){
+  const zeroU = piMap(0);
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(px(0),py(1.02)); ctx.lineTo(px(0),py(0)); ctx.moveTo(px(0),py(zeroU)); ctx.lineTo(px(1.02),py(zeroU)); ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px(0)-3.5,py(1.02)+7);ctx.lineTo(px(0),py(1.02)-2);ctx.lineTo(px(0)+3.5,py(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px(1.02)-7,py(zeroU)-3.5);ctx.lineTo(px(1.02)+2,py(zeroU));ctx.lineTo(px(1.02)-7,py(zeroU)+3.5);ctx.fill();
+  asadVerticalAxisTitle(ctx, 'Excess inflation, π − πᵉ', px(0)-42, (py(0)+py(1))/2, COL.txt, 11);
+  asadLbl(ctx,'u',px(0.97),py(zeroU)+15,COL.txt,13);
+  asadLbl(ctx,'0',px(0)-18,py(zeroU)+4,COL.txt,11);
+  asadPotentialVertical(ctx, px, py, uN, 'uⁿ', false, Math.abs((uNp||uN)-uN)>0.002 ? 0.55 : 1);
+  if(Math.abs((uNp||uN)-uN)>0.002) asadPotentialVertical(ctx, px, py, uNp, "uⁿ'", true, 1);
+}
+function asadCurrentPCState(sc, ph){
+  const wsIntercept = 0.92, wsSlope = 0.50;
+  const uN0 = 0.48;
+  const uN = clamp(uN0 + 1.6*(Y0 - (ph.Yn||Y0)), 0.10, 0.90);
+  const PS0 = wsIntercept - wsSlope*uN0;
+  const PS = wsIntercept - wsSlope*uN;
+  const exPi = ph.eqPi || 0;
+  const uCur = clamp((wsIntercept - exPi - PS)/wsSlope, 0.02, 0.96);
+  const label = (ph.pcPoints && ph.pcPoints[0] && ph.pcPoints[0].label) || ((Math.abs(exPi)<0.002 && Math.abs(uN-uN0)<0.002) ? 'A' : "A'");
+  return {wsIntercept, wsSlope, uN0, uN, PS0, PS, exPi, uCur, label, hasWSShift:Math.abs(exPi)>0.002, hasPSShift:Math.abs(uN-uN0)>0.002};
+}
+
+function asadDrawPCConstructionLabor(id, sc, ph){
+  const {ctx,w,h,px,py} = asadSetupCanvas(id);
+  const st = asadCurrentPCState(sc, ph);
+  const rwMin = 0.48, rwMax = 0.96;
+  const wr = v => (v-rwMin)/(rwMax-rwMin);
+  const WS = u => st.wsIntercept - st.wsSlope*u;
+  const WSs = u => WS(u) - st.exPi;
+  asadDrawAxesLaborMarket(ctx, px, py, st.uN0, st.uN);
+  ctx.save(); asadClipToPlot(ctx, PAD, w, h);
+  asadS(ctx, Us.map(u=>[px(u),py(wr(WS(u)))]), COL.IS, false, 1.8);
+  asadLbl(ctx,'WS',px(0.78),py(wr(WS(0.78)))-8,COL.IS,12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  asadS(ctx, [[px(0.03),py(wr(st.PS0))],[px(0.97),py(wr(st.PS0))]], COL.LM, false, 1.8);
+  asadLbl(ctx,'PS',px(0.86),py(wr(st.PS0))-8,COL.LM,12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  if(st.hasWSShift){
+    asadS(ctx, Us.map(u=>[px(u),py(wr(WSs(u)))]), COL.IS+'bb', true, 1.8);
+    asadLbl(ctx,"WS'",px(0.66),py(wr(WSs(0.66))) + (st.exPi>0?15:-10),COL.IS+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  if(st.hasPSShift){
+    asadS(ctx, [[px(0.03),py(wr(st.PS))],[px(0.97),py(wr(st.PS))]], COL.LM+'bb', true, 1.8);
+    asadLbl(ctx,"PS'",px(0.84),py(wr(st.PS))-8,COL.LM+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  ctx.restore();
+  asadDot(ctx, px(st.uN0), py(wr(st.PS0)), 'A', true, false);
+  if(st.hasWSShift || st.hasPSShift){
+    asadProjDash(ctx, px(st.uCur), py(wr(st.PS)), px(0), py(0));
+    asadDot(ctx, px(st.uCur), py(wr(st.PS)), st.label, true, false);
+  }
+}
+function asadDrawPCConstructionPC(id, sc, ph){
+  const {ctx,w,h,px,py} = asadSetupCanvas(id);
+  const st = asadCurrentPCState(sc, ph);
+  const piLo=-0.16, piHi=0.16, piMap=v=>(v-piLo)/(piHi-piLo);
+  const ppi = v => py(piMap(v));
+  const alpha = st.wsSlope;
+  const PC0 = u => alpha*(st.uN0-u);
+  const PC1 = u => alpha*(st.uN-u);
+  asadDrawAxesPCu(ctx, px, py, st.uN0, st.uN, piMap);
+  ctx.save(); asadClipToPlot(ctx, PAD, w, h);
+  asadS(ctx, Us.map(u=>[px(u), ppi(PC0(u))]), COL.PC, false, 1.8);
+  asadLbl(ctx,'PC',px(0.80),ppi(PC0(0.80))-8,COL.PC,12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  if(st.hasPSShift){
+    asadS(ctx, Us.map(u=>[px(u), ppi(PC1(u))]), COL.PC+'bb', true, 1.8);
+    asadLbl(ctx,"PC'",px(0.68),ppi(PC1(0.68))-8,COL.PC+'bb',12,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  ctx.restore();
+  asadDot(ctx, px(st.uN0), ppi(0), 'A', true, false);
+  if(st.hasWSShift || st.hasPSShift){
+    asadProjDash(ctx, px(st.uCur), ppi(st.exPi), px(0), ppi(0));
+    asadDot(ctx, px(st.uCur), ppi(st.exPi), st.label, st.exPi>=0, false);
+  }
+}
+
+function asadDraw(){
+  const sc = scenarios[curSc];
+  const basePh = sc.phases[Math.min(phase, sc.phases.length-1)];
+  const ph = (animState && animState.sc===sc && typeof animState.t==='number')
+    ? asadInterpPhase(animState.fromP, animState.toP, animState.t)
+    : basePh;
+  const allMode = (viewMode === 'all');
+  asadDrawISLMCanvas('asad-islm', sc, ph, allMode);
+  asadDrawPCCanvas('asad-asad', sc, ph, allMode);
+  if(gTab==='construct'){
+    asadDrawKMCanvas('asad-km', sc, ph, allMode);
+    asadDrawISLMCanvas('asad-islm2', sc, ph, allMode);
+    asadDrawMMCanvas('asad-mm', sc, ph, allMode);
+  }
+  if(gTab==='pcconstruct'){
+    asadDrawPCConstructionLabor('asad-lmkt', sc, ph);
+    asadDrawPCConstructionPC('asad-pcbuild', sc, ph);
+  }
+}
+
+asadSyncScenarioButtons();
+asadSyncPCConstructSidebar();
+asadUpdateAll();
+
+window.asadSetGTab = asadSetGTab;
+window.asadSetScenarioBoth = asadSetScenarioBoth;
+window.asadSetView = asadSetView;
+window.asadSetScenario = asadSetScenario;
+window.asadSelectOil = asadSelectOil;
+window.asadSetPhase = asadSetPhase;
+window.asadTogglePlay = asadTogglePlay;
+window.initIslmAsadApp = function(){
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+};
+window.addEventListener('resize', function(){
+  const panel = document.getElementById('panel-islm-asad');
+  if (!panel || !panel.classList.contains('active')) return;
+  asadUpdateAll();
+});
+})();
+</script>
+<script>
+window.addEventListener('DOMContentLoaded', function(){
+  if (window.initIslmAsadApp) window.initIslmAsadApp();
+});
+</script>
+</body>
+</html>
