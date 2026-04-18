@@ -429,18 +429,18 @@ footer a:hover{color:var(--accent)}
       <a class="brown-logo" href="https://economics.brown.edu/" target="_blank" title="Brown University">
         <img src="https://logos-world.net/wp-content/uploads/2022/11/Brown-University-Symbol.png" alt="Brown University"/>
       </a>
-      <a class="nav-brand" href="#" onclick="siteTab('home',document.querySelector('.nav-tabs button'));return false;">Alexandre Gaillard</a>
+      <a class="nav-brand" href="#home" onclick="siteTab('home', findNavButton('home')); return false;">Alexandre Gaillard</a>
     </div>
     <ul class="nav-tabs">
-      <li><button class="active" onclick="siteTab('home',this)">Home</button></li>
+      <li><button class="active" data-tab="home" onclick="siteTab('home',this)">Home</button></li>
       <li class="nav-item">
         <button class="nav-main" type="button" onclick="toggleNavMenu(this)">
           Teaching <span class="nav-caret">▾</span>
         </button>
         <ul class="nav-dropdown">
-          <li><button type="button" onclick="siteTab('teaching',this)">Teaching overview</button></li>
-          <li><button type="button" onclick="siteTab('nk-grad',this)">NK Model (grad)</button></li>
-          <li><button type="button" onclick="siteTab('islm-asad',this)">IS-LM AS-AD (undergrad)</button></li>
+          <li><button type="button" data-tab="teaching" onclick="siteTab('teaching',this)">Teaching overview</button></li>
+          <li><button type="button" data-tab="nk-grad" onclick="siteTab('nk-grad',this)">NK Model (grad)</button></li>
+          <li><button type="button" data-tab="islm-asad" onclick="siteTab('islm-asad',this)">IS-LM AS-AD (undergrad)</button></li>
         </ul>
       </li>
       <li class="nav-item">
@@ -448,11 +448,11 @@ footer a:hover{color:var(--accent)}
           Code/Data <span class="nav-caret">▾</span>
         </button>
         <ul class="nav-dropdown">
-          <li><button type="button" onclick="siteTab('code',this)">Code/Data overview</button></li>
-          <li><button type="button" onclick="siteTab('explorer',this)">Inequality Explorer</button></li>
+          <li><button type="button" data-tab="code" onclick="siteTab('code',this)">Code/Data overview</button></li>
+          <li><button type="button" data-tab="explorer" onclick="siteTab('explorer',this)">Inequality Explorer</button></li>
         </ul>
       </li>
-      <li><button onclick="siteTab('more',this)">More</button></li>
+      <li><button data-tab="more" onclick="siteTab('more',this)">More</button></li>
       <li><button onclick="window.open('https://drive.google.com/file/d/10_Kg-LkSiRxwDqm-Ik7PusROsZfWGQ1E/view','_blank')">CV</button></li>
     </ul>
   </div>
@@ -1703,17 +1703,34 @@ function initAppPanel(name) {
   }
 }
 
-function siteTab(name, btn) {
+const SITE_ROUTES = new Set(['home','teaching','nk-grad','islm-asad','code','explorer','more']);
+
+function findNavButton(name) {
+  return document.querySelector('.nav-tabs [data-tab="' + name + '"]');
+}
+
+function normalizeRouteHash(hash) {
+  const raw = (hash || '').replace(/^#/, '').trim();
+  const cleaned = raw.replace(/^panel-/, '');
+  return SITE_ROUTES.has(cleaned) ? cleaned : 'home';
+}
+
+function siteTab(name, btn, opts) {
+  opts = opts || {};
+  const updateHash = opts.updateHash !== false;
+  const routeName = SITE_ROUTES.has(name) ? name : 'home';
+
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.nav-main').forEach(b => b.classList.remove('active'));
 
-  const panel = document.getElementById('panel-' + name);
+  const panel = document.getElementById('panel-' + routeName);
   if (panel) panel.classList.add('active');
 
-  if (btn) {
-    btn.classList.add('active');
-    const navItem = btn.closest('.nav-item');
+  const activeBtn = btn || findNavButton(routeName);
+  if (activeBtn) {
+    activeBtn.classList.add('active');
+    const navItem = activeBtn.closest('.nav-item');
     if (navItem) {
       const mainBtn = navItem.querySelector('.nav-main');
       if (mainBtn) mainBtn.classList.add('active');
@@ -1721,11 +1738,30 @@ function siteTab(name, btn) {
   }
 
   closeNavMenus();
-  initAppPanel(name);
+  initAppPanel(routeName);
 
   // lazy-load explorer the first time
-  if (name === 'explorer' && !window._expLoaded) { window._expLoaded = true; loadData(); }
+  if (routeName === 'explorer' && !window._expLoaded) { window._expLoaded = true; loadData(); }
+
+  if (updateHash) {
+    const nextHash = '#' + routeName;
+    if (window.location.hash !== nextHash) {
+      if (history && history.replaceState && routeName === 'home' && !window.location.hash) {
+        history.replaceState(null, '', nextHash);
+      } else {
+        window.location.hash = routeName;
+      }
+    }
+  }
 }
+
+function openTabFromHash() {
+  const routeName = normalizeRouteHash(window.location.hash);
+  siteTab(routeName, findNavButton(routeName), { updateHash: false });
+}
+
+window.addEventListener('hashchange', openTabFromHash);
+document.addEventListener('DOMContentLoaded', openTabFromHash);
 
 document.addEventListener('click', function (e) {
   if (!e.target.closest('.nav-item')) closeNavMenus();
