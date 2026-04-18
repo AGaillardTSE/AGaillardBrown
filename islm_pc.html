@@ -339,6 +339,15 @@ body{overflow:hidden;}
     gap:12px;
     flex:none;
   }
+  /* Mobile-only reorder: interpretation first, then the two main diagrams */
+  #panel-islm-asad .asad-app .main-grid > :nth-child(2),
+  #panel-islm-asad .asad-app .construct-grid > :nth-child(2){order:1;}
+  #panel-islm-asad .asad-app .main-grid > :nth-child(1),
+  #panel-islm-asad .asad-app .construct-grid > :nth-child(1){order:2;}
+  #panel-islm-asad .asad-app .main-grid > :nth-child(3),
+  #panel-islm-asad .asad-app .construct-grid > :nth-child(3){order:3;}
+  #panel-islm-asad .asad-app .main-grid > :nth-child(4),
+  #panel-islm-asad .asad-app .construct-grid > :nth-child(4){order:4;}
   #panel-islm-asad .asad-app .chart-card,
   #panel-islm-asad .asad-app .info-card,
   #panel-islm-asad .asad-app .equation-card,
