@@ -1498,8 +1498,13 @@ footer a:hover{color:var(--accent)}
 </button>
 <button class="sc-btn" id="asad-c-btn-oil_supply" onclick="asadSetScenarioBoth('oil_supply',this)">
 <div class="sc-icon">⛽</div>
-<div class="sc-text"><div class="sc-name">Permanent oil shock</div><div class="sc-sub">Supply only</div></div>
+<div class="sc-text"><div class="sc-name">Permanent oil shock</div><div class="sc-sub">Choose a channel below</div></div>
 </button>
+<div class="sub-btns" id="asad-c-oil-subs">
+<button class="sub-btn active" id="asad-c-sub-oil_supply" onclick="asadSelectOil('oil_supply',this)">Supply only (LRAS + SRAS)</button>
+<button class="sub-btn" id="asad-c-sub-oil_demand" onclick="asadSelectOil('oil_demand',this)">Demand only (AD via IS)</button>
+<button class="sub-btn" id="asad-c-sub-oil_both" onclick="asadSelectOil('oil_both',this)">Both supply &amp; demand</button>
+</div>
 <button class="sc-btn" id="asad-c-btn-fiscal" onclick="asadSetScenarioBoth('fiscal',this)">
 <div class="sc-icon">↓G</div>
 <div class="sc-text"><div class="sc-name">Fiscal consolidation</div><div class="sc-sub">IS shifts left</div></div>
@@ -1518,6 +1523,13 @@ footer a:hover{color:var(--accent)}
 </div>
 <div class="phase-dots" id="asad-c-phase-dots"></div>
 <input id="asad-c-phase-slider" max="3" min="0" oninput="asadSetPhase(+this.value)" step="1" type="range" value="0"/>
+</div>
+<div>
+<div class="sidebar-section-label">View</div>
+<div class="view-toggle">
+<button class="view-btn active" id="asad-c-btn-step" onclick="asadSetView('step')">Step by step</button>
+<button class="view-btn" id="asad-c-btn-all" onclick="asadSetView('all')">All runs</button>
+</div>
 </div>
 <div>
 <div class="sidebar-section-label">Interpretation</div>
@@ -2122,27 +2134,45 @@ function asadSetGTab(tab){
   document.getElementById('asad-gtab-construct').classList.toggle('active', tab==='construct');
   document.getElementById('asad-view-asad').classList.toggle('active', tab==='asad-asad');
   document.getElementById('asad-view-construct').classList.toggle('active', tab==='construct');
-  if(tab==='construct') setTimeout(()=>{ asadSyncConstructSidebar(); asadDrawConstruct(); }, 30);
+  asadSyncScenarioButtons();
+  asadSyncConstructSidebar();
+  setTimeout(()=>{ asadDraw(); }, 30);
+}
+
+// Keep scenario buttons in sync across both sidebars
+function asadSyncScenarioButtons(){
+  const oilKeys = ['oil_supply','oil_demand','oil_both'];
+  document.querySelectorAll('#asad-view-asad .sc-btn, #asad-view-construct .sc-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('#asad-view-asad .sub-btn, #asad-view-construct .sub-btn').forEach(b=>b.classList.remove('active'));
+  if(oilKeys.includes(curSc)){
+    const oilMain = document.getElementById('asad-btn-oil_supply');
+    const oilConstruct = document.getElementById('asad-c-btn-oil_supply');
+    if(oilMain) oilMain.classList.add('active');
+    if(oilConstruct) oilConstruct.classList.add('active');
+    const mainSub = document.getElementById('asad-sub-' + curSc);
+    const constructSub = document.getElementById('asad-c-sub-' + curSc);
+    if(mainSub) mainSub.classList.add('active');
+    if(constructSub) constructSub.classList.add('active');
+  } else {
+    const mainBtn = document.getElementById('asad-btn-' + curSc);
+    const constructBtn = document.getElementById('asad-c-btn-' + curSc);
+    if(mainBtn) mainBtn.classList.add('active');
+    if(constructBtn) constructBtn.classList.add('active');
+  }
 }
 
 // Set scenario from construct tab (syncs both tabs)
 function asadSetScenarioBoth(key, btn){
-  // Update main sidebar buttons
-  document.querySelectorAll('#view-asad .sc-btn').forEach(b=>b.classList.remove('active'));
-  const mainBtn = document.getElementById('btn-'+key) || document.getElementById('asad-btn-base');
-  if(mainBtn) mainBtn.classList.add('active');
-  // Update construct sidebar buttons
-  document.querySelectorAll('#view-construct .sc-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  // Run the scenario
-  curSc = key; phase = 0;
+  curSc = key;
+  phase = 0;
   const sc = scenarios[key];
   document.getElementById('asad-phase-slider').value = 0;
   document.getElementById('asad-phase-slider').max = sc.phases.length-1;
   document.getElementById('asad-c-phase-slider').value = 0;
   document.getElementById('asad-c-phase-slider').max = sc.phases.length-1;
-  asadSyncConstructSidebar();
-  }
+  asadSyncScenarioButtons();
+  asadUpdateAll();
+}
 
 function asadSyncConstructSidebar(){
   const sc = scenarios[curSc];
@@ -2360,27 +2390,33 @@ function asadSetView(mode){
   viewMode = mode;
   document.getElementById('asad-btn-step').classList.toggle('active', mode==='step');
   document.getElementById('asad-btn-all').classList.toggle('active', mode==='all');
+  const cStep = document.getElementById('asad-c-btn-step');
+  const cAll  = document.getElementById('asad-c-btn-all');
+  if(cStep) cStep.classList.toggle('active', mode==='step');
+  if(cAll)  cAll.classList.toggle('active', mode==='all');
   asadDraw();
 }
 
 function asadSetScenario(key, btn){
-  curSc = key; phase = 0;
+  curSc = key;
+  phase = 0;
+  const sc = scenarios[key];
   document.getElementById('asad-phase-slider').value = 0;
-  document.getElementById('asad-phase-slider').max = scenarios[key].phases.length-1;
-  document.querySelectorAll('.sc-btn').forEach(b=>b.classList.remove('active'));
-  const oilKeys = ['oil_supply','oil_demand','oil_both'];
-  if(oilKeys.includes(key)) document.getElementById('asad-btn-oil_supply').classList.add('active');
-  else btn.classList.add('active');
+  document.getElementById('asad-phase-slider').max = sc.phases.length-1;
+  document.getElementById('asad-c-phase-slider').value = 0;
+  document.getElementById('asad-c-phase-slider').max = sc.phases.length-1;
+  asadSyncScenarioButtons();
   asadUpdateAll();
 }
 function asadSelectOil(key, btn){
-  curSc = key; phase = 0;
+  curSc = key;
+  phase = 0;
+  const sc = scenarios[key];
   document.getElementById('asad-phase-slider').value = 0;
-  document.getElementById('asad-phase-slider').max = scenarios[key].phases.length-1;
-  document.querySelectorAll('.sc-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('asad-btn-oil_supply').classList.add('active');
-  document.querySelectorAll('.sub-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.getElementById('asad-phase-slider').max = sc.phases.length-1;
+  document.getElementById('asad-c-phase-slider').value = 0;
+  document.getElementById('asad-c-phase-slider').max = sc.phases.length-1;
+  asadSyncScenarioButtons();
   asadUpdateAll();
 }
 function asadSetPhase(v){ phase=v; asadUpdateAll(); }
@@ -2774,9 +2810,15 @@ const kMD=1.0, hMD=0.6; // money demand params
 const M_P_base = kMD*Y0 - hMD*r0; // 0.5 - 0.27 = 0.23
 
 function asadDrawConstruct(){
-  asadDrawKM();    // Keynesian cross
-  asadDrawISLM_c(); // IS-LM (same as main but on canvas islm2)
-  asadDrawMM();    // Money market
+  if(viewMode === 'all'){
+    asadDrawKMAll();
+    asadDrawISLM_cAll();
+    asadDrawMMAll();
+  } else {
+    asadDrawKM();
+    asadDrawISLM_c();
+    asadDrawMM();
+  }
 }
 
 // ── Keynesian Cross ──────────────────────────────────────────
@@ -2890,6 +2932,96 @@ function asadDrawKM(){
 }
 
 
+function asadDrawKMAll(){
+  const cv = document.getElementById('asad-km');
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+  const sc = scenarios[curSc];
+  const phases = sc.phases;
+  const lastPh = phases[phases.length-1];
+  const alphas = phases.length===3 ? [0.45,0.70,1.0] : [0.35,0.55,0.75,1.0];
+  const A0_base_km = Y0 * (1 - mpc);
+
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0));    ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+
+  ctx.strokeStyle='rgba(0,0,0,0.15)'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(px_(0),py_(0)); ctx.lineTo(px_(1),py_(1)); ctx.stroke();
+  ctx.setLineDash([]);
+  asadLbl(ctx,'Z=Y',px_(0.86),py_(0.89),'rgba(0,0,0,0.25)',10);
+
+  ctx.save(); asadClipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
+  const Zb = u => A0_base_km + mpc*u;
+  ctx.strokeStyle=COL.IS; ctx.lineWidth=1.8;
+  ctx.beginPath(); [0,1].forEach((u,i)=>{ i?ctx.lineTo(px_(u),py_(Zb(u))):ctx.moveTo(px_(u),py_(Zb(u))); }); ctx.stroke();
+  asadLbl(ctx,'Z',px_(0.80),py_(Zb(0.80))+14,COL.IS,11);
+
+  const drawnA0 = new Set([Math.round(A0_base_km*1000)]);
+  phases.forEach((ph,i)=>{
+    const A0_curr = ph.eqY * (1 - mpc);
+    const key = Math.round(A0_curr*1000);
+    if(drawnA0.has(key)) return;
+    drawnA0.add(key);
+    ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    ctx.strokeStyle=COL.IS+'bb'; ctx.lineWidth=1.6; ctx.setLineDash([7,5]);
+    ctx.beginPath(); [0,1].forEach((u,j)=>{ const z=A0_curr + mpc*u; j?ctx.lineTo(px_(u),py_(z)):ctx.moveTo(px_(u),py_(z)); }); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1.0;
+  });
+  const A0_last = lastPh.eqY * (1 - mpc);
+  if(Math.abs(A0_last - A0_base_km) > 0.005){
+    asadLbl(ctx,"Z'",px_(0.74),py_(A0_last + mpc*0.74)+14,COL.IS+'bb',10);
+  }
+  ctx.restore();
+
+  const Yeq_base = A0_base_km/(1-mpc);
+  ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+  ctx.beginPath();
+  ctx.moveTo(px_(Yeq_base),py_(0)); ctx.lineTo(px_(Yeq_base),py_(Yeq_base));
+  ctx.moveTo(px_(0),py_(Yeq_base)); ctx.lineTo(px_(Yeq_base),py_(Yeq_base));
+  ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px_(Yeq_base),py_(Yeq_base),7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(Yeq_base),py_(Yeq_base),3.5,0,Math.PI*2); ctx.fill();
+  asadLbl(ctx,'A',px_(Yeq_base)+6,py_(Yeq_base)-8,COL.dot,11);
+
+  phases.forEach((ph,i)=>{
+    const Yeq_curr = ph.eqY;
+    if(Math.abs(Yeq_curr - Yeq_base) <= 0.005 || !ph.eqLabel) return;
+    ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+    ctx.beginPath();
+    ctx.moveTo(px_(Yeq_curr),py_(0)); ctx.lineTo(px_(Yeq_curr),py_(Yeq_curr));
+    ctx.moveTo(px_(0),py_(Yeq_curr)); ctx.lineTo(px_(Yeq_curr),py_(Yeq_curr));
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(px_(Yeq_curr),py_(Yeq_curr),7,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(Yeq_curr),py_(Yeq_curr),3.5,0,Math.PI*2); ctx.fill();
+    asadLbl(ctx, ph.eqLabel, px_(Yeq_curr)+(Yeq_curr>Yeq_base?6:-14), py_(Yeq_curr)-8, COL.dot, 11);
+    ctx.globalAlpha = 1.0;
+  });
+
+  asadLbl(ctx,'Z',px_(0)-18,py_(0.96),COL.txt,11);
+  asadLbl(ctx,'Y',px_(0.97),py_(0)+15,COL.txt,11);
+  asadLbl(ctx,'Y*',px_(Yeq_base)-5,py_(0)+15,COL.txt,9);
+  ctx.fillStyle='rgba(0,0,0,0.30)'; ctx.font='10px "DM Sans",sans-serif';
+  ctx.fillText('Multiplier: 1/(1−c₁(1−t)) ≈'+(1/(1-mpc)).toFixed(2),px_(0.02),py_(0.97));
+}
+
+
 // ── IS-LM (construction tab) — mirrors asadDrawISLM with current phase ──────────
 function asadDrawISLM_c(){
   const cv = document.getElementById('asad-islm2');
@@ -2911,6 +3043,13 @@ function asadDrawISLM_c(){
   const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
   const dLM_total = (ph.dLM_ex||0)+(ph.dLM_P||0);
 
+  // In the construction tab, the money-market / IS-LM equilibrium should reflect
+  // the ACTUAL post-price-adjustment point when one exists (A'' in the oil cases),
+  // not the auxiliary demand-only point A'.
+  const actualEqY = (ph.eq2Y !== undefined) ? ph.eq2Y : ph.eqY;
+  const actualEqR = (ph.eq2R !== undefined) ? ph.eq2R : ph.eqR;
+  const actualEqLabel = ph.eq2Label || ph.eqLabel;
+
   // Axes
   ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
   ctx.beginPath();
@@ -2931,9 +3070,9 @@ function asadDrawISLM_c(){
   const Us2=Array.from({length:120},(_,i)=>0.02+i*0.96/119);
   ctx.save(); asadClipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
 
-  // Correspondence vertical line at equilibrium Y
+  // Correspondence vertical line at the ACTUAL equilibrium Y shown in IS-LM / MM
   ctx.save(); ctx.strokeStyle=COL.corr; ctx.lineWidth=1; ctx.setLineDash([4,4]);
-  ctx.beginPath(); ctx.moveTo(px_(ph.eqY),py_(0.02)); ctx.lineTo(px_(ph.eqY),py_(0.98));
+  ctx.beginPath(); ctx.moveTo(px_(actualEqY),py_(0.02)); ctx.lineTo(px_(actualEqY),py_(0.98));
   ctx.stroke(); ctx.setLineDash([]); ctx.restore();
 
   // Base IS
@@ -2976,20 +3115,148 @@ function asadDrawISLM_c(){
   ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(eqA.Y),py_(eqA.r),3.5,0,Math.PI*2); ctx.fill();
   asadLbl(ctx,'A',px_(eqA.Y)+7,py_(eqA.r)-7,COL.dot,11);
 
-  // Shifted equilibrium (IS' ∩ LM')
-  if(ph.eqLabel){
+  // Auxiliary demand-only point A' (oil-both only)
+  if(ph.eqLabel && ph.eq2Label){
     const sx=px_(ph.eqY), sy=py_(ph.eqR);
     if(ph.eqY>0.03&&ph.eqY<0.97&&ph.eqR>0.03&&ph.eqR<0.97){
-      // projection dashes
+      ctx.save(); ctx.setLineDash([2,3]); ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(sx,py_(0)); ctx.lineTo(sx,sy); ctx.moveTo(px_(0),sy); ctx.lineTo(sx,sy);
+      ctx.stroke(); ctx.restore();
+      ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=COL.dot; ctx.globalAlpha=0.65; ctx.beginPath(); ctx.arc(sx,sy,3.5,0,Math.PI*2); ctx.fill(); ctx.globalAlpha=1.0;
+      asadLbl(ctx,ph.eqLabel,sx+(ph.eqY>0.80?-15:7),sy+(ph.eqR>r0?-8:13),COL.dot,11);
+    }
+  }
+
+  // Actual shifted equilibrium (A'' in oil cases, otherwise the main shifted point)
+  if(actualEqLabel){
+    const sx=px_(actualEqY), sy=py_(actualEqR);
+    if(actualEqY>0.03&&actualEqY<0.97&&actualEqR>0.03&&actualEqR<0.97){
       ctx.save(); ctx.setLineDash([2,3]); ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8;
       ctx.beginPath(); ctx.moveTo(sx,py_(0)); ctx.lineTo(sx,sy); ctx.moveTo(px_(0),sy); ctx.lineTo(sx,sy);
       ctx.stroke(); ctx.restore();
       ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2); ctx.fill();
       ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(sx,sy,3.5,0,Math.PI*2); ctx.fill();
-      asadLbl(ctx,ph.eqLabel,sx+(ph.eqY>0.80?-15:7),sy+(ph.eqR>r0?-8:13),COL.dot,11);
+      asadLbl(ctx,actualEqLabel,sx+(actualEqY>0.80?-15:7),sy+(actualEqR>r0?-8:13),COL.dot,11);
     }
   }
 }
+
+function asadDrawISLM_cAll(){
+  const cv = document.getElementById('asad-islm2');
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+  const sc = scenarios[curSc];
+  const phases = sc.phases;
+  const n = phases.length;
+  const lastPh = phases[n-1];
+  const alphas = n===3 ? [0.45,0.70,1.0] : [0.35,0.55,0.75,1.0];
+  const dLM_last = (lastPh.dLM_ex||0)+(lastPh.dLM_P||0);
+  const Us2=Array.from({length:120},(_,i)=>0.02+i*0.96/119);
+
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0));    ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+  ctx.setLineDash([3,3]); ctx.strokeStyle=COL.grid; ctx.lineWidth=0.8;
+  ctx.beginPath();
+  ctx.moveTo(px_(Y0),py_(0)); ctx.lineTo(px_(Y0),py_(1));
+  ctx.moveTo(px_(0),py_(r0)); ctx.lineTo(px_(1),py_(r0));
+  ctx.stroke(); ctx.setLineDash([]);
+
+  ctx.save(); asadClipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
+  const actualLastY = (lastPh.eq2Y !== undefined) ? lastPh.eq2Y : lastPh.eqY;
+  ctx.save(); ctx.strokeStyle=COL.corr; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(px_(actualLastY),py_(0.02)); ctx.lineTo(px_(actualLastY),py_(0.98));
+  ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+
+  ctx.strokeStyle=COL.IS; ctx.lineWidth=1.8;
+  ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(asadRIS(u,0)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+  asadLbl(ctx,'IS',px_(0.82),py_(asadRIS(0.82,0))-8,COL.IS,11);
+  if(lastPh.dIS!==0){
+    ctx.strokeStyle=COL.IS+'bb'; ctx.lineWidth=1.8; ctx.setLineDash([7,5]);
+    ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(asadRIS(u,lastPh.dIS)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+    ctx.setLineDash([]);
+    asadLbl(ctx,"IS'",px_(0.82),py_(asadRIS(0.82,lastPh.dIS))-8,COL.IS+'bb',11);
+  }
+
+  ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
+  ctx.beginPath(); Us2.forEach((u,i)=>{ const y=py_(asadRLM(u,P0,0)); i?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+  asadLbl(ctx,'LM',px_(0.28),py_(asadRLM(0.28,P0,0))-8,COL.LM,11,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+
+  const drawnLMs = new Set([0]);
+  phases.forEach((ph,i)=>{
+    const dLM = (ph.dLM_ex||0)+(ph.dLM_P||0);
+    const key = Math.round(dLM*1000);
+    if(drawnLMs.has(key)) return;
+    drawnLMs.add(key);
+    ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.5; ctx.setLineDash([7,5]);
+    ctx.beginPath(); Us2.forEach((u,j)=>{ const y=py_(asadRLM(u,P0,dLM)); j?ctx.lineTo(px_(u),y):ctx.moveTo(px_(u),y); }); ctx.stroke();
+    ctx.setLineDash([]); ctx.globalAlpha = 1.0;
+  });
+  if(Math.abs(dLM_last)>0.001){
+    asadLbl(ctx,"LM'",px_(0.28),py_(asadRLM(0.28,P0,dLM_last))-8,COL.LM+'bb',11,{left:PAD.l,right:w-PAD.r,top:PAD.t,bottom:h-PAD.b});
+  }
+  ctx.restore();
+
+  asadLbl(ctx,'r',px_(0)-18,py_(0.96),COL.txt,11);
+  asadLbl(ctx,'Y',px_(0.97),py_(0)+15,COL.txt,11);
+  asadLbl(ctx,'Y*',px_(Y0)-5,py_(0)+15,COL.txt,9);
+  asadLbl(ctx,'r*',px_(0)-24,py_(r0)+4,COL.txt,9);
+
+  const eqA = asadIslmEq(P0,0,0);
+  ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(px_(eqA.Y),py_(eqA.r),7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(px_(eqA.Y),py_(eqA.r),3.5,0,Math.PI*2); ctx.fill();
+  asadLbl(ctx,'A',px_(eqA.Y)+7,py_(eqA.r)-7,COL.dot,11);
+
+  phases.forEach((ph,i)=>{
+    const actualEqY = (ph.eq2Y !== undefined) ? ph.eq2Y : ph.eqY;
+    const actualEqR = (ph.eq2R !== undefined) ? ph.eq2R : ph.eqR;
+    const actualEqLabel = ph.eq2Label || ph.eqLabel;
+    if(ph.eqLabel && ph.eq2Label){
+      const sx=px_(ph.eqY), sy=py_(ph.eqR);
+      if(ph.eqY>0.03&&ph.eqY<0.97&&ph.eqR>0.03&&ph.eqR<0.97){
+        ctx.globalAlpha = Math.min(0.85, alphas[Math.min(i,alphas.length-1)] + 0.1);
+        ctx.save(); ctx.setLineDash([2,3]); ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8;
+        ctx.beginPath(); ctx.moveTo(sx,py_(0)); ctx.lineTo(sx,sy); ctx.moveTo(px_(0),sy); ctx.lineTo(sx,sy);
+        ctx.stroke(); ctx.restore();
+        ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(sx,sy,3.5,0,Math.PI*2); ctx.fill();
+        asadLbl(ctx,ph.eqLabel,sx+(ph.eqY>0.80?-15:7),sy+(ph.eqR>r0?-8:13),COL.dot,11);
+        ctx.globalAlpha = 1.0;
+      }
+    }
+    if(actualEqLabel){
+      const sx=px_(actualEqY), sy=py_(actualEqR);
+      if(actualEqY>0.03&&actualEqY<0.97&&actualEqR>0.03&&actualEqR<0.97){
+        ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+        ctx.save(); ctx.setLineDash([2,3]); ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8;
+        ctx.beginPath(); ctx.moveTo(sx,py_(0)); ctx.lineTo(sx,sy); ctx.moveTo(px_(0),sy); ctx.lineTo(sx,sy);
+        ctx.stroke(); ctx.restore();
+        ctx.fillStyle=COL.bg; ctx.beginPath(); ctx.arc(sx,sy,7,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(sx,sy,3.5,0,Math.PI*2); ctx.fill();
+        asadLbl(ctx,actualEqLabel,sx+(actualEqY>0.80?-15:7),sy+(actualEqR>r0?-8:13),COL.dot,11);
+        ctx.globalAlpha = 1.0;
+      }
+    }
+  });
+}
+
 
 // ── Money Market ─────────────────────────────────────────────
 // Horizontal axis: real money M/P (supply fixed vertical, demand downward in r)
@@ -3009,27 +3276,20 @@ function asadDrawMM(){
   // Money market: x-axis = M/P (real money), y-axis = r
   // Money demand: L(Y,r) = kMD*Y - hMD*r  →  for given M/P supply:  r = (kMD*Y - M/P)/hMD
   // Money supply: vertical line at M_P (real = M/P; shifts if P changes or CB changes M)
-  // 
-  // Phase mapping:
-  //   dLM_ex > 0 → autonomous LM shift UP → effectively real M/P fell (tighter money)
-  //                MS shifts LEFT (lower real money supply)
-  //   dLM_ex < 0 → LM shifts DOWN → real M/P rose (looser money)
-  //                MS shifts RIGHT
-  //   dLM_P  > 0 → price P rose → real M/P = M/P_nom fell → MS shifts LEFT
-  // Total autonomous shift of MS: -(dLM_ex + dLM_P) / kP  (in M/P units)
-  // Because asadRLM = a_LM + kP*P + b_LM*Y + dLM_ex, and kP enters as the price effect.
-  // For display: we define M_P_curr = M_P_base - (dLM_ex + dLM_P)/kP
-  //   (a higher dLM means less real money → MS shifts left)
-  // The equilibrium Y from the phase determines which L curve to show.
-
+  //
+  // In the oil-supply and oil-both short-run cases, the actual equilibrium is A''
+  // after the price increase has reduced real balances. So the money market must use
+  // eq2 (when present), not the auxiliary demand-only A' point.
   const sc = scenarios[curSc];
   const ph = sc.phases[Math.min(phase, sc.phases.length-1)];
-  // Key fix: derive M/P at equilibrium from ph.eqY and ph.eqR directly.
+  const actualEqY = (ph.eq2Y !== undefined) ? ph.eq2Y : ph.eqY;
+  const actualEqR = (ph.eq2R !== undefined) ? ph.eq2R : ph.eqR;
+  const actualEqLabel = ph.eq2Label || ph.eqLabel;
+
+  // Derive M/P at the ACTUAL equilibrium directly from the money-demand curve.
   // This guarantees the dot lies exactly on BOTH the L curve AND the MS line.
-  // Proof: L(ph.eqY, ph.eqR) = kMD*ph.eqY - hMD*ph.eqR = M_P_eq_ph  (on L curve)
-  //        MS drawn at M_P_eq_ph                                        (on MS line)
-  const M_P_eq_ph = kMD * ph.eqY - hMD * ph.eqR;
-  const shiftedEq = Math.abs(ph.eqY - Y0) > 0.01 || Math.abs(ph.eqR - r0) > 0.01;
+  const M_P_eq_ph = kMD * actualEqY - hMD * actualEqR;
+  const shiftedEq = Math.abs(actualEqY - Y0) > 0.01 || Math.abs(actualEqR - r0) > 0.01;
 
   const pad={l:52,r:20,t:20,b:38};
   const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
@@ -3074,10 +3334,9 @@ function asadDrawMM(){
   drawLD(Y0, COL.LM, false, 'L(Y*)');
 
   // Shifted L(Y_eq) — only if Y changed
-  const shiftedY = Math.abs(ph.eqY - Y0) > 0.01;
+  const shiftedY = Math.abs(actualEqY - Y0) > 0.01;
   if(shiftedY){
-    const lbl_ld = ph.eqY > Y0 ? "L(Y')" : "L(Y')";
-    drawLD(ph.eqY, COL.LM+'bb', true, lbl_ld);
+    drawLD(actualEqY, COL.LM+'bb', true, "L(Y')");
   }
 
   // Base MS: vertical line at M_P_base
@@ -3085,7 +3344,7 @@ function asadDrawMM(){
   ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
   ctx.beginPath(); ctx.moveTo(MS0_x,pr_(0.96)); ctx.lineTo(MS0_x,pr_(0.02)); ctx.stroke();
 
-  // Shifted MS: vertical at M_P_eq_ph (exactly where L(ph.eqY) meets pr_(ph.eqR))
+  // Shifted MS: vertical at M_P_eq_ph (exactly where L(actualEqY) meets pr_(actualEqR))
   const shiftedMS = shiftedEq && Math.abs(M_P_eq_ph - M_P_base) > 0.005;
   if(shiftedMS){
     const MS1_x = pMP(M_P_eq_ph);
@@ -3110,19 +3369,19 @@ function asadDrawMM(){
   ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(MS0_x,pr_(eq_r0),3.5,0,Math.PI*2); ctx.fill();
   asadLbl(ctx,'A', MS0_x+7, pr_(eq_r0)-7, COL.dot, 11);
 
-  // Shifted equilibrium A': L(ph.eqY) ∩ MS' — dot placed at (pMP(M_P_eq_ph), pr_(ph.eqR))
-  // L(ph.eqY, ph.eqR) = kMD*ph.eqY - hMD*ph.eqR = M_P_eq_ph  → on L curve ✓
-  // MS' is at M_P_eq_ph                                          → on MS line ✓
+  // Shifted equilibrium: L(actualEqY) ∩ MS' — dot placed at (pMP(M_P_eq_ph), pr_(actualEqR))
+  // L(actualEqY, actualEqR) = kMD*actualEqY - hMD*actualEqR = M_P_eq_ph  → on L curve ✓
+  // MS' is at M_P_eq_ph                                              → on MS line ✓
   if(shiftedEq){
     const MS_eq_x = pMP(M_P_eq_ph);
-    const r_eq = ph.eqR;
+    const r_eq = actualEqR;
     if(r_eq>0.02&&r_eq<0.96&&M_P_eq_ph>0.01&&M_P_eq_ph<MP_max-0.01){
       ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
       ctx.beginPath(); ctx.moveTo(pMP(0),pr_(r_eq)); ctx.lineTo(MS_eq_x,pr_(r_eq)); ctx.stroke();
       ctx.setLineDash([]);
       ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(MS_eq_x,pr_(r_eq),7,0,Math.PI*2); ctx.fill();
       ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(MS_eq_x,pr_(r_eq),3.5,0,Math.PI*2); ctx.fill();
-      const eqLbl2 = ph.eqLabel || "A'";
+      const eqLbl2 = actualEqLabel || "A'";
       asadLbl(ctx, eqLbl2, MS_eq_x+7, pr_(r_eq)-7, COL.dot, 11);
       asadLbl(ctx, "r'", px_(0)-22, pr_(r_eq)+4, COL.txt, 9);
     }
@@ -3137,6 +3396,130 @@ function asadDrawMM(){
 }
 
 
+function asadDrawMMAll(){
+  const cv = document.getElementById('asad-mm');
+  const dpr = window.devicePixelRatio||1;
+  const w = cv.clientWidth, h = cv.clientHeight;
+  if(!w || !h) return;
+  if(cv.width!==w*dpr||cv.height!==h*dpr){cv.width=w*dpr;cv.height=h*dpr;}
+  cv.style.width=w+'px'; cv.style.height=h+'px';
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+
+  const sc = scenarios[curSc];
+  const phases = sc.phases;
+  const lastPh = phases[phases.length-1];
+  const alphas = phases.length===3 ? [0.45,0.70,1.0] : [0.35,0.55,0.75,1.0];
+  const pad={l:52,r:20,t:20,b:38};
+  const gw=w-pad.l-pad.r, gh=h-pad.t-pad.b;
+  const MP_max=0.8;
+  const px_=u=>pad.l+u*gw, py_=u=>pad.t+(1-u)*gh;
+  const pMP=v=>px_(Math.max(0,Math.min(1,v/MP_max)));
+  const pr_=v=>py_(v);
+
+  ctx.strokeStyle=COL.axis; ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(px_(0),py_(1.02)); ctx.lineTo(px_(0),py_(0));
+  ctx.moveTo(px_(0),py_(0));    ctx.lineTo(px_(1.02),py_(0));
+  ctx.stroke();
+  ctx.fillStyle=COL.axis;
+  ctx.beginPath();ctx.moveTo(px_(0)-3.5,py_(1.02)+7);ctx.lineTo(px_(0),py_(1.02)-2);ctx.lineTo(px_(0)+3.5,py_(1.02)+7);ctx.fill();
+  ctx.beginPath();ctx.moveTo(px_(1.02)-7,py_(0)-3.5);ctx.lineTo(px_(1.02)+2,py_(0));ctx.lineTo(px_(1.02)-7,py_(0)+3.5);ctx.fill();
+
+  const drawLD = (Y_val, color, dashed, label, alpha) => {
+    ctx.save();
+    ctx.globalAlpha = alpha || 1;
+    ctx.strokeStyle=color; ctx.lineWidth=1.8;
+    if(dashed) ctx.setLineDash([7,5]);
+    ctx.beginPath(); let started=false;
+    for(let i=0;i<=100;i++){
+      const r_val=0.02+i*0.96/100;
+      const MP_val=kMD*Y_val - hMD*r_val;
+      if(MP_val<0||MP_val>MP_max) continue;
+      const x=pMP(MP_val), y=pr_(r_val);
+      if(!started){ctx.moveTo(x,y);started=true;}else{ctx.lineTo(x,y);}
+    }
+    ctx.stroke(); ctx.setLineDash([]); ctx.restore();
+    if(label){
+      const r_lbl=0.65, MP_lbl=kMD*Y_val-hMD*r_lbl;
+      if(MP_lbl>0.01&&MP_lbl<MP_max-0.01) asadLbl(ctx,label,pMP(MP_lbl)+4,pr_(r_lbl)-6,color,11);
+    }
+  };
+
+  ctx.save(); asadClipToPlot(ctx, {l:52,r:20,t:20,b:38}, w, h);
+  drawLD(Y0, COL.LM, false, 'L(Y*)', 1);
+  const drawnY = new Set([Math.round(Y0*1000)]);
+  phases.forEach((ph,i)=>{
+    const actualEqY = (ph.eq2Y !== undefined) ? ph.eq2Y : ph.eqY;
+    const key = Math.round(actualEqY*1000);
+    if(drawnY.has(key) || Math.abs(actualEqY - Y0) <= 0.01) return;
+    drawnY.add(key);
+    drawLD(actualEqY, COL.LM+'bb', true, null, alphas[Math.min(i,alphas.length-1)]);
+  });
+  const lastActualY = (lastPh.eq2Y !== undefined) ? lastPh.eq2Y : lastPh.eqY;
+  if(Math.abs(lastActualY - Y0) > 0.01) drawLD(lastActualY, COL.LM+'bb', true, "L(Y')", 1);
+
+  const MS0_x = pMP(M_P_base);
+  ctx.strokeStyle=COL.LM; ctx.lineWidth=1.8;
+  ctx.beginPath(); ctx.moveTo(MS0_x,pr_(0.96)); ctx.lineTo(MS0_x,pr_(0.02)); ctx.stroke();
+
+  const drawnMS = new Set([Math.round(M_P_base*1000)]);
+  phases.forEach((ph,i)=>{
+    const actualEqY = (ph.eq2Y !== undefined) ? ph.eq2Y : ph.eqY;
+    const actualEqR = (ph.eq2R !== undefined) ? ph.eq2R : ph.eqR;
+    const MP = kMD*actualEqY - hMD*actualEqR;
+    const key = Math.round(MP*1000);
+    if(drawnMS.has(key) || Math.abs(MP - M_P_base) <= 0.005) return;
+    drawnMS.add(key);
+    ctx.save(); ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+    ctx.strokeStyle=COL.LM+'bb'; ctx.lineWidth=1.6; ctx.setLineDash([7,5]);
+    const x = pMP(MP);
+    ctx.beginPath(); ctx.moveTo(x,pr_(0.96)); ctx.lineTo(x,pr_(0.02)); ctx.stroke();
+    ctx.setLineDash([]); ctx.restore();
+  });
+  const lastActualR = (lastPh.eq2R !== undefined) ? lastPh.eq2R : lastPh.eqR;
+  const MP_last = kMD*lastActualY - hMD*lastActualR;
+  ctx.restore();
+
+  asadLbl(ctx,'MS', MS0_x+3, pr_(0.97), COL.LM, 11);
+  if(Math.abs(MP_last - M_P_base) > 0.005) asadLbl(ctx,"MS'", pMP(MP_last)+3, pr_(0.97), COL.LM+'bb', 11);
+
+  const eq_r0 = (kMD*Y0 - M_P_base)/hMD;
+  ctx.strokeStyle='rgba(0,0,0,0.09)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+  ctx.beginPath(); ctx.moveTo(pMP(0),pr_(eq_r0)); ctx.lineTo(MS0_x,pr_(eq_r0)); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(MS0_x,pr_(eq_r0),7,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(MS0_x,pr_(eq_r0),3.5,0,Math.PI*2); ctx.fill();
+  asadLbl(ctx,'A', MS0_x+7, pr_(eq_r0)-7, COL.dot, 11);
+
+  phases.forEach((ph,i)=>{
+    const actualEqY = (ph.eq2Y !== undefined) ? ph.eq2Y : ph.eqY;
+    const actualEqR = (ph.eq2R !== undefined) ? ph.eq2R : ph.eqR;
+    const actualEqLabel = ph.eq2Label || ph.eqLabel;
+    const MP = kMD*actualEqY - hMD*actualEqR;
+    if(!actualEqLabel || Math.abs(actualEqY - Y0) <= 0.01 && Math.abs(actualEqR - r0) <= 0.01) return;
+    if(actualEqR>0.02&&actualEqR<0.96&&MP>0.01&&MP<MP_max-0.01){
+      const MS_eq_x = pMP(MP);
+      ctx.globalAlpha = alphas[Math.min(i,alphas.length-1)];
+      ctx.strokeStyle='rgba(0,0,0,0.07)'; ctx.lineWidth=0.8; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(pMP(0),pr_(actualEqR)); ctx.lineTo(MS_eq_x,pr_(actualEqR)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(MS_eq_x,pr_(actualEqR),7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle=COL.dot; ctx.beginPath(); ctx.arc(MS_eq_x,pr_(actualEqR),3.5,0,Math.PI*2); ctx.fill();
+      asadLbl(ctx, actualEqLabel, MS_eq_x+7, pr_(actualEqR)-7, COL.dot, 11);
+      ctx.globalAlpha = 1.0;
+    }
+  });
+
+  asadLbl(ctx,'r',     px_(0)-18,          py_(0.96),      COL.txt, 11);
+  asadLbl(ctx,'M/P',   px_(0.82),          py_(0)+15,      COL.txt, 11);
+  asadLbl(ctx,'r*',    px_(0)-24,          pr_(eq_r0)+4,   COL.txt, 9);
+  if(M_P_base>0&&M_P_base<MP_max) asadLbl(ctx,'(M/P)*', pMP(M_P_base)-10, py_(0)+14, COL.txt, 8);
+}
+
+
+asadSyncScenarioButtons();
 asadUpdateAll();
 
 window.asadSetGTab = asadSetGTab;
@@ -3146,6 +3529,7 @@ window.asadSetScenario = asadSetScenario;
 window.asadSelectOil = asadSelectOil;
 window.asadSetPhase = asadSetPhase;
 window.initIslmAsadApp = function(){
+  asadSyncScenarioButtons();
   asadUpdateAll();
 };
 window.addEventListener('resize', function(){
