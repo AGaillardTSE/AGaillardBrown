@@ -15,9 +15,9 @@
     <title>L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=82" />
     <script src="vendor/leaflet/leaflet.js" defer></script>
-    <script src="app.js" defer></script>
+    <script src="app.js?v=82" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -405,7 +405,11 @@
                 <input id="map-search" type="search" list="bva-options" placeholder="Ex. Toulouse, Paris — Créteil…" autocomplete="off" />
                 <datalist id="bva-options"></datalist>
               </label>
-              <button id="map-reset" class="map-reset" type="button">Vue France</button>
+              <div class="map-actions">
+                <button id="map-reset" class="map-reset" type="button">Vue France</button>
+                <button id="map-download" class="map-download" type="button" disabled>Télécharger en PNG</button>
+                <output id="map-download-status" class="visually-hidden" aria-live="polite"></output>
+              </div>
             </div>
             <div class="map-layout">
               <div class="map-stage">
