@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta
+      name="description"
+      content="An interactive overview of the paper Extreme Poverty in Rich Countries, using data from Restos du Cœur (RDC)."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:title" content="Extreme Poverty in Rich Countries: Empirical Evidence from France" />
+    <meta property="og:description" content="5.5 million unique individuals, interactive maps, and the mechanisms driving entries into and exits from extreme poverty." />
+    <meta property="og:image" content="og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Report title and stylised map of France" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="og.png" />
+    <title>Extreme Poverty in Rich Countries: Empirical Evidence from France</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="vendor/leaflet/leaflet.js" defer></script>
+    <script src="app-en.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Skip to content</a>
+    <header class="topbar">
+      <a class="brand" href="#haut" aria-label="Back to top">
+        <img class="brand-mark" src="favicon.svg" alt="" aria-hidden="true" />
+        <span>Policy brief</span>
+      </a>
+      <nav class="topbar-nav" aria-label="Navigate by question">
+        <div class="language-switch" aria-label="Choose language">
+          <a href="index.html" lang="fr">FR</a>
+          <a href="en.html" lang="en" aria-current="page">EN</a>
+        </div>
+        <details class="question-menu">
+          <summary aria-label="Nine questions to understand extreme poverty">
+            <span class="question-menu-label-full">Nine questions to understand extreme poverty</span>
+          </summary>
+          <ol aria-label="Definitions and the brief’s nine questions">
+            <li class="question-menu-definition"><a href="#definitions"><span>DEF</span><strong>Definitions of extreme poverty</strong></a></li>
+            <li><a href="#question-1"><span>01</span><strong>How many people experience food and housing insecurity?</strong></a></li>
+            <li><a href="#question-2"><span>02</span><strong>How does France compare with other high-income countries?</strong></a></li>
+            <li><a href="#question-3"><span>03</span><strong>Which age groups face the greatest risk of extreme poverty?</strong></a></li>
+            <li><a href="#question-4"><span>04</span><strong>How long does an episode of extreme poverty last?</strong></a></li>
+            <li><a href="#question-5"><span>05</span><strong>What are the employment situations, incomes, and expenses of people assisted?</strong></a></li>
+            <li><a href="#question-6"><span>06</span><strong>What macroeconomic factors drive entries?</strong></a></li>
+            <li><a href="#question-7"><span>07</span><strong>What macroeconomic factors drive exits?</strong></a></li>
+            <li><a href="#question-8"><span>08</span><strong>What individual factors drive exits?</strong></a></li>
+            <li><a href="#question-9"><span>09</span><strong>Which economic shocks explain the recent rise in housing insecurity?</strong></a></li>
+          </ol>
+        </details>
+      </nav>
+    </header>
+
+    <main id="contenu">
+      <section class="hero" id="haut" aria-labelledby="titre-principal">
+        <div class="hero-copy">
+          <h1 id="titre-principal">Extreme Poverty in Rich Countries: Empirical Evidence from France</h1>
+          <div class="article-note">
+            <span>Policy brief</span>
+            <span class="article-links" aria-label="Related documents">
+              <a href="https://conference.nber.org/conf_papers/f247458.pdf" target="_blank" rel="noopener">Original paper</a>
+            </span>
+          </div>
+          <p class="dek">
+            Extreme poverty remains <span class="hero-underline">a blind spot in economic research on income and wealth inequality</span>.
+            Recent research has focussed more on the other end of the distribution—understanding the economic mechanisms associated with great fortunes. This relative lack of large-scale academic research on poverty reflects the fact that the data available to researchers do not adequately cover the most disadvantaged populations, especially people experiencing homelessness.
+            Yet these issues are especially pressing: <span class="hero-underline">numerous indicators document a very rapid rise in severe deprivation in several high-income countries</span>—including France, the United Kingdom, and the United States—over the past decade.
+          </p>
+          <p class="hero-evidence">
+            <span class="hero-underline">Data from Restos du Cœur (RDC)</span> offer a unique opportunity to shed new light on this population. These previously untapped and anonymised data are both exceptionally rich—they cover a very large share of the most disadvantaged people throughout France—and available in near real time, only a few months after each semi-annual collection. The Restos network is also particularly dense: it includes <span class="hero-underline">1,928 distribution centres</span>, or an average of <span class="hero-underline">one centre per 35,000 residents</span>. We estimate that <span class="hero-underline">nearly the entire French population lives within 20&nbsp;km</span> of a distribution site, with an <span class="hero-underline">average distance of between 5 and 10&nbsp;km</span>.
+          </p>
+          <p class="hero-evidence">
+            These data therefore allow us to follow the people assisted throughout their time with Restos. <span class="text-highlight">For each individual, we observe, among other things, their demographic and family characteristics and their postcode</span>—which allows us to link them to economic conditions specific to their living area, such as unemployment or inflation rates; <span class="text-highlight">their sources of income</span>—wages and labour-market status, social benefits, and pensions; <span class="text-highlight">some of their expenditures</span>—rent, utilities, alimony, and debt repayments; <span class="text-highlight">their housing situation</span>—homelessness or, more generally, housing insecurity, social housing, private rental, or home ownership; and the frequency with which they visit Restos du Cœur. We therefore have access to valuable, highly detailed information about the people assisted, their finances, and their consumption behaviour.
+          </p>
+          <p class="hero-evidence">
+            Our paper uses these data to shed light on the determinants, dynamics, and consequences of extreme poverty in France.
+          </p>
+          <p class="byline">
+            By Christophe Bruneel-Zupanc<sup>1</sup>, Alexandre Gaillard<sup>2</sup>, Christian Hellwig<sup>3</sup>,
+            Philipp Wangner<sup>4</sup>, and Nicolas Werquin<sup>5</sup>.
+          </p>
+          <p class="affiliations" aria-label="Authors’ affiliations">
+            <span><sup>1</sup> KU Leuven</span>
+            <span><sup>2</sup> Brown University</span>
+            <span><sup>3</sup> Toulouse School of Economics</span>
+            <span><sup>4</sup> University of Mannheim</span>
+            <span><sup>5</sup> Federal Reserve Bank of Chicago</span>
+          </p>
+          <p class="author-disclaimer">The views expressed are those of the authors and do not necessarily reflect those of the Federal Reserve Bank of Chicago or the Federal Reserve System.</p>
+        </div>
+      </section>
+
+      <section class="definition-section" id="definitions" aria-labelledby="definitions-title">
+        <div class="definition-header">
+          <h2 id="definitions-title">Three nested forms of insecurity in the study data</h2>
+          <p>This brief focuses primarily on housing insecurity and homelessness. Homelessness in the broad sense is a subset of housing insecurity, which is itself observed among people experiencing food insecurity. The original article presents results for the full population assisted by Restos du Cœur who experience food insecurity.</p>
+        </div>
+        <div class="definition-nest" aria-label="Three forms of insecurity, from the observed population to the most acute forms">
+          <section class="definition-frame definition-frame-food" aria-labelledby="definition-food-title">
+            <div class="definition-frame-intro">
+              <div class="definition-layer-title">
+                <span>Field observed in the Restos data</span>
+                <h3 id="definition-food-title">Food insecurity</h3>
+              </div>
+              <div class="definition-layer-copy">
+                <p>People assisted by Restos du Cœur (RDC), whose eligibility is based on their remaining disposable resources—a measure of consumption—and who belong to households that identify themselves as needing food assistance. They may experience housing insecurity, rent in the private or social sector, or, less commonly, own their home.</p>
+              </div>
+            </div>
+
+            <section class="definition-frame definition-frame-housing" aria-labelledby="definition-housing-title">
+              <div class="definition-frame-intro">
+                <div class="definition-layer-title">
+                  <span>Within this field</span>
+                  <h3 id="definition-housing-title">Housing insecurity</h3>
+                </div>
+                <div class="definition-layer-copy">
+                  <p>People who are roofless or houseless, or who live in insecure or inadequate housing. These situations are reported through a mandatory field completed by the people assisted (<a href="https://www.feantsa.org/ethos" target="_blank" rel="noopener noreferrer">following the ETHOS typology</a>).</p>
+                </div>
+              </div>
+
+              <section class="definition-frame definition-frame-homelessness" aria-labelledby="definition-homelessness-title">
+                <div class="definition-frame-intro">
+                  <div class="definition-layer-title">
+                    <span>Most acute forms of housing insecurity</span>
+                    <h3 id="definition-homelessness-title">Homelessness in the broad sense</h3>
+                  </div>
+                  <div class="definition-layer-copy">
+                    <p>People living on the street or without a home of their own, including those temporarily accommodated in emergency shelters, social reintegration centres (CHRS), or hotels. These situations are reported through a mandatory field completed by the people assisted (<a href="https://www.feantsa.org/ethos" target="_blank" rel="noopener noreferrer">following the ETHOS typology</a>).</p>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <nav class="question-index" aria-labelledby="question-index-title">
+        <div class="question-index-intro">
+          <h2 id="question-index-title">Nine questions to understand extreme poverty</h2>
+        </div>
+        <ol>
+          <li><a href="#question-1"><span>01</span><strong>How many people experience food and housing insecurity?</strong></a></li>
+          <li><a href="#question-2"><span>02</span><strong>How does France compare with other high-income countries?</strong></a></li>
+          <li><a href="#question-3"><span>03</span><strong>Which age groups face the greatest risk of extreme poverty?</strong></a></li>
+          <li><a href="#question-4"><span>04</span><strong>How long does an episode of extreme poverty last?</strong></a></li>
+          <li><a href="#question-5"><span>05</span><strong>What are the employment situations, incomes, and expenses of people assisted?</strong></a></li>
+          <li><a href="#question-6"><span>06</span><strong>What macroeconomic factors drive entries?</strong></a></li>
+          <li><a href="#question-7"><span>07</span><strong>What macroeconomic factors drive exits?</strong></a></li>
+          <li><a href="#question-8"><span>08</span><strong>What individual factors drive exits?</strong></a></li>
+          <li><a href="#question-9"><span>09</span><strong>Which economic shocks explain the recent rise in housing insecurity?</strong></a></li>
+        </ol>
+      </nav>
+
+      <section class="section chart-section" id="ampleur" aria-labelledby="analyse-title">
+        <div class="part-heading">
+          <p>Part one</p>
+          <h2 id="analyse-title">Analysis of the raw data</h2>
+          <p class="part-intro">To date, our dataset has not been used by economists; the first part of our paper therefore highlights a number of descriptive statistics on the people assisted by Restos du Cœur.</p>
+        </div>
+        <div class="section-heading qa-section-heading qa-section-heading-solo">
+          <div>
+            <p class="section-number">Analysis of the raw data · Question 1</p>
+            <h3 id="question-1">1. How many people experience food and housing insecurity?</h3>
+            <p class="qa-answer-lead">
+              Restos du Cœur (RDC) assisted <span class="text-highlight">1.3 million people in 2025</span>, nearly 2% of the French population.
+            </p>
+          </div>
+        </div>
+
+        <div class="split-grid trend-grid">
+          <div class="q1-stat-stack" role="list" aria-label="Three key findings on the scale of extreme poverty">
+            <article class="q1-stat-card q1-stat-card-standard" role="listitem" data-mkouf="1">
+              <p><strong class="dialogue-label">Key finding:</strong> <strong class="q1-fact-title">5.5 million people</strong><br />In total, more than 5.5 million people received food assistance from Restos du Cœur (RDC) at least once between 2018 and 2025.</p>
+            </article>
+            <article class="q1-stat-card q1-stat-card-pink fact-frame-pink" role="listitem" data-mkouf="7">
+              <p><strong class="dialogue-label">Key finding:</strong> <strong class="q1-fact-title">1 in 10 people exposed</strong><br />In other words, nearly one tenth of people living in France are, at any given time, at risk of experiencing food insecurity over the following decade.</p>
+            </article>
+            <article class="q1-stat-card q1-stat-card-dark" role="listitem" data-mkouf="2">
+              <p><strong class="dialogue-label">Key finding:</strong> <strong class="q1-fact-title"><span>+51%</span> more people experiencing housing insecurity between 2021 and 2025.</strong><br />This acceleration followed the pandemic. Over a longer period, the number of people assisted by RDC rose by 37% between 2018 and 2025.</p>
+            </article>
+          </div>
+          <article class="story-card line-card">
+            <h3>International comparison: change in the homelessness rate in France and England</h3>
+            <div class="series-legend" aria-label="Chart legend">
+              <button type="button" class="series-toggle is-active" data-series="france" aria-pressed="true">
+                <i class="dot dot-france" aria-hidden="true"></i> France · RDC
+              </button>
+              <button type="button" class="series-toggle is-active" data-series="england" aria-pressed="true">
+                <i class="dot dot-england" aria-hidden="true"></i> England
+              </button>
+            </div>
+            <div id="trend-chart" class="trend-chart" aria-label="International comparison: change in the homelessness rate in France and England"></div>
+            <p class="chart-axis-title">People per 100 residents</p>
+            <p class="chart-source">Sources: France—Restos du Cœur (RDC) data; England—Ministry of Housing, Communities and Local Government.</p>
+          </article>
+        </div>
+
+        <p class="q1-transition-note">One objective of our paper is to determine the factors that drove this trend. The inflation surge of recent years is, of course, one of the main suspects, which we examine in detail.</p>
+
+        <div class="section-heading qa-section-heading qa-section-heading-solo qa-break">
+          <div>
+            <p class="section-number">Analysis of the raw data · Question 2</p>
+            <h3 id="question-2">2. How does France compare with other high-income countries?</h3>
+            <p class="qa-answer-lead">
+              Comparing extreme poverty across high-income countries is difficult, especially when it comes to homelessness. Countries do not use a common methodology to measure its extent—for example, some include all forms of housing insecurity while others restrict their count to people sleeping rough. Moreover, households experiencing housing insecurity are by nature difficult to locate and are therefore often undercounted. With these caveats in mind, OECD data allow us to draw a comparative picture across countries in 2022.
+            </p>
+          </div>
+        </div>
+
+        <div class="q2-evidence-layout">
+          <div class="chart-card country-chart-card">
+            <div class="country-chart-header">
+              <h3 class="chart-card-title">Homelessness rate</h3>
+              <div class="chart-toolbar" aria-label="Chart filters">
+                <button class="filter is-active" type="button" data-filter="focus" aria-pressed="true">
+                  Key comparisons
+                </button>
+                <button class="filter" type="button" data-filter="all" aria-pressed="false">
+                  All countries
+                </button>
+                <span class="unit">per 100 residents</span>
+              </div>
+            </div>
+            <div id="country-chart" class="country-chart" role="list" aria-label="Homelessness rate by country"></div>
+            <p class="chart-note">
+              Restos du Cœur + includes the broader forms of housing insecurity observed in Restos du Cœur data;
+              RDC uses a definition comparable to the OECD’s.
+            </p>
+            <p class="chart-note chart-note-secondary">International definitions of housing insecurity are not perfectly comparable, and the populations concerned are difficult to count.</p>
+          </div>
+          <div class="dialogue-grid dialogue-grid-q2" aria-label="Excerpts from the policy brief">
+            <blockquote class="synthesis-dialogue synthesis-dialogue-compact" data-mkouf="3">
+              <p><strong class="dialogue-label">Key finding:</strong> France, shown in bright red below, has one of the highest shares of people experiencing homelessness in the OECD, estimated at 0.49% of the population.</p>
+            </blockquote>
+            <blockquote class="synthesis-dialogue synthesis-dialogue-compact fact-frame-pink" data-mkouf="4">
+              <p><strong class="dialogue-label">Key finding:</strong> Using a methodology as close as possible to the OECD’s, we estimate that people experiencing homelessness who are assisted by RDC represent 0.42% of the population, compared with the OECD estimate of 0.49%. When we include all forms of housing insecurity, this proportion reaches 0.62% of the population.</p>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="profils" aria-label="Analysis of the raw data—questions 3 to 5">
+        <p class="resident-scope-note">Unless stated otherwise, the remainder of the brief focuses on the subpopulation of residents in France. This choice mainly reflects their uniform access to the various social transfers (RSA, housing benefits, etc.) and to social housing.</p>
+        <div class="section-heading qa-section-heading qa-section-heading-solo">
+          <div>
+            <p class="section-number">Analysis of the raw data · Question 3</p>
+            <h3 id="question-3">3. Which age groups face the greatest risk of extreme poverty?</h3>
+          </div>
+        </div>
+
+        <blockquote class="synthesis-dialogue" data-mkouf="5" aria-label="Excerpt from the policy brief">
+          <p><strong class="dialogue-label">Key finding:</strong> <em>Children and adolescents</em> are very substantially <em>over-represented</em> in extreme poverty—and even more so among people experiencing homelessness—whereas older people are under-represented. Children aged 0–9 account for nearly 25% of people experiencing housing insecurity; nearly all of these children live in single-mother households, even though this age group makes up only 10% of the population.</p>
+        </blockquote>
+
+        <div class="profile-grid profile-grid-single">
+          <article class="chart-card age-card">
+            <h3>Age distribution</h3>
+            <div class="inline-legend" aria-label="Legend">
+              <span><i class="swatch swatch-france"></i>France</span>
+              <span><i class="swatch swatch-rdc"></i>People assisted by RDC</span>
+              <span><i class="swatch swatch-housing"></i>Strict housing insecurity</span>
+            </div>
+            <div class="age-chart-layout">
+              <div class="age-pyramid-grid">
+                <section class="age-pyramid-panel" aria-labelledby="age-all-title">
+                  <div class="chart-panel-heading">
+                    <h4 id="age-all-title">All ages</h4>
+                  </div>
+                  <div id="age-pyramid-main" class="age-pyramid-chart" role="list" aria-label="Age pyramid for the full population"></div>
+                  <p class="chart-axis-title age-axis-title">Share of the population or group</p>
+                </section>
+                <section class="age-pyramid-panel" aria-labelledby="age-children-title">
+                  <div class="chart-panel-heading">
+                    <h4 id="age-children-title">Children and adolescents</h4>
+                    <span>detail for ages 0–18</span>
+                  </div>
+                  <div id="age-pyramid-children" class="age-pyramid-chart" role="list" aria-label="Detailed age pyramid for children and adolescents"></div>
+                  <p class="chart-axis-title age-axis-title">Share of the population or group</p>
+                  <p class="microcopy age-panel-note">A closer look at the child and adolescent segment of the age pyramid shown on the left.</p>
+                </section>
+              </div>
+            </div>
+            <p class="effects-reading age-chart-reading"><strong>How to read this:</strong> This chart shows the age pyramid in our dataset (red), in the subsample of people experiencing housing insecurity (blue), and in France as a whole (light grey). For example, children aged 0–9 account for just over 20% of people assisted by Restos and between 20% and 25% of those experiencing housing insecurity, compared with 10% of the French population.</p>
+          </article>
+        </div>
+
+        <div class="qa-break">
+          <p class="section-number">Analysis of the raw data · Question 4</p>
+          <h3 id="question-4">4. How long does an episode of extreme poverty last?</h3>
+          <p class="qa-answer-lead">One of the most unexpected findings from our analysis of the raw data is that <span class="text-highlight">food insecurity and housing insecurity are both transitory phenomena</span>.</p>
+        </div>
+
+        <blockquote class="synthesis-dialogue" data-mkouf="6" aria-label="Excerpt from the policy brief">
+          <p><strong class="dialogue-label">Key finding:</strong> The average spell at RDC lasts about 18 months, while an episode of housing insecurity or homelessness is shorter still, at 17 months. Only <span class="text-highlight">14% of people assisted by Restos continue to receive assistance for more than three years</span>, and it is rare—around 10% of cases—for them to return after an interruption of at least one year.</p>
+        </blockquote>
+
+        <div class="duration-panels">
+          <article class="chart-card duration-card duration-card-status">
+            <h3>Food insecurity and homelessness.</h3>
+            <p class="chart-lead">In both cases, the largest share of spells is concentrated in the first campaign.</p>
+            <div class="inline-legend duration-legend" aria-label="Legend for forms of insecurity">
+              <span><i class="swatch swatch-food"></i>Food insecurity</span>
+              <span><i class="swatch swatch-homelessness"></i>Homelessness</span>
+            </div>
+            <div id="duration-status-chart" class="duration-chart" role="list" aria-label="Duration of food-insecurity and homelessness spells"></div>
+            <p class="chart-axis-title">Number of RDC campaigns</p>
+            <p class="effects-reading duration-reading"><strong>How to read this:</strong> Nearly 40% of food-insecurity episodes and just over 35% of homelessness episodes last only one campaign.</p>
+            <div class="duration-facts duration-facts-inline duration-facts-two">
+              <p><strong>18 months</strong><span>average duration at RDC, measured by number of campaigns</span></p>
+              <p><strong>17 months</strong><span>average duration of homelessness</span></p>
+            </div>
+          </article>
+
+          <article class="chart-card duration-card duration-card-age">
+            <h3>Duration varies with age.</h3>
+            <p class="chart-lead">People under 25 spend fewer campaigns at RDC.</p>
+            <div class="inline-legend duration-legend" aria-label="Legend for age groups">
+              <span><i class="swatch swatch-duration-young"></i>Under 25</span>
+              <span><i class="swatch swatch-duration-mid"></i>Ages 25–64</span>
+              <span><i class="swatch swatch-duration-senior"></i>Ages 65 and over</span>
+            </div>
+            <div id="duration-age-chart" class="duration-chart" role="list" aria-label="Duration of spells by age"></div>
+            <p class="chart-axis-title">Number of RDC campaigns</p>
+            <p class="effects-reading duration-reading"><strong>How to read this:</strong> Nearly 45% of people under 25, nearly 40% of those aged 25–64, and more than 35% of those aged 65 and over attend Restos for only one campaign.</p>
+            <div class="duration-facts duration-facts-inline duration-facts-one">
+              <p><strong>21 months</strong><span>average duration after age 65, measured by number of campaigns</span></p>
+            </div>
+          </article>
+        </div>
+
+        <p class="q4-transition-note">It is important to understand that these two statistics—a short-lived but very widespread risk—are two sides of the same coin. The fact that people receive assistance from Restos for a relatively short time means that the sample is constantly renewed and that, consequently, <span class="text-highlight">many people living in France will be represented in it sooner or later</span>.</p>
+
+        <div class="qa-break">
+          <p class="section-number">Analysis of the raw data · Question 5</p>
+          <h3 id="question-5">5. What are the employment situations, incomes, and expenses of people assisted?</h3>
+          <p class="qa-answer-lead">Restos data provide a highly detailed picture of the employment and finances of the people assisted.</p>
+        </div>
+
+        <div class="budget-band">
+          <div class="budget-schematic-grid" aria-label="Income, employment status, and housing costs as a share of income">
+            <article class="budget-diagram-card employment-diagram" data-mkouf="8">
+              <p class="diagram-eyebrow">Income</p>
+              <div class="employment-stat-cluster">
+                <div class="employment-main-stat"><strong>90%</strong><span>of people assisted are not employed</span></div>
+                <p class="diagram-caption">Among all people assisted, and included in this 90%:</p>
+                <div class="employment-breakdown">
+                  <p><strong>3%</strong><span>students</span></p>
+                  <p><strong>10%</strong><span>people with disabilities</span></p>
+                  <p><strong>11%</strong><span>retirees</span></p>
+                </div>
+              </div>
+              <p class="employment-explainer">This is of course partly because households turn to Restos precisely when they find themselves in this situation. Exclusion from the labour market means that the main source of income for working-age people assisted comes from social benefits, particularly the RSA minimum-income benefit, unemployment insurance, family and housing benefits, and disability assistance.</p>
+            </article>
+            <article class="budget-diagram-card housing-diagram" data-mkouf="9">
+              <p class="diagram-eyebrow">Share of income spent on housing or temporary shelter</p>
+              <div class="housing-cost-row">
+                <div><strong>45%</strong><span>Private-sector tenants</span></div>
+                <i style="--share: 45%" aria-hidden="true"></i>
+              </div>
+              <div class="housing-cost-row">
+                <div><strong>40%</strong><span>Social-housing tenants</span></div>
+                <i style="--share: 40%" aria-hidden="true"></i>
+              </div>
+              <div class="housing-cost-row housing-cost-row-emphasis">
+                <div><strong>20%</strong><span>People without a home of their own</span></div>
+                <i style="--share: 20%" aria-hidden="true"></i>
+                <p>Even without a home of their own, people may spend a significant share of their income on temporary accommodation—CHRS, hotel stays, or other shelters that are not always free.</p>
+              </div>
+              <p class="housing-debt-note">Around <strong>10%</strong> of people assisted are in debt.</p>
+            </article>
+          </div>
+          <blockquote class="synthesis-dialogue synthesis-dialogue-budget budget-note" aria-label="Key finding">
+            <p><strong class="dialogue-label">Key finding:</strong> The remaining disposable resources of the people assisted—that is, their income after paying rent and related charges—are relatively stable: <strong class="dialogue-key-number">≈ €300</strong> remains available, per consumption unit, to cover essential expenses.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="territory-section" id="territoires" aria-labelledby="territoires-title">
+        <div class="territory-inner">
+          <div class="section-heading territory-heading">
+            <div>
+              <p class="section-number">Part two</p>
+              <h2 id="territoires-title">Drivers of entry and exit flows</h2>
+              <p class="territory-subtitle">The second part of our analysis goes beyond these raw descriptive statistics and studies the determinants of entry into and exit from food and housing insecurity. Because Restos centres are present throughout the country, we can correlate these entry and exit flows with geographic variation in local macroeconomic conditions in order to estimate their respective roles in the formation and persistence of poverty.</p>
+              <p class="territory-subtitle territory-subtitle-secondary">To this end, we collected a wide range of annual data at the living-area level: the unemployment rate, average income, food-price and rent inflation, the number of businesses and business creation, industrial sectors, the availability of social housing, emergency accommodation capacity, weather conditions, and more. For flows out of poverty, we can also estimate the impact of individual characteristics, including households’ demographic and socioeconomic characteristics.</p>
+              <p class="territory-subtitle territory-subtitle-secondary">Our empirical analysis exploits the fact that economic variables vary differently across the country over time; for example, the unemployment map does not coincide with the rent map, and it changes differently from one year to the next. This allows us to isolate and independently estimate the effect of each economic variable on the share of households entering or leaving food insecurity or homelessness each year.</p>
+              <p class="territory-subtitle territory-subtitle-secondary">For a concrete example of how we estimate these effects, the map below shows the number of people experiencing homelessness per thousand residents in each living area in 2022–2023. It also displays other aggregates, including rent levels, the unemployment rate, and more.</p>
+            </div>
+          </div>
+
+          <p class="map-instructions">Hover over an area for details; search for it to zoom in.</p>
+
+          <div class="map-shell">
+            <div class="map-toolbar" aria-label="Atlas options">
+              <label>
+                <span>Theme</span>
+                <select id="map-theme" aria-label="Choose a map theme"></select>
+              </label>
+              <label>
+                <span>Indicator</span>
+                <select id="map-variable" aria-label="Choose a map indicator"></select>
+              </label>
+              <label class="map-search-label">
+                <span>Search for an area</span>
+                <input id="map-search" type="search" list="bva-options" placeholder="E.g. Toulouse, Paris — Créteil…" autocomplete="off" />
+                <datalist id="bva-options"></datalist>
+              </label>
+              <button id="map-reset" class="map-reset" type="button">France view</button>
+            </div>
+            <div class="map-layout">
+              <div class="map-stage">
+                <div class="map-stage-header">
+                  <span class="map-source-pill">Leaflet · IGN municipality geometry · classes by augmented living area</span>
+                  <span>Winter 2022–2023</span>
+                </div>
+                <div id="bva-map" class="bva-map" role="region" aria-label="Interactive atlas of augmented living areas">
+                  <div class="map-loading">Building the atlas…</div>
+                </div>
+              </div>
+              <aside class="map-side">
+                <h3 id="map-title">Homelessness</h3>
+                <p id="map-description">People assisted by RDC who experience homelessness in the broad sense, across more than 1,900 Restos du Cœur distribution centres, relative to the local number of households.</p>
+                <div id="map-legend" class="map-legend" aria-label="Interactive legend"></div>
+                <div class="map-context" aria-label="Benchmarks for the selected area">
+                  <p><span>Homelessness</span><strong id="map-context-housing">—</strong></p>
+                  <p><span>Private rent</span><strong id="map-context-rent">—</strong></p>
+                  <p><span>Broad unemployment</span><strong id="map-context-unemployment">—</strong></p>
+                </div>
+                <p class="microcopy">
+                  The 34,806 municipalities in metropolitan France are grouped into 1,702 augmented living areas,
+                  including 22 subdivisions of the Paris area.
+                </p>
+              </aside>
+            </div>
+          </div>
+          <blockquote class="synthesis-dialogue synthesis-dialogue-compact territory-fact" aria-label="Key finding">
+            <p><strong class="dialogue-label">Key finding:</strong> Extreme poverty has a strong geographic dimension. It is more prevalent in urban areas, especially city centres: around 50% of the people concerned live in city centres, compared with 30% of the French population as a whole, pointing to a form of impoverishment of urban cores. Yet poverty is not exclusively urban: 30% of Restos du Cœur distribution centres and nearly 20% of the people assisted are located in rural areas or isolated towns.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="section" id="mecanismes" aria-label="Drivers of entry and exit flows—questions 6 to 8">
+        <div class="section-heading qa-section-heading qa-section-heading-solo">
+          <div>
+            <p class="section-number">Drivers of entry and exit flows · Question 6</p>
+            <h3 id="question-6">6. What macroeconomic factors drive entries?</h3>
+            <p class="qa-answer-lead">The first important empirical result we obtain is to <span class="text-highlight">quantify the impact of economic shocks and certain public policies on flows into food and housing insecurity</span>. We find that these effects are <em>very large</em> and statistically significant. The main economic determinants of flows into extreme poverty are, on the one hand—with a positive sign—the unemployment rate and rent inflation and, on the other—with a negative sign—average income in the local living area, the stock of social housing, and the number of firms, particularly in certain sectors.</p>
+          </div>
+        </div>
+
+        <blockquote class="synthesis-dialogue q6-entry-fact" data-mkouf="10" aria-label="Excerpt from the policy brief">
+          <p><strong class="dialogue-label">Key finding:</strong> A 10% increase in the unemployment rate leads, all else equal, to an increase of about 10% in the number of people experiencing homelessness or housing insecurity, and 13% in the number experiencing food insecurity.</p>
+        </blockquote>
+        <p class="qa-answer-lead q6-figure-followup">The effects of several economic variables on entry into housing insecurity are shown in the figure below on the left. The right-hand panel can be used to simulate the impact of selected economic variables on entries into housing insecurity at the local living-area level.</p>
+
+        <div class="mechanism-grid mechanism-grid-paired">
+          <article class="effects-card">
+            <div class="effects-heading">
+              <h3>Estimates of entries into housing insecurity.</h3>
+            </div>
+            <div class="effects-axis" aria-hidden="true"><span>−1,5</span><span>−1</span><span>−0,5</span><span>0</span><span>0,5</span><span>1</span><span>1,5</span></div>
+            <div id="entry-effects-chart" class="effects-chart" role="list" aria-label="Estimated elasticities of entries into housing insecurity"></div>
+            <p class="effects-axis-title">Elasticities and displayed intervals</p>
+            <p class="effects-reading"><strong>How to read this:</strong> if private rents rise by 1%, the number of people experiencing housing insecurity rises by about 0.42%, all else equal.</p>
+            <p id="entry-effects-note" class="microcopy">When an interval does not cross zero, the effect is statistically significant at a confidence level above 90%.</p>
+          </article>
+          <article class="simulator" data-shock-simulator="entry">
+            <h3>A local shock can quickly trigger new entries.</h3>
+            <p class="shock-prompt">A change in:</p>
+            <div class="shock-options" role="radiogroup" aria-label="Local variable applied to entries">
+              <button type="button" role="radio" aria-checked="true" class="is-active" data-shock="unemployment">Unemployment</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="rent">Private rents</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="housing">Social housing</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="firms">Firms</button>
+            </div>
+            <label class="slider-label" for="entry-shock-range">
+              Size of the change
+              <output data-shock-input for="entry-shock-range">+10 %</output>
+            </label>
+            <input id="entry-shock-range" data-shock-range type="range" min="1" max="20" value="10" step="1" />
+            <div class="shock-result" aria-live="polite">
+              <span data-shock-prefix>A 10% increase in unemployment leads, all else equal, to a change in entries into housing insecurity of</span>
+              <strong data-shock-output>≈ +10 %</strong>
+              <p data-shock-secondary>Confidence interval: [+5.8%, +13%].</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="qa-break">
+          <p class="section-number">Drivers of entry and exit flows · Question 7</p>
+          <h3 id="question-7">7. What macroeconomic factors drive exits?</h3>
+          <p class="qa-answer-lead">Let us now consider people who have already fallen into poverty. Which macroeconomic or public-policy variables might help them escape it? One of the most striking findings of our analysis is that <span class="text-highlight">no macroeconomic variable has an economically or statistically significant and robust effect on exit rates from food or housing insecurity</span>. In other words—and this is the most important point of our study—recessions push households into extreme poverty at far higher rates than the subsequent recovery helps them escape it.</p>
+        </div>
+        <div class="dialogue-grid q7-dialogue-grid" aria-label="Excerpts from the policy brief">
+          <blockquote class="synthesis-dialogue synthesis-dialogue-compact" data-mkouf="11">
+            <p><strong class="dialogue-label">Key finding:</strong> Exit rates from extreme poverty respond very little to fluctuations in economic activity; changes in food and housing insecurity over the business cycle (recessions and expansions) are driven overwhelmingly by the entry margin, even though their average levels depend heavily on exit flows.</p>
+          </blockquote>
+        </div>
+        <div class="qa-narrative-followup">
+          <p class="qa-answer-lead">These findings suggest that <span class="text-highlight">public policies operating through labour and housing markets can help prevent people from falling into extreme poverty, but have little effect in helping those already there to escape it</span>; helping them instead requires targeted interventions tailored to individuals' personal circumstances.</p>
+          <p class="qa-answer-lead">The effects of several economic variables on exits from housing insecurity are shown in the figure below on the left. The right-hand panel can be used to simulate the impact of selected economic variables on exits from housing insecurity at the local living-area level.</p>
+        </div>
+
+        <div class="mechanism-grid mechanism-grid-paired">
+          <article class="effects-card">
+            <div class="effects-heading">
+              <h3>Estimates of exits from housing insecurity.</h3>
+            </div>
+            <div class="effects-axis" aria-hidden="true"><span>−1,5</span><span>−1</span><span>−0,5</span><span>0</span><span>0,5</span><span>1</span><span>1,5</span></div>
+            <div id="effects-chart" class="effects-chart" role="list" aria-label="Estimated elasticities of exits from housing insecurity"></div>
+            <p class="effects-axis-title">Elasticities and displayed intervals</p>
+            <p class="effects-reading"><strong>How to read this:</strong> in this specification, if private rents rise by 1%, the number of people exiting housing insecurity rises by about 0.14%, all else equal.</p>
+            <p id="effects-note" class="microcopy">An interval that does not cross zero is presented as statistically significant at a confidence level above 90%.</p>
+          </article>
+          <article class="simulator" data-shock-simulator="exit">
+            <h3>The same local changes have little effect on exits.</h3>
+            <p class="shock-prompt">A change in:</p>
+            <div class="shock-options" role="radiogroup" aria-label="Local variable applied to exits">
+              <button type="button" role="radio" aria-checked="true" class="is-active" data-shock="unemployment">Unemployment</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="rent">Private rents</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="housing" aria-label="Local stock of social housing">Social housing</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="firms">Firms</button>
+            </div>
+            <label class="slider-label" for="exit-shock-range">
+              Size of the change
+              <output data-shock-input for="exit-shock-range">+10 %</output>
+            </label>
+            <input id="exit-shock-range" data-shock-range type="range" min="1" max="20" value="10" step="1" />
+            <div class="shock-result" aria-live="polite">
+              <span data-shock-prefix>A 10% increase in unemployment leads, all else equal, to a change in exits from housing insecurity of</span>
+              <strong data-shock-output>≈ −1,2 %</strong>
+              <p data-shock-secondary>Confidence interval: [−2.3%, −0.2%].</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="exit-lead qa-break">
+          <p class="section-number">Drivers of entry and exit flows · Question 8</p>
+          <h3 id="question-8">8. What individual factors drive exits?</h3>
+        </div>
+        <p class="standalone-highlight-prose" data-mkouf="13">If economic variables and public policies do not help people escape extreme poverty, what factors determine these flows? The key determinants are individual or household characteristics. First, <em>an individual’s age has an important effect on their chances of getting back on their feet.</em> Second, household income obviously plays an important role. Finally, <em>the most important determinant of the exit rate from extreme poverty is the number of Restos du Cœur campaigns a household has already attended.</em> Economists call this <em>duration dependence</em>: the more time has elapsed since a household first entered Restos du Cœur, the less likely it is to leave.</p>
+        <div class="exit-factors">
+          <article>
+            <span>Age</span>
+            <strong class="factor-context">Under 25 → age 65 and over</strong>
+            <p class="factor-effect"><b>−10 points</b> in the exit rate per campaign</p>
+            <p class="factor-detail">The exit rate falls from about <strong class="inline-number">32%</strong> among people under 25 to <strong class="inline-number">22%</strong> among those aged 65 and over.</p>
+          </article>
+          <article>
+            <span>Income</span>
+            <strong class="factor-context">€0 → €500 per month</strong>
+            <p class="factor-effect"><b>+10 points</b> in the exit rate per campaign</p>
+            <p class="factor-detail">This change is calculated per consumption unit: an average rate of 32% would therefore rise to about <strong class="inline-number">42%</strong>.</p>
+          </article>
+          <article>
+            <span>Duration</span>
+            <strong class="factor-context">First campaign → after 3 years</strong>
+            <p class="factor-effect"><b>32% → 22%</b> exit rate per campaign</p>
+            <p class="factor-detail">After at least three years at RDC, the exit rate falls by about 10 points per campaign.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="inflation-section" id="chocs-recents" aria-labelledby="question-9">
+        <div class="inflation-header">
+          <p class="section-number">Drivers of entry and exit flows · Question 9</p>
+          <h3 id="question-9">9. Which economic shocks explain the recent rise in housing insecurity?</h3>
+          <p class="counterfactual-explainer">Finally, we use the empirical results just described to answer the following question: how important were changes in inflation (prices and rents) and unemployment in the rise in extreme poverty experienced in recent years? To answer it, we carry out the following exercise. We calculate the flows into and out of homelessness that would have occurred if one of these variables—for example, the price level—had remained fixed at its 2018 level, while allowing the others to follow their actual paths.</p>
+          <blockquote class="synthesis-dialogue synthesis-dialogue-on-color" data-mkouf="15" aria-label="Excerpt from the policy brief">
+            <p><strong class="dialogue-label">Key finding:</strong> We conclude that, all else equal, inflation accounts for more than half (52%) of the dramatic rise in housing insecurity since 2018.</p>
+          </blockquote>
+        </div>
+        <div class="counterfactual-grid">
+          <article class="counterfactual-card">
+            <div class="counterfactual-heading">
+              <span>Inflation</span>
+              <h4>Rise in housing insecurity since 2018</h4>
+              <p>If prices had remained at their 2018 level, the model estimates that housing insecurity would have risen by 29%, rather than the 61% observed.</p>
+            </div>
+            <div class="counterfactual-bars" aria-label="Observed rise and simulated rise without inflation">
+              <button type="button" class="cf-bar observed" data-tooltip="Observed rise: +61%">
+                <span class="cf-fill" style="--p:100%"></span><strong>+61%</strong><small>observed</small>
+              </button>
+              <button type="button" class="cf-bar simulated" data-tooltip="Price level held at its 2018 value: +29%">
+                <span class="cf-fill" style="--p:47.5%"></span><strong>+29%</strong><small>2018 prices</small>
+              </button>
+            </div>
+            <div class="inflation-share">
+              <span>Share attributed to housing and food-price inflation</span>
+              <strong>52%</strong>
+            </div>
+          </article>
+          <article class="counterfactual-card counterfactual-card-unemployment">
+            <div class="counterfactual-heading">
+              <span>Unemployment</span>
+              <h4>Lower unemployment slowed the rise in housing insecurity</h4>
+              <p>If unemployment had remained at its 2018 level, the model estimates that the current number of people experiencing homelessness would be 12% higher.</p>
+            </div>
+            <div class="counterfactual-bars" aria-label="Simulated level without the fall in unemployment and observed level">
+              <button type="button" class="cf-bar unemployment-fixed" data-tooltip="Unemployment held at its 2018 level: index 112">
+                <span class="cf-fill" style="--p:100%"></span><strong>112</strong><small>without decline</small>
+              </button>
+              <button type="button" class="cf-bar observed" data-tooltip="Observed situation after the fall in unemployment: index 100">
+                <span class="cf-fill" style="--p:89.3%"></span><strong>100</strong><small>observed</small>
+              </button>
+            </div>
+            <div class="inflation-share unemployment-share">
+              <span>Additional increase avoided thanks to lower unemployment</span>
+              <strong>12%</strong>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section conclusion-section" id="conclusion" aria-labelledby="conclusion-title">
+        <h2 id="conclusion-title">Conclusion</h2>
+        <p class="conclusion-lead">Prevent early. Provide sustained support.</p>
+        <p class="conclusion-narrative">Data from Restos du Cœur (RDC) allow us to provide new empirical evidence on extreme poverty in an advanced market economy such as France. Prevention is the most powerful public-policy lever, especially through <em class="policy-highlight">labour-market stability</em>, <em class="policy-highlight">an adequate supply of affordable housing</em>, and <em class="policy-highlight">price stability</em>. For households already in extreme poverty, aggregate economic conditions offer little help; what matters is providing <em class="policy-highlight">early, targeted support</em> before duration dependence makes it increasingly difficult to exit food and housing insecurity.</p>
+
+        <div class="poverty-measure">
+          <p class="conclusion-narrative">Let us conclude with a subtle but important point about measuring poverty. <span class="text-highlight">People assisted by RDC are not admitted on the basis of income, but according to their remaining disposable resources—in other words, a measure of consumption.</span> By definition, they belong to households that identify themselves as needing food assistance. This criterion allows us to study poverty far more meaningfully than income data alone, which can be misleading: for example, the same income may be enough to secure housing in a rural area but not in Paris.</p>
+        </div>
+
+        <p class="conclusion-policy-title">Lessons for public policy:</p>
+        <div class="conclusion-grid">
+          <article><h3>Prevent entries</h3><p>Stabilise employment, contain unavoidable expenses, and expand the supply of affordable housing.</p></article>
+          <article><h3>Act without delay</h3><p>Duration dependence reduces the chances of exit. The analysis supports early intervention.</p></article>
+          <article><h3>Target individual situations</h3><p>Exits depend more on age, income, and the duration of the spell than on local economic conditions.</p></article>
+        </div>
+
+      </section>
+    </main>
+
+    <footer aria-hidden="true"></footer>
+    <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+  </body>
+</html>

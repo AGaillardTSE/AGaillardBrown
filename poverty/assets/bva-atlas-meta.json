@@ -1,0 +1,268 @@
+{
+  "version": 1,
+  "protection": "quintile_classes_only",
+  "note": "Only coarse public classes are distributed; exact basin values are not included.",
+  "metrics": {
+    "active_household_share": {
+      "thresholds": [
+        54.5141,
+        59.495,
+        63.4647,
+        67.6217
+      ],
+      "classCount": 5
+    },
+    "average_temperature": {
+      "thresholds": [
+        7.2193,
+        8.1957,
+        8.9219,
+        9.7783
+      ],
+      "classCount": 5
+    },
+    "commune_count": {
+      "thresholds": [
+        6,
+        11,
+        18,
+        32
+      ],
+      "classCount": 5
+    },
+    "firm_creations": {
+      "thresholds": [
+        16.9171,
+        19.5812,
+        22.5868,
+        27.109
+      ],
+      "classCount": 5
+    },
+    "firm_stock": {
+      "thresholds": [
+        105.1443,
+        120.4965,
+        136.0374,
+        159.0414
+      ],
+      "classCount": 5
+    },
+    "food_price": {
+      "thresholds": [
+        107.3485,
+        109.2139,
+        110.677,
+        112.8751
+      ],
+      "classCount": 5
+    },
+    "households_served": {
+      "thresholds": [
+        0,
+        8.7715,
+        12.3392,
+        17.0011
+      ],
+      "classCount": 5
+    },
+    "housing_strict": {
+      "thresholds": [
+        0.1574,
+        0.4284,
+        0.9021,
+        2.1036
+      ],
+      "classCount": 5
+    },
+    "local_income": {
+      "thresholds": [
+        14.3438,
+        15.2819,
+        16.3334,
+        18.3198
+      ],
+      "classCount": 5
+    },
+    "low_income_share": {
+      "thresholds": [
+        7.4699,
+        9.8929,
+        12.2607,
+        15.583
+      ],
+      "classCount": 5
+    },
+    "mountain_share": {
+      "thresholds": [
+        0,
+        23.1489,
+        78.7162,
+        100
+      ],
+      "classCount": 5
+    },
+    "population_thousands": {
+      "thresholds": [
+        8.5194,
+        12.9632,
+        19.2518,
+        34.0702
+      ],
+      "classCount": 5
+    },
+    "priority_area_share": {
+      "thresholds": [
+        0,
+        35.3558,
+        45.4242,
+        57.7133
+      ],
+      "classCount": 5
+    },
+    "private_rent": {
+      "thresholds": [
+        8.3423,
+        9.5099,
+        10.7574,
+        13.1695
+      ],
+      "classCount": 5
+    },
+    "rainfall": {
+      "thresholds": [
+        50.7867,
+        60.5379,
+        72.8294,
+        89.0536
+      ],
+      "classCount": 5
+    },
+    "rdc_centers": {
+      "thresholds": [
+        0,
+        0.0582,
+        0.1026,
+        0.1702
+      ],
+      "classCount": 5
+    },
+    "rdc_total": {
+      "thresholds": [
+        3.3019,
+        7.1296,
+        10.0282,
+        14.3644
+      ],
+      "classCount": 5
+    },
+    "retired_household_share": {
+      "thresholds": [
+        34.6992,
+        37.9242,
+        41.408,
+        45.791
+      ],
+      "classCount": 5
+    },
+    "shelter_capacity": {
+      "thresholds": [
+        0,
+        2.005,
+        4.5253,
+        8.2573
+      ],
+      "classCount": 5
+    },
+    "shelters": {
+      "thresholds": [
+        0,
+        0.0982,
+        0.157,
+        0.2296
+      ],
+      "classCount": 5
+    },
+    "social_mobility": {
+      "thresholds": [
+        7.272,
+        9.1755,
+        10.9161,
+        12.9544
+      ],
+      "classCount": 5
+    },
+    "social_new": {
+      "thresholds": [
+        0,
+        0.691,
+        1.446,
+        2.9905
+      ],
+      "classCount": 5
+    },
+    "social_rent": {
+      "thresholds": [
+        4.7525,
+        5.1054,
+        5.4056,
+        5.7597
+      ],
+      "classCount": 5
+    },
+    "social_stock": {
+      "thresholds": [
+        32.8737,
+        49.8144,
+        71.5416,
+        106.5341
+      ],
+      "classCount": 5
+    },
+    "social_vacancy": {
+      "thresholds": [
+        1.1102,
+        1.8858,
+        2.8268,
+        4.8882
+      ],
+      "classCount": 5
+    },
+    "sole_trader_creations": {
+      "thresholds": [
+        12.113,
+        13.9686,
+        15.9923,
+        19.4237
+      ],
+      "classCount": 5
+    },
+    "tourist_share": {
+      "thresholds": [
+        0,
+        21.067,
+        42.1654,
+        66.8819
+      ],
+      "classCount": 5
+    },
+    "unemployment": {
+      "thresholds": [
+        13.2124,
+        14.9876,
+        16.6768,
+        19.0504
+      ],
+      "classCount": 5
+    },
+    "urban_share": {
+      "thresholds": [
+        31.2695,
+        47.3113,
+        65.9095,
+        85.7294
+      ],
+      "classCount": 5
+    }
+  }
+}

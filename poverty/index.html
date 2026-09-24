@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b1020" />
+    <meta
+      name="description"
+      content="Une lecture interactive de la note L’extrême pauvreté dans les pays riches, à partir des données des Restos du Cœur."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises" />
+    <meta property="og:description" content="5,5 millions de personnes distinctes, des cartes interactives et les mécanismes d’entrée et de sortie de la grande pauvreté." />
+    <meta property="og:image" content="og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Titre de la note et carte stylisée de la France" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="og.png" />
+    <title>L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="vendor/leaflet/leaflet.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+    <header class="topbar">
+      <a class="brand" href="#haut" aria-label="Retour au début">
+        <img class="brand-mark" src="favicon.svg" alt="" aria-hidden="true" />
+        <span>Note de synthèse</span>
+      </a>
+      <nav class="topbar-nav" aria-label="Navigation par question">
+        <div class="language-switch" aria-label="Choisir la langue">
+          <a href="index.html" lang="fr" aria-current="page">FR</a>
+          <a href="en.html" lang="en">EN</a>
+        </div>
+        <details class="question-menu">
+          <summary aria-label="Neuf questions pour comprendre la grande pauvreté">
+            <span class="question-menu-label-full">Neuf questions pour comprendre la grande pauvreté</span>
+          </summary>
+          <ol aria-label="Définitions et neuf questions de la synthèse">
+            <li class="question-menu-definition"><a href="#definitions"><span>DEF</span><strong>Définitions de la grande pauvreté</strong></a></li>
+            <li><a href="#question-1"><span>01</span><strong>Combien d'individus la précarité alimentaire et résidentielle concernent-elles?</strong></a></li>
+            <li><a href="#question-2"><span>02</span><strong>Comment la France se place-t-elle parmi les pays riches?</strong></a></li>
+            <li><a href="#question-3"><span>03</span><strong>Quels sont les âges les plus exposés au risque d'extrême pauvreté?</strong></a></li>
+            <li><a href="#question-4"><span>04</span><strong>Combien de temps dure un épisode d’extrême pauvreté?</strong></a></li>
+            <li><a href="#question-5"><span>05</span><strong>Quelles sont les situations d'emploi, les revenus et dépenses des personnes accueillies?</strong></a></li>
+            <li><a href="#question-6"><span>06</span><strong>Quels sont les déterminants macroéconomiques des flux d'entrée?</strong></a></li>
+            <li><a href="#question-7"><span>07</span><strong>Quels sont les déterminants macroéconomiques des flux de sortie?</strong></a></li>
+            <li><a href="#question-8"><span>08</span><strong>Quels sont les déterminants individuels des flux de sortie?</strong></a></li>
+            <li><a href="#question-9"><span>09</span><strong>Quels chocs économiques expliquent l'augmentation récente de la précarité résidentielle?</strong></a></li>
+          </ol>
+        </details>
+      </nav>
+    </header>
+
+    <main id="contenu">
+      <section class="hero" id="haut" aria-labelledby="titre-principal">
+        <div class="hero-copy">
+          <h1 id="titre-principal">L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises</h1>
+          <div class="article-note">
+            <span>Note de synthèse</span>
+            <span class="article-links" aria-label="Documents associés">
+              <a href="https://conference.nber.org/conf_papers/f247458.pdf" target="_blank" rel="noopener">Article original</a>
+            </span>
+          </div>
+          <p class="dek">
+            L'extrême pauvreté reste à ce jour un <span class="hero-underline">angle mort des études économiques consacrées aux inégalités de revenus et de richesse</span>.
+            Les recherches récentes se concentrent davantage sur l'autre pôle de la distribution — la compréhension des mécanismes économiques liés aux grandes fortunes. Cette relative absence de travaux académiques d'ampleur sur la pauvreté tient au fait que les données auxquelles les chercheurs ont accès couvrent mal les populations les plus défavorisées, tout particulièrement les sans-abri.
+            Or ces questions sont particulièrement d'actualité : de <span class="hero-underline">nombreux indicateurs documentent un accroissement très rapide de la grande précarité dans plusieurs pays riches</span> — en France, au Royaume-Uni, ou encore aux États-Unis — au cours de la dernière décennie.
+          </p>
+          <p class="hero-evidence">
+            Les <span class="hero-underline">données des Restos du Cœur</span> nous offrent une opportunité unique d’apporter un éclairage neuf sur cette partie de la population. Ces données inexploitées (et anonymisées) sont à la fois extrêmement riches — elles contiennent une part très importante des plus précaires sur tout le territoire — et disponibles en temps réel, quelques mois seulement après leur collecte à fréquence semi-annuelle. Le maillage territorial des Restos est en outre particulièrement dense&nbsp;: on dénombre <span class="hero-underline">1&nbsp;928 centres de distribution</span> des Restos du Cœur, soit en moyenne <span class="hero-underline">1 centre pour 35&nbsp;000 habitants</span>. Nous estimons que <span class="hero-underline">la quasi-totalité de la population française se trouve dans un rayon de 20&nbsp;km</span> d’un site de distribution, avec une <span class="hero-underline">distance moyenne comprise entre 5 et 10&nbsp;km</span>.
+          </p>
+          <p class="hero-evidence">
+            Ces données nous permettent donc de suivre les personnes accueillies pendant toute la durée de leur passage aux Restos. <span class="text-highlight">Pour chacun des individus, nous observons entre autres leurs caractéristiques démographiques et familiales, leur code postal</span> — qui nous permet de les relier aux conditions économiques spécifiques à leur bassin de vie, telles que les taux de chômage ou d’inflation —, <span class="text-highlight">leurs sources de revenus</span> — salaires et situation sur le marché du travail, prestations sociales, retraites —, <span class="text-highlight">certaines de leurs dépenses</span> — loyer, charges, pensions alimentaires, remboursements de dettes —, <span class="text-highlight">leur situation résidentielle</span> — sans-abrisme ou, plus généralement, précarité résidentielle, logement social, location privée ou propriété —, et la fréquence à laquelle ils visitent les Restos du Cœur. Nous avons donc accès à des informations précieuses et très détaillées sur les personnes accueillies, leurs finances et leurs comportements de consommation.
+          </p>
+          <p class="hero-evidence">
+            Notre article exploite ces données afin d’éclairer les déterminants, la dynamique et les conséquences de l’extrême pauvreté en France.
+          </p>
+          <p class="byline">
+            Par Christophe Bruneel-Zupanc<sup>1</sup>, Alexandre Gaillard<sup>2</sup>, Christian Hellwig<sup>3</sup>,
+            Philipp Wangner<sup>4</sup> et Nicolas Werquin<sup>5</sup>.
+          </p>
+          <p class="affiliations" aria-label="Affiliations des auteurs">
+            <span><sup>1</sup> KU Leuven</span>
+            <span><sup>2</sup> Brown University</span>
+            <span><sup>3</sup> Toulouse School of Economics</span>
+            <span><sup>4</sup> University of Mannheim</span>
+            <span><sup>5</sup> Federal Reserve Bank of Chicago</span>
+          </p>
+          <p class="author-disclaimer">Les opinions exprimées sont celles des auteurs et ne reflètent pas nécessairement les vues de la Federal Reserve Bank of Chicago ni du Système de Réserve fédérale.</p>
+        </div>
+      </section>
+
+      <section class="definition-section" id="definitions" aria-labelledby="definitions-title">
+        <div class="definition-header">
+          <h2 id="definitions-title">Trois situations de précarité emboîtées dans les données de l’étude</h2>
+          <p>Cette synthèse se focalise principalement sur la précarité résidentielle et le sans-abrisme. Le sans-abrisme au sens large est un sous-ensemble de la précarité résidentielle, elle-même observée au sein de la précarité alimentaire. L’article originel comporte les résultats pour l’ensemble de la population accueillie aux Restos en situation de précarité alimentaire.</p>
+        </div>
+        <div class="definition-nest" aria-label="Trois situations de précarité, du champ observé aux formes les plus aiguës">
+          <section class="definition-frame definition-frame-food" aria-labelledby="definition-food-title">
+            <div class="definition-frame-intro">
+              <div class="definition-layer-title">
+                <span>Champ d’observation des données Restos</span>
+                <h3 id="definition-food-title">Précarité alimentaire</h3>
+              </div>
+              <div class="definition-layer-copy">
+                <p>Personnes accueillies aux Restos du Cœur, admises selon leur reste à vivre — une mesure de consommation — et appartenant à des ménages qui se désignent comme ayant besoin d’aide alimentaire. Ces personnes peuvent être en précarité résidentielle, locataires dans le parc privé ou social ou, plus rarement, propriétaires.</p>
+              </div>
+            </div>
+
+            <section class="definition-frame definition-frame-housing" aria-labelledby="definition-housing-title">
+              <div class="definition-frame-intro">
+                <div class="definition-layer-title">
+                  <span>Au sein de ce champ</span>
+                  <h3 id="definition-housing-title">Précarité résidentielle</h3>
+                </div>
+                <div class="definition-layer-copy">
+                  <p>Personnes sans abri, sans logement personnel, ou vivant dans un logement précaire ou inadéquat. Ces situations sont déclarées dans un champ obligatoire renseigné par les personnes accueillies (<a href="https://www.feantsa.org/files/Home/ETHOS/PDFS/Languages/French.pdf" target="_blank" rel="noopener noreferrer">en suivant la typologie ETHOS</a>).</p>
+                </div>
+              </div>
+
+              <section class="definition-frame definition-frame-homelessness" aria-labelledby="definition-homelessness-title">
+                <div class="definition-frame-intro">
+                  <div class="definition-layer-title">
+                    <span>Formes les plus aiguës de la précarité résidentielle</span>
+                    <h3 id="definition-homelessness-title">Sans-abrisme au sens large</h3>
+                  </div>
+                  <div class="definition-layer-copy">
+                    <p>Personnes vivant à la rue ou sans logement personnel, y compris lorsqu’elles sont hébergées temporairement en CHU, en CHRS ou à l’hôtel. Ces situations sont déclarées dans un champ obligatoire renseigné par les personnes accueillies (<a href="https://www.feantsa.org/files/Home/ETHOS/PDFS/Languages/French.pdf" target="_blank" rel="noopener noreferrer">en suivant la typologie ETHOS</a>).</p>
+                  </div>
+                </div>
+              </section>
+            </section>
+          </section>
+        </div>
+      </section>
+
+      <nav class="question-index" aria-labelledby="question-index-title">
+        <div class="question-index-intro">
+          <h2 id="question-index-title">Neuf questions pour comprendre la grande pauvreté</h2>
+        </div>
+        <ol>
+          <li><a href="#question-1"><span>01</span><strong>Combien d'individus la précarité alimentaire et résidentielle concernent-elles?</strong></a></li>
+          <li><a href="#question-2"><span>02</span><strong>Comment la France se place-t-elle parmi les pays riches?</strong></a></li>
+          <li><a href="#question-3"><span>03</span><strong>Quels sont les âges les plus exposés au risque d'extrême pauvreté?</strong></a></li>
+          <li><a href="#question-4"><span>04</span><strong>Combien de temps dure un épisode d’extrême pauvreté?</strong></a></li>
+          <li><a href="#question-5"><span>05</span><strong>Quelles sont les situations d'emploi, les revenus et dépenses des personnes accueillies?</strong></a></li>
+          <li><a href="#question-6"><span>06</span><strong>Quels sont les déterminants macroéconomiques des flux d'entrée?</strong></a></li>
+          <li><a href="#question-7"><span>07</span><strong>Quels sont les déterminants macroéconomiques des flux de sortie?</strong></a></li>
+          <li><a href="#question-8"><span>08</span><strong>Quels sont les déterminants individuels des flux de sortie?</strong></a></li>
+          <li><a href="#question-9"><span>09</span><strong>Quels chocs économiques expliquent l'augmentation récente de la précarité résidentielle?</strong></a></li>
+        </ol>
+      </nav>
+
+      <section class="section chart-section" id="ampleur" aria-labelledby="analyse-title">
+        <div class="part-heading">
+          <p>Première partie</p>
+          <h2 id="analyse-title">Analyse des données brutes</h2>
+          <p class="part-intro">Notre ensemble de données n’a, à ce jour, pas été exploité par des économistes ; aussi la première partie de notre article consiste-t-elle à mettre en évidence un certain nombre de statistiques descriptives sur les personnes accueillies par les Restos du Cœur.</p>
+        </div>
+        <div class="section-heading qa-section-heading qa-section-heading-solo">
+          <div>
+            <p class="section-number">Analyse des données brutes · Question 1</p>
+            <h3 id="question-1">1. Combien d'individus la précarité alimentaire et résidentielle concernent-elles?</h3>
+            <p class="qa-answer-lead">
+              Les Restos du Cœur ont accueilli <span class="text-highlight">1,3 million de personnes en 2025</span>, soit près de 2 % de la population française.
+            </p>
+          </div>
+        </div>
+
+        <div class="split-grid trend-grid">
+          <div class="q1-stat-stack" role="list" aria-label="Trois faits marquants sur l’ampleur de la grande pauvreté">
+            <article class="q1-stat-card q1-stat-card-standard" role="listitem" data-mkouf="1">
+              <p><strong class="dialogue-label">Fait marquant :</strong> <strong class="q1-fact-title">5,5 millions d’individus</strong><br />Au total, plus de 5,5 millions d'individus ont reçu de l'aide alimentaire de la part des Restos au moins une fois entre 2018 et 2025.</p>
+            </article>
+            <article class="q1-stat-card q1-stat-card-pink fact-frame-pink" role="listitem" data-mkouf="7">
+              <p><strong class="dialogue-label">Fait marquant :</strong> <strong class="q1-fact-title">1 personne sur 10 exposée</strong><br />En d’autres termes, près d’un dixième des personnes vivant en France courent, à un instant donné, le risque de tomber dans la précarité alimentaire au cours de la décennie qui suit.</p>
+            </article>
+            <article class="q1-stat-card q1-stat-card-dark" role="listitem" data-mkouf="2">
+              <p><strong class="dialogue-label">Fait marquant :</strong> <strong class="q1-fact-title"><span>+51 %</span> de personnes en précarité résidentielle entre 2021 et 2025.</strong><br />Cette accélération intervient après la pandémie. Sur une période plus longue, le nombre de personnes accueillies aux RDC a progressé de 37 % entre 2018 et 2025.</p>
+            </article>
+          </div>
+          <article class="story-card line-card">
+            <h3>Comparaison internationale : évolution du taux de sans-abrisme en France et en Angleterre</h3>
+            <div class="series-legend" aria-label="Légende du graphique">
+              <button type="button" class="series-toggle is-active" data-series="france" aria-pressed="true">
+                <i class="dot dot-france" aria-hidden="true"></i> France · RDC
+              </button>
+              <button type="button" class="series-toggle is-active" data-series="england" aria-pressed="true">
+                <i class="dot dot-england" aria-hidden="true"></i> Angleterre
+              </button>
+            </div>
+            <div id="trend-chart" class="trend-chart" aria-label="Comparaison internationale : évolution du taux de sans-abrisme en France et en Angleterre"></div>
+            <p class="chart-axis-title">Nombre de personnes pour 100 habitants</p>
+            <p class="chart-source">Sources : France — données des Restos du Cœur (RDC) ; Angleterre — Ministry of Housing, Communities and Local Government.</p>
+          </article>
+        </div>
+
+        <p class="q1-transition-note">L’un des objectifs de notre article est de déterminer les facteurs qui ont entraîné cette évolution. La poussée inflationniste des dernières années est évidemment l’un des principaux suspects, que nous étudions en détail.</p>
+
+        <div class="section-heading qa-section-heading qa-section-heading-solo qa-break">
+          <div>
+            <p class="section-number">Analyse des données brutes · Question 2</p>
+            <h3 id="question-2">2. Comment la France se place-t-elle parmi les pays riches?</h3>
+            <p class="qa-answer-lead">
+              La comparaison de l’extrême pauvreté entre pays riches est délicate, en particulier en ce qui concerne le sans-abrisme. Les différents pays n’utilisent pas de méthodologie commune pour mesurer son étendue — par exemple, certains incluent toutes les formes de précarité résidentielle tandis que d’autres se restreignent aux personnes qui dorment dans la rue. De plus, les ménages en situation de précarité résidentielle sont par nature difficiles à localiser et donc souvent sous-estimés. Tout en gardant ces réserves en tête, les données de l’OCDE nous permettent de dresser un tableau comparatif entre pays en 2022.
+            </p>
+          </div>
+        </div>
+
+        <div class="q2-evidence-layout">
+          <div class="chart-card country-chart-card">
+            <div class="country-chart-header">
+              <h3 class="chart-card-title">Taux de sans-abrisme</h3>
+              <div class="chart-toolbar" aria-label="Filtres du graphique">
+                <button class="filter is-active" type="button" data-filter="focus" aria-pressed="true">
+                  Repères clés
+                </button>
+                <button class="filter" type="button" data-filter="all" aria-pressed="false">
+                  Tous les pays
+                </button>
+                <span class="unit">pour 100 habitants</span>
+              </div>
+            </div>
+            <div id="country-chart" class="country-chart" role="list" aria-label="Taux de sans-abrisme par pays"></div>
+            <p class="chart-note">
+              Restos du Cœur + inclut les formes larges de précarité résidentielle observées dans les données
+              des Restos du Cœur ; RDC utilise une définition comparable à l’OCDE.
+            </p>
+            <p class="chart-note chart-note-secondary">Les définitions internationales de l’insécurité résidentielle ne sont pas parfaitement comparables, et les populations concernées sont difficiles à recenser.</p>
+          </div>
+          <div class="dialogue-grid dialogue-grid-q2" aria-label="Extraits de la note de synthèse">
+            <blockquote class="synthesis-dialogue synthesis-dialogue-compact" data-mkouf="3">
+              <p><strong class="dialogue-label">Fait marquant :</strong> La France, représentée en rouge vif ci-dessous, a l'une des parts de sans-abris les plus élevées de l'OCDE, estimée à 0,49 % de la population.</p>
+            </blockquote>
+            <blockquote class="synthesis-dialogue synthesis-dialogue-compact fact-frame-pink" data-mkouf="4">
+              <p><strong class="dialogue-label">Fait marquant :</strong> En utilisant une méthodologie aussi proche que possible de celle de l’OCDE, nous estimons que les personnes sans abri accueillies par les Restos représentent 0,42 % de la population, contre 0,49 % dans l’estimation de l’OCDE. Lorsque nous incluons toutes les formes de précarité résidentielle, cette proportion atteint 0,62 % de la population.</p>
+            </blockquote>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="profils" aria-label="Analyse des données brutes — questions 3 à 5">
+        <p class="resident-scope-note">Sauf indication contraire, la suite de la note se concentre sur la sous-population des résidents français. Ce choix repose principalement sur leur accès homogène aux différents transferts sociaux (RSA, allocations logement, etc.) ainsi qu’au logement social.</p>
+        <div class="section-heading qa-section-heading qa-section-heading-solo">
+          <div>
+            <p class="section-number">Analyse des données brutes · Question 3</p>
+            <h3 id="question-3">3. Quels sont les âges les plus exposés au risque d'extrême pauvreté?</h3>
+          </div>
+        </div>
+
+        <blockquote class="synthesis-dialogue" data-mkouf="5" aria-label="Extrait de la note de synthèse">
+          <p><strong class="dialogue-label">Fait marquant :</strong> Les <em>enfants et adolescents</em> sont très largement <em>sur-représentés</em> dans l’extrême pauvreté (et à plus forte raison parmi les sans-abri), tandis que les personnes âgées y sont, à l'inverse, sous-représentées. Il y a près de 25 % d’enfants âgés de 0 à 9 ans parmi les personnes en précarité résidentielle, ces enfants vivant quasi systématiquement dans une famille composée d’une mère seule, alors que la part de cette tranche d’âge dans la population n’est que de 10 %.</p>
+        </blockquote>
+
+        <div class="profile-grid profile-grid-single">
+          <article class="chart-card age-card">
+            <h3>Répartition par âge</h3>
+            <div class="inline-legend" aria-label="Légende">
+              <span><i class="swatch swatch-france"></i>France</span>
+              <span><i class="swatch swatch-rdc"></i>Personnes accueillies aux RDC</span>
+              <span><i class="swatch swatch-housing"></i>Insécurité résidentielle stricte</span>
+            </div>
+            <div class="age-chart-layout">
+              <div class="age-pyramid-grid">
+                <section class="age-pyramid-panel" aria-labelledby="age-all-title">
+                  <div class="chart-panel-heading">
+                    <h4 id="age-all-title">Ensemble des âges</h4>
+                  </div>
+                  <div id="age-pyramid-main" class="age-pyramid-chart" role="list" aria-label="Pyramide des âges pour l’ensemble de la population"></div>
+                  <p class="chart-axis-title age-axis-title">Part dans la population ou le groupe</p>
+                </section>
+                <section class="age-pyramid-panel" aria-labelledby="age-children-title">
+                  <div class="chart-panel-heading">
+                    <h4 id="age-children-title">Enfants et adolescents</h4>
+                    <span>détail de 0 à 18 ans</span>
+                  </div>
+                  <div id="age-pyramid-children" class="age-pyramid-chart" role="list" aria-label="Pyramide détaillée des enfants et adolescents"></div>
+                  <p class="chart-axis-title age-axis-title">Part dans la population ou le groupe</p>
+                  <p class="microcopy age-panel-note">Zoom sur la pyramide des âges des enfants et adolescents à partir de celle de gauche.</p>
+                </section>
+              </div>
+            </div>
+            <p class="effects-reading age-chart-reading"><strong>Lecture :</strong> Ce graphique montre la pyramide des âges dans notre ensemble de données (en rouge), dans notre sous-échantillon constitué des personnes en précarité résidentielle (en bleu), et en France dans son ensemble (en gris clair). Il y a par exemple un peu plus de 20 % d’enfants âgés de 0 à 9 ans parmi les personnes accueillies aux Restos et entre 20 et 25 % parmi celles en précarité résidentielle, alors que cette tranche d’âge représente 10 % de la population française.</p>
+          </article>
+        </div>
+
+        <div class="qa-break">
+          <p class="section-number">Analyse des données brutes · Question 4</p>
+          <h3 id="question-4">4. Combien de temps dure un épisode d’extrême pauvreté?</h3>
+          <p class="qa-answer-lead">L’un des résultats les plus inattendus de notre analyse des données brutes est que <span class="text-highlight">la précarité alimentaire et la précarité résidentielle sont toutes deux des phénomènes transitoires</span>.</p>
+        </div>
+
+        <blockquote class="synthesis-dialogue" data-mkouf="6" aria-label="Extrait de la note de synthèse">
+          <p><strong class="dialogue-label">Fait marquant :</strong> La durée moyenne d’un passage aux Restos est d’environ 18 mois, et celle d’une expérience de précarité résidentielle ou de sans-abrisme est plus courte encore (17 mois). Seuls <span class="text-highlight">14 % des individus qui passent par les Restos y demeurent au-delà de trois ans</span>, et il est rare — environ 10 % des cas — qu’ils y retournent après une absence d’au moins une année.</p>
+        </blockquote>
+
+        <div class="duration-panels">
+          <article class="chart-card duration-card duration-card-status">
+            <h3>Précarité alimentaire et sans-abrisme.</h3>
+            <p class="chart-lead">Dans les deux cas, la première campagne concentre la plus grande part des épisodes.</p>
+            <div class="inline-legend duration-legend" aria-label="Légende des formes de précarité">
+              <span><i class="swatch swatch-food"></i>Précarité alimentaire</span>
+              <span><i class="swatch swatch-homelessness"></i>Sans-abrisme</span>
+            </div>
+            <div id="duration-status-chart" class="duration-chart" role="list" aria-label="Durée des épisodes de précarité alimentaire et de sans-abrisme"></div>
+            <p class="chart-axis-title">Nombre de campagnes aux Restos</p>
+            <p class="effects-reading duration-reading"><strong>Lecture :</strong> Près de 40 % des épisodes de précarité alimentaire et un peu plus de 35 % des épisodes de sans-abrisme ne durent qu’une seule campagne.</p>
+            <div class="duration-facts duration-facts-inline duration-facts-two">
+              <p><strong>18 mois</strong><span>durée moyenne aux RDC, mesurée par le nombre de campagnes</span></p>
+              <p><strong>17 mois</strong><span>durée moyenne dans le sans-abrisme</span></p>
+            </div>
+          </article>
+
+          <article class="chart-card duration-card duration-card-age">
+            <h3>La durée varie avec l’âge.</h3>
+            <p class="chart-lead">Les moins de 25 ans passent moins de temps, en nombre de campagnes, au sein des Restos.</p>
+            <div class="inline-legend duration-legend" aria-label="Légende des groupes d’âge">
+              <span><i class="swatch swatch-duration-young"></i>Moins de 25 ans</span>
+              <span><i class="swatch swatch-duration-mid"></i>25–64 ans</span>
+              <span><i class="swatch swatch-duration-senior"></i>65 ans et plus</span>
+            </div>
+            <div id="duration-age-chart" class="duration-chart" role="list" aria-label="Durée des épisodes selon l’âge"></div>
+            <p class="chart-axis-title">Nombre de campagnes aux Restos</p>
+            <p class="effects-reading duration-reading"><strong>Lecture :</strong> Près de 45 % des personnes de moins de 25 ans, près de 40 % de celles âgées de 25 à 64 ans et plus de 35 % de celles âgées de 65 ans ou plus ne restent aux Restos qu’une seule campagne.</p>
+            <div class="duration-facts duration-facts-inline duration-facts-one">
+              <p><strong>21 mois</strong><span>durée moyenne après 65 ans, mesurée par le nombre de campagnes</span></p>
+            </div>
+          </article>
+        </div>
+
+        <p class="q4-transition-note">Il est important de comprendre que ces deux statistiques — un risque de courte durée mais très répandu — sont les deux faces d’une même médaille. Le fait que les personnes accueillies restent relativement peu de temps aux Restos signifie que l’échantillon se renouvelle constamment et que, par conséquent, de <span class="text-highlight">nombreux habitants y seront présents tôt ou tard</span>.</p>
+
+        <div class="qa-break">
+          <p class="section-number">Analyse des données brutes · Question 5</p>
+          <h3 id="question-5">5. Quelles sont les situations d'emploi, les revenus et dépenses des personnes accueillies?</h3>
+          <p class="qa-answer-lead">Les données des Restos nous donnent un aperçu très fin de l’emploi et des finances des personnes accueillies.</p>
+        </div>
+
+        <div class="budget-band">
+          <div class="budget-schematic-grid" aria-label="Revenus, situation d’emploi et part du logement dans les revenus">
+            <article class="budget-diagram-card employment-diagram" data-mkouf="8">
+              <p class="diagram-eyebrow">Revenus</p>
+              <div class="employment-stat-cluster">
+                <div class="employment-main-stat"><strong>90 %</strong><span>des personnes accueillies sont sans emploi</span></div>
+                <p class="diagram-caption">Parmi l’ensemble des personnes accueillies, et inclus dans ces 90 % :</p>
+                <div class="employment-breakdown">
+                  <p><strong>3 %</strong><span>étudiants</span></p>
+                  <p><strong>10 %</strong><span>en situation de handicap</span></p>
+                  <p><strong>11 %</strong><span>retraités</span></p>
+                </div>
+              </div>
+              <p class="employment-explainer">Ceci est bien sûr en partie dû au fait que c’est précisément lorsqu’ils se retrouvent dans cette situation que les ménages ont recours à l’aide des Restos. Cette exclusion du marché du travail a pour conséquence que la principale source de revenu des personnes accueillies en âge de travailler repose sur l’aide sociale, notamment à travers le RSA, l’assurance chômage, les allocations familiales et de logement, et l’aide au handicap.</p>
+            </article>
+            <article class="budget-diagram-card housing-diagram" data-mkouf="9">
+              <p class="diagram-eyebrow">Part du revenu consacrée au logement ou à un abri temporaire</p>
+              <div class="housing-cost-row">
+                <div><strong>45 %</strong><span>Locataires du parc privé</span></div>
+                <i style="--share: 45%" aria-hidden="true"></i>
+              </div>
+              <div class="housing-cost-row">
+                <div><strong>40 %</strong><span>Locataires du parc social</span></div>
+                <i style="--share: 40%" aria-hidden="true"></i>
+              </div>
+              <div class="housing-cost-row housing-cost-row-emphasis">
+                <div><strong>20 %</strong><span>Personnes sans logement personnel</span></div>
+                <i style="--share: 20%" aria-hidden="true"></i>
+                <p>Même sans logement personnel, une part significative du revenu peut financer un hébergement temporaire : CHRS, nuitées à l’hôtel ou autres abris qui ne sont pas toujours gratuits.</p>
+              </div>
+              <p class="housing-debt-note">On dénombre environ <strong>10 %</strong> de personnes en situation d’endettement.</p>
+            </article>
+          </div>
+          <blockquote class="synthesis-dialogue synthesis-dialogue-budget budget-note" aria-label="Fait marquant">
+            <p><strong class="dialogue-label">Fait marquant :</strong> Le reste à vivre des personnes accueillies — c’est-à-dire leur revenu après paiement du loyer et des charges associées — est relativement stable : <strong class="dialogue-key-number">≈ 300 €</strong> restent ensuite disponibles, par unité de consommation, pour couvrir les dépenses primaires.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="territory-section" id="territoires" aria-labelledby="territoires-title">
+        <div class="territory-inner">
+          <div class="section-heading territory-heading">
+            <div>
+              <p class="section-number">Deuxième partie</p>
+              <h2 id="territoires-title">Déterminants des flux d’entrée et de sortie</h2>
+              <p class="territory-subtitle">La seconde partie de notre analyse va au-delà de ces statistiques descriptives brutes et étudie les déterminants des flux d’entrée et de sortie de la précarité alimentaire et résidentielle. Les centres des Restos étant présents partout dans le pays, nous pouvons corréler ces flux d’entrée et de sortie aux variations géographiques des conditions macroéconomiques locales afin d’estimer leurs rôles respectifs dans la formation et la persistance de la pauvreté.</p>
+              <p class="territory-subtitle territory-subtitle-secondary">Nous avons pour cela collecté de nombreuses données annuelles à l’échelon du bassin de vie : le taux de chômage, le revenu moyen, l’inflation alimentaire et locative, le nombre et la création d’entreprises, les secteurs industriels, la disponibilité des logements sociaux, la capacité des hébergements d’urgence, les conditions météorologiques, etc. Pour les flux de sortie de la pauvreté, nous sommes également en mesure d’estimer l’impact des caractéristiques individuelles, par exemple les variables démographiques et socio-économiques des ménages.</p>
+              <p class="territory-subtitle territory-subtitle-secondary">Notre analyse empirique consiste à exploiter le fait que les variables économiques varient de manière différente sur le territoire au cours du temps ; par exemple, la carte du chômage ne coïncide pas avec celle des loyers, et elle évolue de manière différente d’année en année. Cela nous permet d’isoler et d’estimer indépendamment l’effet de chaque variable économique sur la proportion de ménages qui entrent dans la précarité alimentaire ou le sans-abrisme, ou qui en sortent, chaque année.</p>
+              <p class="territory-subtitle territory-subtitle-secondary">Pour donner un exemple concret de la façon dont nous estimons ces effets, la carte ci-dessous représente le nombre de personnes sans abri par millier d’habitants et par bassin de vie en 2022–2023. Elle permet aussi de visualiser d’autres agrégats : le niveau des loyers, le taux de chômage, etc.</p>
+            </div>
+          </div>
+
+          <p class="map-instructions">Survolez un territoire pour obtenir des détails&nbsp;; recherchez-le pour zoomer.</p>
+
+          <div class="map-shell">
+            <div class="map-toolbar" aria-label="Options de l’atlas">
+              <label>
+                <span>Thème</span>
+                <select id="map-theme" aria-label="Choisir un thème cartographique"></select>
+              </label>
+              <label>
+                <span>Indicateur</span>
+                <select id="map-variable" aria-label="Choisir un indicateur cartographique"></select>
+              </label>
+              <label class="map-search-label">
+                <span>Rechercher un bassin</span>
+                <input id="map-search" type="search" list="bva-options" placeholder="Ex. Toulouse, Paris — Créteil…" autocomplete="off" />
+                <datalist id="bva-options"></datalist>
+              </label>
+              <button id="map-reset" class="map-reset" type="button">Vue France</button>
+            </div>
+            <div class="map-layout">
+              <div class="map-stage">
+                <div class="map-stage-header">
+                  <span class="map-source-pill">Leaflet · géométrie communale IGN · classes par bassin augmenté</span>
+                  <span>Hiver 2022–2023</span>
+                </div>
+                <div id="bva-map" class="bva-map" role="region" aria-label="Atlas interactif des bassins de vie augmentés">
+                  <div class="map-loading">Construction de l’atlas…</div>
+                </div>
+              </div>
+              <aside class="map-side">
+                <h3 id="map-title">Sans-abrisme</h3>
+                <p id="map-description">Personnes accueillies aux RDC en situation de sans-abrisme au sens large, dans les plus de 1 900 centres de distribution des Restos, rapportées au nombre local de ménages.</p>
+                <div id="map-legend" class="map-legend" aria-label="Légende interactive"></div>
+                <div class="map-context" aria-label="Repères pour le bassin sélectionné">
+                  <p><span>Sans-abrisme</span><strong id="map-context-housing">—</strong></p>
+                  <p><span>Loyer privé</span><strong id="map-context-rent">—</strong></p>
+                  <p><span>Chômage élargi</span><strong id="map-context-unemployment">—</strong></p>
+                </div>
+                <p class="microcopy">
+                  Les 34 806 communes métropolitaines sont regroupées en 1 702 bassins de vie augmentés,
+                  dont 22 subdivisions du bassin parisien.
+                </p>
+              </aside>
+            </div>
+          </div>
+          <blockquote class="synthesis-dialogue synthesis-dialogue-compact territory-fact" aria-label="Fait marquant">
+            <p><strong class="dialogue-label">Fait marquant :</strong> La grande pauvreté présente une dimension territoriale forte. Elle est davantage présente dans les espaces urbains et notamment les centres-villes : environ 50 % des personnes concernées vivent en centre-ville, contre 30 % de l’ensemble de la population française, ce qui témoigne d’une forme de paupérisation des centres-villes. Pour autant, la pauvreté n’est pas uniquement urbaine : 30 % des centres de distribution des Restos du Cœur et près de 20 % des personnes accueillies sont situés en zone rurale ou dans des villes isolées.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="section" id="mecanismes" aria-label="Déterminants des flux d'entrée et de sortie — questions 6 à 8">
+        <div class="section-heading qa-section-heading qa-section-heading-solo">
+          <div>
+            <p class="section-number">Déterminants des flux d'entrée et de sortie · Question 6</p>
+            <h3 id="question-6">6. Quels sont les déterminants macroéconomiques des flux d'entrée?</h3>
+            <p class="qa-answer-lead">Le premier résultat empirique important que nous obtenons consiste à <span class="text-highlight">quantifier l'impact des chocs économiques et de certaines politiques publiques sur les flux d'entrée</span> dans la précarité alimentaire et résidentielle. Nous observons que ces effets sont <em>très élevés</em> et statistiquement significatifs. Les principaux déterminants économiques des flux d'entrée dans l'extrême pauvreté sont, d'une part (avec un signe positif), le taux de chômage et l'inflation des loyers, et d'autre part (avec un signe négatif), le revenu moyen du bassin de vie, le stock de logements sociaux, et le nombre d'entreprises (notamment dans certains secteurs).</p>
+          </div>
+        </div>
+
+        <blockquote class="synthesis-dialogue q6-entry-fact" data-mkouf="10" aria-label="Extrait de la note de synthèse">
+          <p><strong class="dialogue-label">Fait marquant :</strong> Une hausse de 10% du taux de chômage entraîne, toutes choses égales par ailleurs, une augmentation d'environ 10% du nombre de personnes sans-abri ou en situation de précarité résidentielle, et de 13% pour la précarité alimentaire.</p>
+        </blockquote>
+        <p class="qa-answer-lead q6-figure-followup">Les effets de plusieurs variables économiques sur l'entrée dans la précarité résidentielle sont représentés sur la figure ci-dessous à gauche. Le panneau de droite permet de simuler l'impact de certaines variables économiques sur l'entrée dans la précarité résidentielle à l'échelle des bassins de vie.</p>
+
+        <div class="mechanism-grid mechanism-grid-paired">
+          <article class="effects-card">
+            <div class="effects-heading">
+              <h3>Estimations des entrées dans la précarité résidentielle.</h3>
+            </div>
+            <div class="effects-axis" aria-hidden="true"><span>−1,5</span><span>−1</span><span>−0,5</span><span>0</span><span>0,5</span><span>1</span><span>1,5</span></div>
+            <div id="entry-effects-chart" class="effects-chart" role="list" aria-label="Élasticités estimées des entrées dans la précarité résidentielle"></div>
+            <p class="effects-axis-title">Élasticités et intervalles affichés</p>
+            <p class="effects-reading"><strong>Lecture :</strong> si les loyers privés augmentent de 1 %, le nombre de personnes en situation de précarité résidentielle augmente d’environ 0,42 %, toutes choses égales par ailleurs.</p>
+            <p id="entry-effects-note" class="microcopy">Lorsqu’un intervalle ne croise pas zéro, l’effet est statistiquement significatif avec un niveau de confiance supérieur à 90 %.</p>
+          </article>
+          <article class="simulator" data-shock-simulator="entry">
+            <h3>Un choc local peut provoquer rapidement de nouvelles entrées.</h3>
+            <p class="shock-prompt">Une variation de :</p>
+            <div class="shock-options" role="radiogroup" aria-label="Variable locale appliquée aux entrées">
+              <button type="button" role="radio" aria-checked="true" class="is-active" data-shock="unemployment">Chômage</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="rent">Loyers privés</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="housing">Logements sociaux</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="firms">Entreprises</button>
+            </div>
+            <label class="slider-label" for="entry-shock-range">
+              Amplitude de la variation
+              <output data-shock-input for="entry-shock-range">+10 %</output>
+            </label>
+            <input id="entry-shock-range" data-shock-range type="range" min="1" max="20" value="10" step="1" />
+            <div class="shock-result" aria-live="polite">
+              <span data-shock-prefix>Une hausse de 10 % du chômage entraîne, toutes choses égales par ailleurs, une variation des entrées dans la précarité résidentielle de</span>
+              <strong data-shock-output>≈ +10 %</strong>
+              <p data-shock-secondary>Intervalle de confiance : [+5,8 % ; +13 %].</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="qa-break">
+          <p class="section-number">Déterminants des flux d'entrée et de sortie · Question 7</p>
+          <h3 id="question-7">7. Quels sont les déterminants macroéconomiques des flux de sortie?</h3>
+          <p class="qa-answer-lead">Considérons maintenant les individus qui sont déjà tombés dans la pauvreté. Quelles sont les variables, macroéconomiques ou de politiques publiques, susceptibles de les aider à s'en sortir&nbsp;? L'un des résultats les plus frappants de notre analyse est qu'<span class="text-highlight">aucune variable macroéconomique n'a d'impact économiquement ou statistiquement significatif robuste sur les taux de sortie de la précarité alimentaire ou résidentielle</span>. En d'autres termes, et c'est là le point le plus important de notre étude, les récessions poussent les ménages vers l'extrême pauvreté à des rythmes bien plus élevés que la reprise ultérieure ne les aide à en sortir.</p>
+        </div>
+        <div class="dialogue-grid q7-dialogue-grid" aria-label="Extraits de la note de synthèse">
+          <blockquote class="synthesis-dialogue synthesis-dialogue-compact" data-mkouf="11">
+            <p><strong class="dialogue-label">Fait marquant :</strong> Les taux de sortie de l'extrême pauvreté ne réagissent que très peu aux fluctuations de l'activité économique ; les variations de la précarité alimentaire et de la précarité résidentielle au cours du cycle économique (récessions et périodes de croissance) sont en très grande partie déterminées par la marge d'entrée, même si leur niveau moyen dépend fortement des flux de sortie.</p>
+          </blockquote>
+        </div>
+        <div class="qa-narrative-followup">
+          <p class="qa-answer-lead">Ces résultats suggèrent que <span class="text-highlight">les politiques publiques agissant sur les marchés du travail et du logement sont en mesure d'aider à prévenir les basculements dans la grande pauvreté, mais n'ont que peu d'effet pour aider à en sortir ceux qui y sont déjà tombés</span> ; aider ceux-ci nécessite plutôt des interventions ciblées et adaptées aux situations personnelles des individus.</p>
+          <p class="qa-answer-lead">Les effets de plusieurs variables économiques sur la sortie de la précarité résidentielle sont représentés sur la figure ci-dessous à gauche. Le panneau de droite permet de simuler l'impact de certaines variables économiques sur les sorties de la précarité résidentielle à l'échelle des bassins de vie.</p>
+        </div>
+
+        <div class="mechanism-grid mechanism-grid-paired">
+          <article class="effects-card">
+            <div class="effects-heading">
+              <h3>Estimations des sorties de la précarité résidentielle.</h3>
+            </div>
+            <div class="effects-axis" aria-hidden="true"><span>−1,5</span><span>−1</span><span>−0,5</span><span>0</span><span>0,5</span><span>1</span><span>1,5</span></div>
+            <div id="effects-chart" class="effects-chart" role="list" aria-label="Élasticités estimées des sorties de la précarité résidentielle"></div>
+            <p class="effects-axis-title">Élasticités et intervalles affichés</p>
+            <p class="effects-reading"><strong>Lecture :</strong> dans cette spécification, si les loyers privés augmentent de 1 %, le nombre de personnes sortant de la précarité résidentielle augmente d’environ 0,14 %, toutes choses égales par ailleurs.</p>
+            <p id="effects-note" class="microcopy">Un intervalle qui ne croise pas zéro est présenté comme statistiquement significatif, avec un niveau de confiance supérieur à 90 %.</p>
+          </article>
+          <article class="simulator" data-shock-simulator="exit">
+            <h3>Les mêmes variations locales modifient peu les sorties.</h3>
+            <p class="shock-prompt">Une variation de :</p>
+            <div class="shock-options" role="radiogroup" aria-label="Variable locale appliquée aux sorties">
+              <button type="button" role="radio" aria-checked="true" class="is-active" data-shock="unemployment">Chômage</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="rent">Loyers privés</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="housing" aria-label="Stock local de logements sociaux">Logements sociaux</button>
+              <button type="button" role="radio" aria-checked="false" data-shock="firms">Entreprises</button>
+            </div>
+            <label class="slider-label" for="exit-shock-range">
+              Amplitude de la variation
+              <output data-shock-input for="exit-shock-range">+10 %</output>
+            </label>
+            <input id="exit-shock-range" data-shock-range type="range" min="1" max="20" value="10" step="1" />
+            <div class="shock-result" aria-live="polite">
+              <span data-shock-prefix>Une hausse de 10 % du chômage entraîne, toutes choses égales par ailleurs, une variation des sorties de la précarité résidentielle de</span>
+              <strong data-shock-output>≈ −1,2 %</strong>
+              <p data-shock-secondary>Intervalle de confiance : [−2,3 % ; −0,2 %].</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="exit-lead qa-break">
+          <p class="section-number">Déterminants des flux d'entrée et de sortie · Question 8</p>
+          <h3 id="question-8">8. Quels sont les déterminants individuels des flux de sortie?</h3>
+        </div>
+        <p class="standalone-highlight-prose" data-mkouf="13">Si les variables et politiques économiques ne favorisent pas la sortie de l'extrême pauvreté, quels facteurs déterminent ces flux&nbsp;? Les déterminants clés en sont les caractéristiques individuelles ou du ménage. En premier lieu, <em>l'âge d'un individu a un effet important sur ses chances de se remettre sur pied.</em> Deuxièmement, le revenu du ménage joue un rôle évidemment important. Enfin, <em>le déterminant le plus important du taux de sortie de l'extrême pauvreté est le nombre de campagnes qu'un ménage a déjà passées aux Restos.</em> Les économistes appellent cela une <em>dépendance à la durée</em> : plus le temps qui s'est écoulé depuis sa première entrée aux Restos est important, moins le ménage a de chances d'en sortir.</p>
+        <div class="exit-factors">
+          <article>
+            <span>Âge</span>
+            <strong class="factor-context">Moins de 25 ans → 65 ans et plus</strong>
+            <p class="factor-effect"><b>−10 points</b> de taux de sortie par campagne</p>
+            <p class="factor-detail">Le taux de sortie passe d’environ <strong class="inline-number">32 %</strong> chez les moins de 25 ans à <strong class="inline-number">22 %</strong> chez les 65 ans et plus.</p>
+          </article>
+          <article>
+            <span>Revenu</span>
+            <strong class="factor-context">0 → 500 € par mois</strong>
+            <p class="factor-effect"><b>+10 points</b> de taux de sortie par campagne</p>
+            <p class="factor-detail">Cette variation est calculée par unité de consommation : un taux moyen de 32 % passerait ainsi à environ <strong class="inline-number">42 %</strong>.</p>
+          </article>
+          <article>
+            <span>Durée</span>
+            <strong class="factor-context">Première campagne → après 3 ans</strong>
+            <p class="factor-effect"><b>32 % → 22 %</b> de taux de sortie par campagne</p>
+            <p class="factor-detail">Après au moins trois ans aux RDC, le taux de sortie baisse d’environ 10 points par campagne.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="inflation-section" id="chocs-recents" aria-labelledby="question-9">
+        <div class="inflation-header">
+          <p class="section-number">Déterminants des flux d'entrée et de sortie · Question 9</p>
+          <h3 id="question-9">9. Quels chocs économiques expliquent l'augmentation récente de la précarité résidentielle?</h3>
+          <p class="counterfactual-explainer">Enfin, nous utilisons les résultats empiriques que nous venons de décrire pour répondre à la question suivante&nbsp;: quelle fut l'importance de l'évolution de l'inflation (des prix et des loyers) et du chômage dans l'augmentation de l'extrême pauvreté que nous avons vécue au cours des dernières années&nbsp;? Pour cela, nous proposons l'exercice suivant. Nous calculons les flux d'entrée et de sortie dans le sans-abrisme qui se seraient produits si l'une de ces variables (par exemple, le niveau des prix) était restée fixe à son niveau de 2018 — tout en laissant les autres suivre leur cours réel.</p>
+          <blockquote class="synthesis-dialogue synthesis-dialogue-on-color" data-mkouf="15" aria-label="Extrait de la note de synthèse">
+            <p><strong class="dialogue-label">Fait marquant :</strong> Nous concluons que toutes choses égales par ailleurs, l'inflation est responsable de plus de la moitié (52%) de la hausse spectaculaire de la précarité résidentielle depuis 2018.</p>
+          </blockquote>
+        </div>
+        <div class="counterfactual-grid">
+          <article class="counterfactual-card">
+            <div class="counterfactual-heading">
+              <span>Inflation</span>
+              <h4>Hausse de la précarité résidentielle depuis 2018</h4>
+              <p>Si les prix étaient restés à leur niveau de 2018, le modèle estime que la hausse de la précarité résidentielle aurait été de 29 %, au lieu des 61 % observés.</p>
+            </div>
+            <div class="counterfactual-bars" aria-label="Hausse observée et simulée sans inflation">
+              <button type="button" class="cf-bar observed" data-tooltip="Hausse observée : +61 %">
+                <span class="cf-fill" style="--p:100%"></span><strong>+61 %</strong><small>observé</small>
+              </button>
+              <button type="button" class="cf-bar simulated" data-tooltip="Niveau des prix maintenu à son niveau de 2018 : +29 %">
+                <span class="cf-fill" style="--p:47.5%"></span><strong>+29 %</strong><small>prix de 2018</small>
+              </button>
+            </div>
+            <div class="inflation-share">
+              <span>Part attribuée à l’inflation résidentielle et de la nourriture</span>
+              <strong>52 %</strong>
+            </div>
+          </article>
+          <article class="counterfactual-card counterfactual-card-unemployment">
+            <div class="counterfactual-heading">
+              <span>Chômage</span>
+              <h4>La baisse du chômage a freiné la précarité résidentielle</h4>
+              <p>Si le chômage était resté à son niveau de 2018, le modèle estime que le nombre actuel de personnes sans abri serait supérieur de 12 %.</p>
+            </div>
+            <div class="counterfactual-bars" aria-label="Niveau simulé sans la baisse du chômage et niveau observé">
+              <button type="button" class="cf-bar unemployment-fixed" data-tooltip="Chômage maintenu à son niveau de 2018 : indice 112">
+                <span class="cf-fill" style="--p:100%"></span><strong>112</strong><small>sans baisse</small>
+              </button>
+              <button type="button" class="cf-bar observed" data-tooltip="Situation observée après la baisse du chômage : indice 100">
+                <span class="cf-fill" style="--p:89.3%"></span><strong>100</strong><small>observé</small>
+              </button>
+            </div>
+            <div class="inflation-share unemployment-share">
+              <span>Surcroît évité grâce à la baisse du chômage</span>
+              <strong>12 %</strong>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section conclusion-section" id="conclusion" aria-labelledby="conclusion-title">
+        <h2 id="conclusion-title">Conclusion</h2>
+        <p class="conclusion-lead">Prévenir tôt. Accompagner dans la durée.</p>
+        <p class="conclusion-narrative">Les données des Restos du Cœur nous permettent d'apporter de nouveaux éléments empiriques sur l’extrême pauvreté dans une économie de marché développée comme la France. La prévention est le levier de politique publique le plus puissant, à travers notamment <em class="policy-highlight">la stabilité du marché du travail</em>, <em class="policy-highlight">l’offre de logements à prix abordables</em> et <em class="policy-highlight">la stabilité des prix</em>. Pour les ménages déjà tombés dans l’extrême pauvreté, les conditions économiques agrégées aident peu&nbsp;; ce qui compte est d'apporter <em class="policy-highlight">un soutien précoce et ciblé</em>, avant que la dépendance à la durée ne rende la sortie de la précarité alimentaire et résidentielle de plus en plus difficile.</p>
+
+        <div class="poverty-measure">
+          <p class="conclusion-narrative">Concluons sur un point subtil mais important concernant la mesure de la pauvreté. <span class="text-highlight">Les personnes accueillies par les Restos ne sont pas admises sur des critères de revenu mais selon un critère de reste à vivre, c'est-à-dire une mesure de consommation.</span> Par définition, ils appartiennent à des ménages qui se désignent eux-mêmes comme ayant besoin d'aide alimentaire. Ce critère nous permet d'étudier la pauvreté d'une manière bien plus pertinente qu'en se fondant uniquement sur des données de revenus, qui peuvent être trompeuses (par exemple, un même revenu peut être suffisant pour se loger en zone rurale mais pas à Paris).</p>
+        </div>
+
+        <p class="conclusion-policy-title">Leçon pour les politiques publiques :</p>
+        <div class="conclusion-grid">
+          <article><h3>Prévenir les entrées</h3><p>Stabiliser l’emploi, contenir les dépenses contraintes et développer une offre de logements abordables.</p></article>
+          <article><h3>Intervenir sans attendre</h3><p>La dépendance à la durée réduit les chances de sortie. L’analyse plaide pour une intervention précoce.</p></article>
+          <article><h3>Cibler les situations</h3><p>Les sorties dépendent davantage de l’âge, du revenu et de la durée de l’épisode que de la conjoncture locale.</p></article>
+        </div>
+
+      </section>
+    </main>
+
+    <footer aria-hidden="true"></footer>
+    <div id="tooltip" class="tooltip" role="status" aria-live="polite"></div>
+  </body>
+</html>
