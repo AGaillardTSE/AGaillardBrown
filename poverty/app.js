@@ -177,6 +177,7 @@ let mapMetricKey = "housing_strict";
 let bvaMap;
 let bvaLayer;
 let bvaFeatures = [];
+let departmentFeatures = [];
 let bvaMeta = { metrics: {} };
 let bvaScale;
 let bvaBounds;
@@ -200,6 +201,7 @@ function formatCountry(value) {
 function showTooltip(target, html) {
   const box = target.getBoundingClientRect();
   tooltip.innerHTML = html;
+  tooltip.classList.toggle("is-age-tooltip", target.classList.contains("pyramid-row"));
   tooltip.classList.add("is-visible");
   const width = tooltip.offsetWidth || 220;
   const x = Math.min(window.innerWidth - width / 2 - 10, Math.max(width / 2 + 10, box.left + box.width / 2));
@@ -329,7 +331,7 @@ function renderAgePyramid(hostSelector, data, maximum, ticks, dividerIndexes = [
         <i class="pyramid-bar pyramid-housing"></i>
       </span>
     `;
-    bindTooltip(row, `<strong>${label} ans</strong><br>France : ${fr(france * 100, 1)} %<br>Personnes accueillies aux RDC : ${fr(rdc * 100, 1)} %<br>Insécurité résidentielle stricte : ${fr(housing * 100, 1)} %`);
+    bindTooltip(row, `<strong>${label} ans</strong><br>France : ${fr(france * 100, 1)}&nbsp;%<br>Personnes accueillies aux RDC : ${fr(rdc * 100, 1)}&nbsp;%<br>Insécurité résidentielle stricte : ${fr(housing * 100, 1)}&nbsp;%`);
     host.appendChild(row);
   });
 
@@ -444,12 +446,16 @@ function mapClassColor(index) {
 }
 
 function basinStyle(feature) {
+  const fillColor = mapClassColor(metricClass(feature) ?? -1);
   return {
     pane: "basins",
-    color: "rgba(255,255,255,.72)",
-    weight: .34,
-    fillColor: mapClassColor(metricClass(feature) ?? -1),
-    fillOpacity: .94
+    color: fillColor,
+    opacity: 1,
+    weight: 1.2,
+    lineCap: "round",
+    lineJoin: "round",
+    fillColor,
+    fillOpacity: 1
   };
 }
 
@@ -579,6 +585,268 @@ function searchBasin() {
   }
 }
 
+function wrappedCanvasLines(context, text, maxWidth, maxLines = Infinity) {
+  const words = String(text).trim().split(/\s+/);
+  const lines = [];
+  let line = "";
+  words.forEach((word) => {
+    const candidate = line ? `${line} ${word}` : word;
+    if (line && context.measureText(candidate).width > maxWidth) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  });
+  if (line) lines.push(line);
+  if (lines.length <= maxLines) return lines;
+  const visible = lines.slice(0, maxLines);
+  let last = `${visible.at(-1)}…`;
+  while (last.length > 1 && context.measureText(last).width > maxWidth) last = `${last.slice(0, -2)}…`;
+  visible[visible.length - 1] = last;
+  return visible;
+}
+
+function drawWrappedCanvasText(context, text, x, y, maxWidth, lineHeight, maxLines = Infinity) {
+  const lines = wrappedCanvasLines(context, text, maxWidth, maxLines);
+  lines.forEach((line, index) => context.fillText(line, x, y + index * lineHeight));
+  return y + lines.length * lineHeight;
+}
+
+function mapExportSlug(value) {
+  return String(value)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "") || "france";
+}
+
+function traceFeatureForExport(context, feature, offsetX, offsetY, scale, project) {
+  const geometry = feature?.geometry;
+  if (!geometry || !["Polygon", "MultiPolygon"].includes(geometry.type)) return false;
+  const polygons = geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates;
+  let traced = false;
+  polygons.forEach((polygon) => polygon.forEach((ring) => {
+    ring.forEach(([longitude, latitude], index) => {
+      const point = project([longitude, latitude]);
+      const x = offsetX + point.x * scale;
+      const y = offsetY + point.y * scale;
+      if (index === 0) context.moveTo(x, y);
+      else context.lineTo(x, y);
+      traced = true;
+    });
+    context.closePath();
+  }));
+  return traced;
+}
+
+function drawFeatureForExport(context, feature, offsetX, offsetY, scale, style, project) {
+  context.beginPath();
+  if (!traceFeatureForExport(context, feature, offsetX, offsetY, scale, project)) return;
+  if (style.fill) {
+    context.fillStyle = style.fill;
+    context.fill("evenodd");
+  }
+  if (style.stroke) {
+    context.strokeStyle = style.stroke;
+    context.lineWidth = style.lineWidth;
+    context.lineJoin = "round";
+    context.lineCap = "round";
+    context.stroke();
+  }
+}
+
+function downloadCanvas(canvas, filename) {
+  const save = (href, revoke = null) => {
+    const link = document.createElement("a");
+    link.href = href;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    if (revoke) window.setTimeout(revoke, 30000);
+  };
+  return new Promise((resolve, reject) => {
+    if (!canvas.toBlob) {
+      try {
+        save(canvas.toDataURL("image/png"));
+        resolve({ bytes: null });
+      } catch (error) {
+        reject(error);
+      }
+      return;
+    }
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        try {
+          save(canvas.toDataURL("image/png"));
+          resolve({ bytes: null });
+        } catch (error) {
+          reject(error);
+        }
+        return;
+      }
+      const url = URL.createObjectURL(blob);
+      save(url, () => URL.revokeObjectURL(url));
+      resolve({ bytes: blob.size });
+    }, "image/png");
+  });
+}
+
+async function downloadMapAsPng() {
+  const button = document.querySelector("#map-download");
+  const status = document.querySelector("#map-download-status");
+  if (!bvaMap || !bvaLayer || !bvaFeatures.length || button.disabled) return;
+  const defaultLabel = "Télécharger en PNG";
+  button.disabled = true;
+  button.textContent = "Préparation…";
+  status.textContent = "Préparation de la carte PNG.";
+  try {
+    if (document.fonts?.ready) await document.fonts.ready;
+    bvaMap.stop();
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const mapHost = document.querySelector("#bva-map");
+    const mapRect = mapHost.getBoundingClientRect();
+    if (!mapRect.width || !mapRect.height) throw new Error("Carte invisible");
+
+    const width = 1440;
+    const headerHeight = 160;
+    const footerHeight = 64;
+    const legendWidth = 400;
+    const mapWidth = width - legendWidth;
+    const mapScale = mapWidth / mapRect.width;
+    const mapZoom = bvaMap.getZoom();
+    const pixelOrigin = bvaMap.getPixelOrigin();
+    const paneOffset = bvaMap.layerPointToContainerPoint(L.point(0, 0));
+    const project = ([longitude, latitude]) => bvaMap.project(L.latLng(latitude, longitude), mapZoom)
+      .subtract(pixelOrigin)
+      .add(paneOffset);
+    const bodyHeight = Math.max(760, Math.round(mapRect.height * mapScale));
+    const height = headerHeight + bodyHeight + footerHeight;
+    const pixelRatio = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = width * pixelRatio;
+    canvas.height = height * pixelRatio;
+    const context = canvas.getContext("2d");
+    context.scale(pixelRatio, pixelRatio);
+    context.textBaseline = "top";
+
+    context.fillStyle = "#10162b";
+    context.fillRect(0, 0, width, headerHeight);
+    context.fillStyle = "#ef2d68";
+    context.font = "800 15px Inter, Arial, sans-serif";
+    context.fillText("NOTE DE SYNTHÈSE · CARTE INTERACTIVE", 46, 30);
+    context.fillStyle = "#ffffff";
+    context.font = "600 42px Georgia, serif";
+    context.fillText(mapMetrics.get(mapMetricKey).label, 46, 58);
+    context.fillStyle = "#b7c0d4";
+    context.font = "500 18px Inter, Arial, sans-serif";
+    context.fillText("Bassins de vie augmentés · Hiver 2022–2023", 48, 116);
+
+    const mapY = headerHeight;
+    context.save();
+    context.beginPath();
+    context.rect(0, mapY, mapWidth, bodyHeight);
+    context.clip();
+    const mapBackground = context.createRadialGradient(mapWidth * .45, mapY + bodyHeight * .45, 30, mapWidth * .45, mapY + bodyHeight * .45, Math.max(mapWidth, bodyHeight) * .7);
+    mapBackground.addColorStop(0, "#ffffff");
+    mapBackground.addColorStop(1, "#dbe2ee");
+    context.fillStyle = mapBackground;
+    context.fillRect(0, mapY, mapWidth, bodyHeight);
+    bvaFeatures.forEach((feature) => {
+      const fill = mapClassColor(metricClass(feature) ?? -1);
+      drawFeatureForExport(context, feature, 0, mapY, mapScale, {
+        fill,
+        stroke: fill,
+        lineWidth: Math.max(1.25, 1.05 * mapScale)
+      }, project);
+    });
+    departmentFeatures.forEach((feature) => drawFeatureForExport(context, feature, 0, mapY, mapScale, {
+      stroke: "rgba(11,16,32,.62)",
+      lineWidth: Math.max(1.15, .85 * mapScale)
+    }, project));
+    if (selectedBasinLayer?.feature) drawFeatureForExport(context, selectedBasinLayer.feature, 0, mapY, mapScale, {
+      stroke: "#0b1020",
+      lineWidth: Math.max(3, 2.1 * mapScale)
+    }, project);
+    context.restore();
+
+    const sideX = mapWidth;
+    const sidePadding = 36;
+    const textWidth = legendWidth - sidePadding * 2;
+    context.fillStyle = "#161e38";
+    context.fillRect(sideX, mapY, legendWidth, bodyHeight);
+    context.fillStyle = "#ef2d68";
+    context.font = "800 14px Inter, Arial, sans-serif";
+    context.fillText("LÉGENDE", sideX + sidePadding, mapY + 34);
+    context.fillStyle = "#ffffff";
+    context.font = "600 29px Georgia, serif";
+    let cursorY = drawWrappedCanvasText(context, mapMetrics.get(mapMetricKey).label, sideX + sidePadding, mapY + 59, textWidth, 35, 2) + 10;
+    context.fillStyle = "#c0c9dc";
+    context.font = "400 17px Inter, Arial, sans-serif";
+    cursorY = drawWrappedCanvasText(context, mapMetrics.get(mapMetricKey).description, sideX + sidePadding, cursorY, textWidth, 25, 6) + 24;
+
+    const { classCount } = bvaScale;
+    for (let index = 0; index < classCount; index += 1) {
+      const color = mapClassColor(index);
+      context.fillStyle = color;
+      context.fillRect(sideX + sidePadding, cursorY + 2, 38, 22);
+      context.strokeStyle = "rgba(255,255,255,.35)";
+      context.lineWidth = 1;
+      context.strokeRect(sideX + sidePadding, cursorY + 2, 38, 22);
+      context.fillStyle = "#e5e9f3";
+      context.font = "500 16px Inter, Arial, sans-serif";
+      context.fillText(classRangeLabel(mapMetrics.get(mapMetricKey), mapMetricKey, index, true), sideX + sidePadding + 54, cursorY + 3);
+      cursorY += 39;
+    }
+    context.fillStyle = "#cbd1dc";
+    context.fillRect(sideX + sidePadding, cursorY + 2, 38, 22);
+    context.strokeStyle = "rgba(255,255,255,.35)";
+    context.strokeRect(sideX + sidePadding, cursorY + 2, 38, 22);
+    context.fillStyle = "#e5e9f3";
+    context.font = "500 16px Inter, Arial, sans-serif";
+    context.fillText("Non disponible", sideX + sidePadding + 54, cursorY + 3);
+    cursorY += 58;
+
+    if (selectedBasinLayer?.feature?.properties?.bva_name) {
+      context.fillStyle = "#ef2d68";
+      context.font = "800 13px Inter, Arial, sans-serif";
+      context.fillText("BASSIN SÉLECTIONNÉ", sideX + sidePadding, cursorY);
+      context.fillStyle = "#ffffff";
+      context.font = "600 21px Georgia, serif";
+      drawWrappedCanvasText(context, selectedBasinLayer.feature.properties.bva_name, sideX + sidePadding, cursorY + 25, textWidth, 27, 3);
+    }
+
+    const footerY = headerHeight + bodyHeight;
+    context.fillStyle = "#10162b";
+    context.fillRect(0, footerY, width, footerHeight);
+    context.fillStyle = "#b7c0d4";
+    context.font = "500 14px Inter, Arial, sans-serif";
+    context.fillText("Source : Restos du Cœur · IGN ADMIN EXPRESS 2024 · GHWW", 46, footerY + 23);
+    context.textAlign = "right";
+    context.fillText("L’extrême pauvreté dans les pays riches", width - 40, footerY + 23);
+    context.textAlign = "left";
+
+    const areaSlug = mapExportSlug(selectedBasinLayer?.feature?.properties?.bva_name || "france");
+    const filename = `carte-${mapMetricKey.replaceAll("_", "-")}-${areaSlug}-2022-2023.png`;
+    const exportInfo = await downloadCanvas(canvas, filename);
+    const sizeLabel = exportInfo.bytes ? `, ${Math.round(exportInfo.bytes / 1024)} ko` : "";
+    status.textContent = `Carte PNG générée : ${filename}, ${canvas.width} × ${canvas.height} pixels${sizeLabel}.`;
+  } catch (error) {
+    console.error("Échec du téléchargement de la carte", error);
+    status.textContent = "Le téléchargement de la carte a échoué. Réessayez.";
+    button.textContent = "Réessayer";
+    window.setTimeout(() => { button.textContent = defaultLabel; }, 1800);
+    return;
+  } finally {
+    button.disabled = false;
+  }
+  button.textContent = "PNG téléchargé";
+  window.setTimeout(() => { button.textContent = defaultLabel; }, 1400);
+}
+
 function prepareMapControls() {
   const themeSelect = document.querySelector("#map-theme");
   const variableSelect = document.querySelector("#map-variable");
@@ -608,6 +876,7 @@ function prepareMapControls() {
     document.querySelector("#map-search").value = "";
     clearBasinSelection(true);
   });
+  document.querySelector("#map-download").addEventListener("click", downloadMapAsPng);
 }
 
 async function initializeBvaMap() {
@@ -630,6 +899,7 @@ async function initializeBvaMap() {
     ]);
     bvaMeta = metadata;
     bvaFeatures = basins.features;
+    departmentFeatures = departments.features;
     bvaScale = getMapScale(mapMetricKey);
     bvaMap = L.map("bva-map", {
       zoomControl: false,
@@ -672,6 +942,7 @@ async function initializeBvaMap() {
     renderMapLegend();
     renderBasinDetail();
     loading.remove();
+    document.querySelector("#map-download").disabled = false;
   } catch (error) {
     loading.textContent = "La carte n’a pas pu être chargée. Les autres résultats restent disponibles.";
   }

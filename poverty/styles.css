@@ -31,6 +31,7 @@
 
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0,0,0,0) !important; white-space: nowrap !important; border: 0 !important; }
 body {
   margin: 0;
   background: var(--paper);
@@ -509,9 +510,14 @@ h3 { font-size: var(--type-h3); }
 .map-toolbar select, .map-toolbar input { width: 100%; min-width: 0; min-height: 45px; padding: 0.65rem 0.8rem; color: var(--white); background: #222c49; border: 1px solid #46506d; border-radius: 11px; outline: none; }
 .map-toolbar select:focus, .map-toolbar input:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,212,95,0.16); }
 .map-toolbar input::placeholder { color: #818ba6; }
-.map-reset { min-height: 45px; padding: 0.65rem 0.9rem; color: var(--ink); background: var(--yellow); border: 0; border-radius: 11px; font-size: 0.78rem; font-weight: 850; cursor: pointer; }
+.map-actions { display: flex; gap: 0.55rem; align-items: stretch; }
+.map-reset, .map-download { min-height: 45px; padding: 0.65rem 0.9rem; border: 0; border-radius: 11px; font-size: 0.78rem; font-weight: 850; white-space: nowrap; cursor: pointer; }
+.map-reset { color: var(--ink); background: var(--yellow); }
 .map-reset:hover { background: #ffe391; }
-.map-reset:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+.map-download { color: var(--white); background: var(--pink); }
+.map-download:hover { background: #ff467e; }
+.map-download:disabled { opacity: 0.68; cursor: wait; }
+.map-reset:focus-visible, .map-download:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
 .map-layout { display: grid; grid-template-columns: minmax(0,1.52fr) minmax(290px,0.58fr); }
 .map-stage { min-width: 0; color: var(--ink); background: #e8edf5; border-right: 1px solid rgba(255,255,255,0.12); }
 .map-stage-header { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 0.75rem 1rem; background: rgba(255,255,255,0.86); border-bottom: 1px solid #e3e6ee; }
@@ -673,6 +679,7 @@ footer { min-height: 64px; background: var(--ink); }
   transition: opacity 120ms ease;
 }
 .tooltip.is-visible { opacity: 1; }
+.tooltip.is-age-tooltip { width: min(280px, calc(100vw - 20px)); max-width: none; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes rise { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 
@@ -683,6 +690,7 @@ footer { min-height: 64px; background: var(--ink); }
   .trend-chart svg { height: auto; min-height: 0; }
   .q2-evidence-layout { grid-template-columns: 1fr; grid-template-areas: "facts" "chart"; }
   .q2-evidence-layout .dialogue-grid-q2 { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); }
+  .map-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); }
 }
 
 @media (max-width: 900px) {
@@ -706,6 +714,8 @@ footer { min-height: 64px; background: var(--ink); }
   .territory-inner { padding: 0 1rem; }
   .map-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .map-search-label { grid-column: 1 / -1; }
+  .map-actions { grid-column: 1 / -1; align-self: stretch; }
+  .map-actions > button { flex: 1; }
   .map-layout { grid-template-columns: 1fr; }
   .map-stage { border-right: 0; border-bottom: 1px solid rgba(255,255,255,0.12); }
   .bva-map { min-height: 600px; }
@@ -775,7 +785,8 @@ footer { min-height: 64px; background: var(--ink); }
   .housing-cost-row { grid-template-columns: 1fr; gap: 0.55rem; }
   .map-toolbar { grid-template-columns: 1fr; }
   .map-search-label { grid-column: auto; }
-  .map-reset { width: 100%; }
+  .map-actions { grid-column: auto; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .map-reset, .map-download { width: 100%; padding-right: 0.6rem; padding-left: 0.6rem; white-space: normal; }
   .map-stage-header { align-items: flex-start; }
   .map-source-pill { max-width: 150px; }
   .bva-map { min-height: 510px; }
