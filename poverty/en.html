@@ -6,18 +6,23 @@
     <meta name="theme-color" content="#0b1020" />
     <meta
       name="description"
-      content="An interactive overview of the paper Extreme Poverty in Wealthy Nations, using data from Restos du Cœur (RDC)."
+      content="An interactive overview of the paper Extreme Poverty in Rich Countries, using data from Restos du Cœur (RDC)."
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_GB" />
-    <meta property="og:title" content="Extreme Poverty in Wealthy Nations: Evidence from France" />
+    <meta property="og:title" content="Extreme Poverty in Rich Countries: Empirical Evidence from France" />
     <meta property="og:description" content="5.5 million unique individuals, interactive maps, and the mechanisms driving entries into and exits from extreme poverty." />
-    <title>Extreme Poverty in Wealthy Nations: Evidence from France</title>
+    <meta property="og:url" content="https://grande-pauvrete-france-v35.joker8558.chatgpt.site" />
+    <link rel="canonical" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/en.html" />
+    <link rel="alternate" hreflang="fr" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/" />
+    <link rel="alternate" hreflang="en" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/en.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/" />
+    <title>Extreme Poverty in Rich Countries: Empirical Evidence from France</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=82" />
+    <link rel="stylesheet" href="styles.css?v=89" />
     <script src="vendor/leaflet/leaflet.js" defer></script>
-    <script src="app-en.js?v=82" defer></script>
+    <script src="app-en.js?v=89" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#contenu">Skip to content</a>
@@ -54,7 +59,7 @@
     <main id="contenu">
       <section class="hero" id="haut" aria-labelledby="titre-principal">
         <div class="hero-copy">
-          <h1 id="titre-principal">Extreme Poverty in Wealthy Nations: Evidence from France</h1>
+          <h1 id="titre-principal">Extreme Poverty in Rich Countries: Empirical Evidence from France</h1>
           <div class="article-note">
             <span>Policy brief</span>
             <span class="article-links" aria-label="Related documents">
@@ -176,7 +181,7 @@
               <p><strong class="dialogue-label">Key finding:</strong> <strong class="q1-fact-title">1 in 10 people exposed</strong><br />In other words, nearly one tenth of people living in France are, at any given time, at risk of experiencing food insecurity over the following decade.</p>
             </article>
             <article class="q1-stat-card q1-stat-card-dark" role="listitem" data-mkouf="2">
-              <p><strong class="dialogue-label">Key finding:</strong> <strong class="q1-fact-title"><span>+51%</span> more people experiencing housing insecurity between 2021 and 2025.</strong><br />This acceleration followed the pandemic. Over a longer period, the number of people assisted by RDC rose by 37% between 2018 and 2025.</p>
+              <p><strong class="dialogue-label">Key finding:</strong> <strong class="q1-fact-title"><span>+62%</span> more people experiencing housing insecurity between 2018 and 2025.</strong><br />This acceleration followed the pandemic. Over a longer period, the number of people assisted by RDC rose by 37% between 2018 and 2025.</p>
             </article>
           </div>
           <article class="story-card line-card">
@@ -389,9 +394,16 @@
           </div>
 
           <p class="map-instructions">Hover over an area for details; search for it to zoom in.</p>
-
           <div class="map-shell">
             <div class="map-toolbar" aria-label="Atlas options">
+              <label>
+                <span>View</span>
+                <select id="map-mode" aria-label="Choose between level and change">
+                  <option value="level">2022–2023 level</option>
+                  <option value="change_2018_2023">2018–2023 change</option>
+                  <option value="change_2021_2023">2021–2023 change</option>
+                </select>
+              </label>
               <label>
                 <span>Theme</span>
                 <select id="map-theme" aria-label="Choose a map theme"></select>
@@ -407,7 +419,8 @@
               </label>
               <div class="map-actions">
                 <button id="map-reset" class="map-reset" type="button">France view</button>
-                <button id="map-download" class="map-download" type="button" disabled>Download PNG</button>
+                <button id="map-download-simple" class="map-download" type="button" aria-label="Download only the map and its legend as a PNG" disabled>Map-only PNG</button>
+                <button id="map-download-context" class="map-download map-download-secondary" type="button" aria-label="Download the full map with title, definition, and sources as a PNG" disabled>Full PNG</button>
                 <output id="map-download-status" class="visually-hidden" aria-live="polite"></output>
               </div>
             </div>
@@ -415,7 +428,7 @@
               <div class="map-stage">
                 <div class="map-stage-header">
                   <span class="map-source-pill">Leaflet · IGN municipality geometry · classes by augmented living area</span>
-                  <span>Winter 2022–2023</span>
+                  <span id="map-period">Winter 2022–2023</span>
                 </div>
                 <div id="bva-map" class="bva-map" role="region" aria-label="Interactive atlas of augmented living areas">
                   <div class="map-loading">Building the atlas…</div>

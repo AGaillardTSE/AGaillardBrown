@@ -504,20 +504,25 @@ h3 { font-size: var(--type-h3); }
 .territory-dialogue p + p { margin-top: 1rem; }
 .map-instructions { width: 100%; max-width: none; margin: 0 0 1.7rem; color: #b7c0d4; font-size: var(--type-muted-prose); line-height: 1.6; }
 .territory-fact { margin: 1.25rem 0 0; }
-.map-toolbar { display: grid; grid-template-columns: minmax(150px,0.7fr) minmax(220px,1.2fr) minmax(240px,1fr) auto; gap: 0.65rem; align-items: end; padding: 0.8rem; background: rgba(5,9,22,0.42); border-bottom: 1px solid rgba(255,255,255,0.12); }
+.map-toolbar { display: grid; grid-template-columns: minmax(165px,0.86fr) minmax(130px,0.62fr) minmax(180px,1fr) minmax(210px,1fr) auto; gap: 0.65rem; align-items: end; padding: 0.8rem; background: rgba(5,9,22,0.42); border-bottom: 1px solid rgba(255,255,255,0.12); }
 .map-toolbar label { display: grid; gap: 0.35rem; min-width: 0; }
 .map-toolbar label > span { color: #aeb8cf; font-size: 0.62rem; font-weight: 850; letter-spacing: 0.09em; text-transform: uppercase; }
-.map-toolbar select, .map-toolbar input { width: 100%; min-width: 0; min-height: 45px; padding: 0.65rem 0.8rem; color: var(--white); background: #222c49; border: 1px solid #46506d; border-radius: 11px; outline: none; }
+.map-toolbar select, .map-toolbar input { width: 100%; min-width: 0; min-height: 45px; padding: 0.65rem 0.8rem; color: var(--white); background-color: #222c49; border: 1px solid #46506d; border-radius: 11px; outline: none; }
+.map-toolbar select { -webkit-appearance: none; appearance: none; padding-right: 2.75rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23dde3f0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 12px 8px; }
 .map-toolbar select:focus, .map-toolbar input:focus { border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,212,95,0.16); }
 .map-toolbar input::placeholder { color: #818ba6; }
-.map-actions { display: flex; gap: 0.55rem; align-items: stretch; }
+.map-actions { display: flex; flex-wrap: wrap; gap: 0.55rem; align-items: stretch; min-width: 0; }
+.map-actions > button { min-width: 0; }
 .map-reset, .map-download { min-height: 45px; padding: 0.65rem 0.9rem; border: 0; border-radius: 11px; font-size: 0.78rem; font-weight: 850; white-space: nowrap; cursor: pointer; }
 .map-reset { color: var(--ink); background: var(--yellow); }
 .map-reset:hover { background: #ffe391; }
 .map-download { color: var(--white); background: var(--pink); }
 .map-download:hover { background: #ff467e; }
+.map-download-secondary { background: #46506d; }
+.map-download-secondary:hover { background: #596582; }
 .map-download:disabled { opacity: 0.68; cursor: wait; }
 .map-reset:focus-visible, .map-download:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+@media (forced-colors: active) { .map-toolbar select { -webkit-appearance: auto; appearance: auto; padding-right: 0.8rem; background-image: none; } }
 .map-layout { display: grid; grid-template-columns: minmax(0,1.52fr) minmax(290px,0.58fr); }
 .map-stage { min-width: 0; color: var(--ink); background: #e8edf5; border-right: 1px solid rgba(255,255,255,0.12); }
 .map-stage-header { display: flex; justify-content: space-between; gap: 1rem; align-items: center; padding: 0.75rem 1rem; background: rgba(255,255,255,0.86); border-bottom: 1px solid #e3e6ee; }
@@ -691,6 +696,7 @@ footer { min-height: 64px; background: var(--ink); }
   .q2-evidence-layout { grid-template-columns: 1fr; grid-template-areas: "facts" "chart"; }
   .q2-evidence-layout .dialogue-grid-q2 { grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); }
   .map-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .map-actions { grid-column: 1 / -1; }
 }
 
 @media (max-width: 900px) {
@@ -786,6 +792,7 @@ footer { min-height: 64px; background: var(--ink); }
   .map-toolbar { grid-template-columns: 1fr; }
   .map-search-label { grid-column: auto; }
   .map-actions { grid-column: auto; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .map-reset { grid-column: 1 / -1; }
   .map-reset, .map-download { width: 100%; padding-right: 0.6rem; padding-left: 0.6rem; white-space: normal; }
   .map-stage-header { align-items: flex-start; }
   .map-source-pill { max-width: 150px; }

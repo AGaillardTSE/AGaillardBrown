@@ -12,12 +12,17 @@
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:title" content="L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises" />
     <meta property="og:description" content="5,5 millions de personnes distinctes, des cartes interactives et les mécanismes d’entrée et de sortie de la grande pauvreté." />
+    <meta property="og:url" content="https://grande-pauvrete-france-v35.joker8558.chatgpt.site" />
+    <link rel="canonical" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site" />
+    <link rel="alternate" hreflang="fr" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/" />
+    <link rel="alternate" hreflang="en" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/en.html" />
+    <link rel="alternate" hreflang="x-default" href="https://grande-pauvrete-france-v35.joker8558.chatgpt.site/" />
     <title>L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=82" />
+    <link rel="stylesheet" href="styles.css?v=89" />
     <script src="vendor/leaflet/leaflet.js" defer></script>
-    <script src="app.js?v=82" defer></script>
+    <script src="app.js?v=89" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -29,7 +34,7 @@
       <nav class="topbar-nav" aria-label="Navigation par question">
         <div class="language-switch" aria-label="Choisir la langue">
           <a href="index.html" lang="fr" aria-current="page">FR</a>
-          <a href="" lang="en">EN</a>
+          <a href="en.html" lang="en">EN</a>
         </div>
         <details class="question-menu">
           <summary aria-label="Neuf questions pour comprendre la grande pauvreté">
@@ -389,9 +394,16 @@
           </div>
 
           <p class="map-instructions">Survolez un territoire pour obtenir des détails&nbsp;; recherchez-le pour zoomer.</p>
-
           <div class="map-shell">
             <div class="map-toolbar" aria-label="Options de l’atlas">
+              <label>
+                <span>Affichage</span>
+                <select id="map-mode" aria-label="Choisir entre le niveau et l’évolution">
+                  <option value="level">Niveau 2022–2023</option>
+                  <option value="change_2018_2023">Évolution 2018–2023</option>
+                  <option value="change_2021_2023">Évolution 2021–2023</option>
+                </select>
+              </label>
               <label>
                 <span>Thème</span>
                 <select id="map-theme" aria-label="Choisir un thème cartographique"></select>
@@ -407,7 +419,8 @@
               </label>
               <div class="map-actions">
                 <button id="map-reset" class="map-reset" type="button">Vue France</button>
-                <button id="map-download" class="map-download" type="button" disabled>Télécharger en PNG</button>
+                <button id="map-download-simple" class="map-download" type="button" aria-label="Télécharger uniquement la carte et sa légende en PNG" disabled>PNG carte seule</button>
+                <button id="map-download-context" class="map-download map-download-secondary" type="button" aria-label="Télécharger la carte complète avec titre, définition et sources en PNG" disabled>PNG complet</button>
                 <output id="map-download-status" class="visually-hidden" aria-live="polite"></output>
               </div>
             </div>
@@ -415,7 +428,7 @@
               <div class="map-stage">
                 <div class="map-stage-header">
                   <span class="map-source-pill">Leaflet · géométrie communale IGN · classes par bassin augmenté</span>
-                  <span>Hiver 2022–2023</span>
+                  <span id="map-period">Hiver 2022–2023</span>
                 </div>
                 <div id="bva-map" class="bva-map" role="region" aria-label="Atlas interactif des bassins de vie augmentés">
                   <div class="map-loading">Construction de l’atlas…</div>

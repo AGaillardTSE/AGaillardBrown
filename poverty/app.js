@@ -144,6 +144,52 @@ const mapMetricGroups = [
 
 const mapMetrics = new Map(mapMetricGroups.flatMap((group) => group.metrics.map((metric) => [metric.key, metric])));
 const mapPalette = ["#f7e6d7", "#f3b58d", "#ed756f", "#b63a70", "#3a1748"];
+const mapChangePalette = ["#285a9f", "#8ab3dc", "#f1eee7", "#f2a37f", "#bd2357"];
+const mapModes = {
+  level: { suffix: "", period: "Hiver 2022–2023", exportSlug: "niveau-2022-2023" },
+  change_2018_2023: {
+    suffix: "__change_2018_2023",
+    period: "Hiver 2018–2019 → hiver 2022–2023",
+    rangePhrase: "entre l’hiver 2018–2019 et l’hiver 2022–2023",
+    exportSlug: "evolution-2018-2023"
+  },
+  change_2021_2023: {
+    suffix: "__change_2021_2023",
+    period: "Hiver 2021–2022 → hiver 2022–2023",
+    rangePhrase: "entre l’hiver 2021–2022 et l’hiver 2022–2023",
+    exportSlug: "evolution-2021-2023"
+  }
+};
+const mapChangeConfig = {
+  housing_strict: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 2, method: "points" },
+  rdc_total: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 1, method: "points" },
+  private_rent: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  social_rent: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  social_stock: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 1, method: "points" },
+  social_new: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 2, method: "points" },
+  social_vacancy: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  social_mobility: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  shelter_capacity: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 2, method: "points" },
+  shelters: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 3, method: "points" },
+  unemployment: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  local_income: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  food_price: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  low_income_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  firm_stock: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  firm_creations: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  sole_trader_creations: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  rdc_centers: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 3, method: "points" },
+  households_served: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 1, method: "points" },
+  urban_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  priority_area_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  tourist_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  mountain_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  active_household_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  retired_household_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
+  average_temperature: { unit: "écart en °C", shortUnit: "°C", digits: 1, method: "temperature" },
+  rainfall: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  population_thousands: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" }
+};
 
 const effectLabels = [
   "Loyers privés", "Loyers sociaux", "Annonces de locations", "Logements sociaux",
@@ -174,6 +220,7 @@ const tooltip = document.querySelector("#tooltip");
 const countryChart = document.querySelector("#country-chart");
 const focusCodes = new Set(["NZL", "SVK", "CZE", "RDC+", "BEL", "FRA", "AUS", "ENG", "RDC", "GER", "USA"]);
 let mapMetricKey = "housing_strict";
+let mapModeKey = "level";
 let bvaMap;
 let bvaLayer;
 let bvaFeatures = [];
@@ -394,17 +441,44 @@ function renderDuration() {
 
 document.querySelectorAll("[data-tooltip]").forEach((target) => bindTooltip(target, target.dataset.tooltip));
 
-function metricClass(feature, key = mapMetricKey) {
+function mapDataKey(key = mapMetricKey) {
+  return `${key}${mapModes[mapModeKey]?.suffix || ""}`;
+}
+
+function activeMapMetric(key = mapMetricKey) {
+  const base = mapMetrics.get(key);
+  if (mapModeKey === "level") return base;
+  const change = mapChangeConfig[key];
+  if (!change) return base;
+  const rangePhrase = mapModes[mapModeKey].rangePhrase;
+  const methodDescriptions = {
+    percent: `Variation relative ${rangePhrase}, exprimée en pourcentage.`,
+    "percentage-points": `Écart ${rangePhrase}, exprimé en points de pourcentage.`,
+    points: `Écart ${rangePhrase}, exprimé en ${change.shortUnit}.`,
+    temperature: `Écart ${rangePhrase}, exprimé en degrés Celsius.`
+  };
+  return {
+    ...base,
+    ...change,
+    label: `Évolution · ${base.label}`,
+    description: `${base.description} ${methodDescriptions[change.method]}`,
+    signed: true
+  };
+}
+
+function metricClass(feature, key = mapDataKey()) {
   const value = feature?.properties?.[key];
   return Number.isInteger(value) && value >= 0 ? value : null;
 }
 
 function formatMetricBoundary(metric, value) {
   if (!Number.isFinite(value)) return "Non disponible";
-  return value.toLocaleString("fr-FR", {
+  const formatted = Math.abs(value).toLocaleString("fr-FR", {
     minimumFractionDigits: metric.digits,
     maximumFractionDigits: metric.digits
   });
+  if (!metric.signed || value === 0) return value < 0 ? `−${formatted}` : formatted;
+  return `${value > 0 ? "+" : "−"}${formatted}`;
 }
 
 function escapeHtml(value) {
@@ -429,7 +503,7 @@ function classRangeLabel(metric, key, index, includeUnit = true) {
   if (!thresholds.length) {
     label = `Classe ${index + 1}`;
   } else if (index === 0) {
-    label = thresholds[0] === 0 ? "Aucun" : `≤ ${formatMetricBoundary(metric, thresholds[0])}`;
+    label = mapModeKey === "level" && thresholds[0] === 0 ? "Aucun" : `≤ ${formatMetricBoundary(metric, thresholds[0])}`;
   } else if (index >= classCount - 1) {
     label = `> ${formatMetricBoundary(metric, thresholds.at(-1))}`;
   } else {
@@ -438,11 +512,20 @@ function classRangeLabel(metric, key, index, includeUnit = true) {
   return includeUnit && label !== "Aucun" ? `${label} ${metric.shortUnit}` : label;
 }
 
+function numericClassRangeLabel(metric, key, index) {
+  if (!Number.isInteger(index) || index < 0) return "";
+  const { thresholds } = getMapScale(key);
+  if (!thresholds.length) return String(index + 1);
+  if (mapModeKey === "level" && index === 0 && thresholds[0] === 0) return formatMetricBoundary(metric, 0);
+  return classRangeLabel(metric, key, index, false);
+}
+
 function mapClassColor(index) {
   if (index < 0) return "#cbd1dc";
   const classCount = bvaScale.classCount;
-  const paletteIndex = classCount === 1 ? 2 : Math.round(index * (mapPalette.length - 1) / (classCount - 1));
-  return mapPalette[paletteIndex];
+  const palette = mapModeKey === "level" ? mapPalette : mapChangePalette;
+  const paletteIndex = classCount === 1 ? 2 : Math.round(index * (palette.length - 1) / (classCount - 1));
+  return palette[paletteIndex];
 }
 
 function basinStyle(feature) {
@@ -480,29 +563,33 @@ function renderBasinDetail(feature = null) {
     ["#map-context-unemployment", "unemployment"]
   ];
   contextRows.forEach(([selector, key]) => {
-    const contextMetric = mapMetrics.get(key);
+    const contextMetric = activeMapMetric(key);
+    const dataKey = mapDataKey(key);
     document.querySelector(selector).textContent = feature
-      ? classRangeLabel(contextMetric, key, metricClass(feature, key), true)
+      ? classRangeLabel(contextMetric, dataKey, metricClass(feature, dataKey), true)
       : "Sélectionnez un bassin";
   });
 }
 
 function tooltipFor(feature) {
-  const metric = mapMetrics.get(mapMetricKey);
-  return `<strong>${escapeHtml(feature.properties.bva_name)}</strong><br>${escapeHtml(metric.label)} : ${escapeHtml(classRangeLabel(metric, mapMetricKey, metricClass(feature), true))}`;
+  const metric = activeMapMetric();
+  const dataKey = mapDataKey();
+  return `<strong>${escapeHtml(feature.properties.bva_name)}</strong><br>${escapeHtml(metric.label)} : ${escapeHtml(classRangeLabel(metric, dataKey, metricClass(feature), true))}`;
 }
 
 function renderMapLegend() {
   const host = document.querySelector("#map-legend");
-  const metric = mapMetrics.get(mapMetricKey);
+  const metric = activeMapMetric();
+  const dataKey = mapDataKey();
   const { thresholds, classCount } = bvaScale;
   host.replaceChildren();
+  const palette = mapModeKey === "level" ? mapPalette : mapChangePalette;
   for (let index = 0; index < classCount; index += 1) {
     const row = document.createElement("div");
     row.className = "legend-segment";
-    const paletteIndex = classCount === 1 ? 2 : Math.round(index * (mapPalette.length - 1) / (classCount - 1));
-    row.style.setProperty("--c", mapPalette[paletteIndex]);
-    const label = classRangeLabel(metric, mapMetricKey, index, true);
+    const paletteIndex = classCount === 1 ? 2 : Math.round(index * (palette.length - 1) / (classCount - 1));
+    row.style.setProperty("--c", palette[paletteIndex]);
+    const label = classRangeLabel(metric, dataKey, index, true);
     row.innerHTML = `<i aria-hidden="true"></i><span>${escapeHtml(label)}</span>`;
     host.appendChild(row);
   }
@@ -515,11 +602,13 @@ function renderMapLegend() {
 
 function setMapMetric(key) {
   mapMetricKey = key;
-  const metric = mapMetrics.get(key);
+  const metric = activeMapMetric(key);
+  const dataKey = mapDataKey(key);
   document.querySelector("#map-title").textContent = metric.label;
   document.querySelector("#map-description").textContent = metric.description;
+  document.querySelector("#map-period").textContent = mapModes[mapModeKey].period;
   if (!bvaFeatures.length) return;
-  bvaScale = getMapScale(key);
+  bvaScale = getMapScale(dataKey);
   bvaLayer.eachLayer((layer) => {
     layer.setStyle(basinStyle(layer.feature));
     layer.setTooltipContent(tooltipFor(layer.feature));
@@ -694,14 +783,149 @@ function downloadCanvas(canvas, filename) {
   });
 }
 
-async function downloadMapAsPng() {
-  const button = document.querySelector("#map-download");
+function setMapDownloadButtonsDisabled(disabled) {
+  document.querySelectorAll(".map-download").forEach((button) => {
+    button.disabled = disabled;
+  });
+}
+
+async function downloadSimpleMapAsPng(event) {
+  const button = event?.currentTarget || document.querySelector("#map-download-simple");
   const status = document.querySelector("#map-download-status");
   if (!bvaMap || !bvaLayer || !bvaFeatures.length || button.disabled) return;
-  const defaultLabel = "Télécharger en PNG";
-  button.disabled = true;
+  const defaultLabel = "PNG carte seule";
+  const exportMetric = activeMapMetric();
+  const exportDataKey = mapDataKey();
+  const exportModeSlug = mapModes[mapModeKey].exportSlug;
+  setMapDownloadButtonsDisabled(true);
   button.textContent = "Préparation…";
-  status.textContent = "Préparation de la carte PNG.";
+  status.textContent = "Préparation du PNG carte seule.";
+  try {
+    if (document.fonts?.ready) await document.fonts.ready;
+    bvaMap.stop();
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+
+    const mapHost = document.querySelector("#bva-map");
+    const mapRect = mapHost.getBoundingClientRect();
+    if (!mapRect.width || !mapRect.height) throw new Error("Carte invisible");
+
+    const width = 1440;
+    const mapWidth = width;
+    const mapScale = mapWidth / mapRect.width;
+    const mapZoom = bvaMap.getZoom();
+    const pixelOrigin = bvaMap.getPixelOrigin();
+    const paneOffset = bvaMap.layerPointToContainerPoint(L.point(0, 0));
+    const project = ([longitude, latitude]) => bvaMap.project(L.latLng(latitude, longitude), mapZoom)
+      .subtract(pixelOrigin)
+      .add(paneOffset);
+    const { classCount } = bvaScale;
+    const legendPadding = 12;
+    const legendRowHeight = 36;
+    const legendHeight = legendPadding * 2 + (classCount + 1) * legendRowHeight;
+    const height = Math.max(Math.round(mapRect.height * mapScale), legendHeight + 64);
+    const pixelRatio = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = width * pixelRatio;
+    canvas.height = height * pixelRatio;
+    const context = canvas.getContext("2d");
+    context.scale(pixelRatio, pixelRatio);
+    context.textBaseline = "top";
+
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, width, height);
+
+    context.save();
+    context.beginPath();
+    context.rect(0, 0, mapWidth, height);
+    context.clip();
+    bvaFeatures.forEach((feature) => {
+      const fill = mapClassColor(metricClass(feature) ?? -1);
+      drawFeatureForExport(context, feature, 0, 0, mapScale, {
+        fill,
+        stroke: fill,
+        lineWidth: Math.max(1.25, 1.05 * mapScale)
+      }, project);
+    });
+    departmentFeatures.forEach((feature) => drawFeatureForExport(context, feature, 0, 0, mapScale, {
+      stroke: "rgba(11,16,32,.62)",
+      lineWidth: Math.max(1.15, .85 * mapScale)
+    }, project));
+    if (selectedBasinLayer?.feature) drawFeatureForExport(context, selectedBasinLayer.feature, 0, 0, mapScale, {
+      stroke: "#0b1020",
+      lineWidth: Math.max(3, 2.1 * mapScale)
+    }, project);
+    context.restore();
+
+    const legendX = 32;
+    const legendY = 32;
+
+    let cursorY = legendY + legendPadding;
+    for (let index = 0; index < classCount; index += 1) {
+      const color = mapClassColor(index);
+      context.fillStyle = color;
+      context.fillRect(legendX + legendPadding, cursorY + 2, 46, 26);
+      context.strokeStyle = "#bdc5d3";
+      context.lineWidth = 1;
+      context.strokeRect(legendX + legendPadding, cursorY + 2, 46, 26);
+      const legendLabel = numericClassRangeLabel(exportMetric, exportDataKey, index);
+      const legendTextX = legendX + legendPadding + 56;
+      const legendTextY = cursorY + 3;
+      context.font = "700 21px Inter, Arial, sans-serif";
+      context.strokeStyle = "rgba(255,255,255,.94)";
+      context.lineWidth = 5;
+      context.lineJoin = "round";
+      context.strokeText(legendLabel, legendTextX, legendTextY);
+      context.fillStyle = "#1c2436";
+      context.fillText(legendLabel, legendTextX, legendTextY);
+      cursorY += legendRowHeight;
+    }
+    context.fillStyle = "#cbd1dc";
+    context.fillRect(legendX + legendPadding, cursorY + 2, 46, 26);
+    context.strokeStyle = "#bdc5d3";
+    context.lineWidth = 1;
+    context.strokeRect(legendX + legendPadding, cursorY + 2, 46, 26);
+    const missingTextX = legendX + legendPadding + 56;
+    const missingTextY = cursorY + 3;
+    context.font = "700 21px Inter, Arial, sans-serif";
+    context.strokeStyle = "rgba(255,255,255,.94)";
+    context.lineWidth = 5;
+    context.lineJoin = "round";
+    context.strokeText("Non disponible", missingTextX, missingTextY);
+    context.fillStyle = "#1c2436";
+    context.fillText("Non disponible", missingTextX, missingTextY);
+
+    const areaSlug = mapExportSlug(selectedBasinLayer?.feature?.properties?.bva_name || "france");
+    const filename = `carte-${mapMetricKey.replaceAll("_", "-")}-${exportModeSlug}-${areaSlug}-carte-seule.png`;
+    const exportInfo = await downloadCanvas(canvas, filename);
+    const sizeLabel = exportInfo.bytes ? `, ${Math.round(exportInfo.bytes / 1024)} ko` : "";
+    status.textContent = `PNG carte seule généré : ${filename}, ${canvas.width} × ${canvas.height} pixels${sizeLabel}.`;
+  } catch (error) {
+    console.error("Échec du téléchargement de la carte", error);
+    status.textContent = "Le téléchargement de la carte a échoué. Réessayez.";
+    button.textContent = "Réessayer";
+    window.setTimeout(() => { button.textContent = defaultLabel; }, 1800);
+    return;
+  } finally {
+    setMapDownloadButtonsDisabled(false);
+  }
+  button.textContent = "PNG téléchargé";
+  window.setTimeout(() => { button.textContent = defaultLabel; }, 1400);
+}
+
+async function downloadContextMapAsPng(event) {
+  const button = event?.currentTarget || document.querySelector("#map-download-context");
+  const status = document.querySelector("#map-download-status");
+  if (!bvaMap || !bvaLayer || !bvaFeatures.length || button.disabled) return;
+  const defaultLabel = "PNG complet";
+  const exportMetric = activeMapMetric();
+  const exportDataKey = mapDataKey();
+  const exportMode = mapModes[mapModeKey];
+  const exportPeriod = mapModeKey === "level"
+    ? `Niveau · ${exportMode.period}`
+    : `Évolution · ${exportMode.period}`;
+  setMapDownloadButtonsDisabled(true);
+  button.textContent = "Préparation…";
+  status.textContent = "Préparation du PNG complet.";
   try {
     if (document.fonts?.ready) await document.fonts.ready;
     bvaMap.stop();
@@ -740,10 +964,10 @@ async function downloadMapAsPng() {
     context.fillText("NOTE DE SYNTHÈSE · CARTE INTERACTIVE", 46, 30);
     context.fillStyle = "#ffffff";
     context.font = "600 42px Georgia, serif";
-    context.fillText(mapMetrics.get(mapMetricKey).label, 46, 58);
+    context.fillText(exportMetric.label, 46, 58);
     context.fillStyle = "#b7c0d4";
     context.font = "500 18px Inter, Arial, sans-serif";
-    context.fillText("Bassins de vie augmentés · Hiver 2022–2023", 48, 116);
+    context.fillText(`Bassins de vie augmentés · ${exportPeriod}`, 48, 116);
 
     const mapY = headerHeight;
     context.save();
@@ -783,10 +1007,10 @@ async function downloadMapAsPng() {
     context.fillText("LÉGENDE", sideX + sidePadding, mapY + 34);
     context.fillStyle = "#ffffff";
     context.font = "600 29px Georgia, serif";
-    let cursorY = drawWrappedCanvasText(context, mapMetrics.get(mapMetricKey).label, sideX + sidePadding, mapY + 59, textWidth, 35, 2) + 10;
+    let cursorY = drawWrappedCanvasText(context, exportMetric.label, sideX + sidePadding, mapY + 59, textWidth, 35, 2) + 10;
     context.fillStyle = "#c0c9dc";
     context.font = "400 17px Inter, Arial, sans-serif";
-    cursorY = drawWrappedCanvasText(context, mapMetrics.get(mapMetricKey).description, sideX + sidePadding, cursorY, textWidth, 25, 6) + 24;
+    cursorY = drawWrappedCanvasText(context, exportMetric.description, sideX + sidePadding, cursorY, textWidth, 25, 6) + 24;
 
     const { classCount } = bvaScale;
     for (let index = 0; index < classCount; index += 1) {
@@ -797,17 +1021,17 @@ async function downloadMapAsPng() {
       context.lineWidth = 1;
       context.strokeRect(sideX + sidePadding, cursorY + 2, 38, 22);
       context.fillStyle = "#e5e9f3";
-      context.font = "500 16px Inter, Arial, sans-serif";
-      context.fillText(classRangeLabel(mapMetrics.get(mapMetricKey), mapMetricKey, index, true), sideX + sidePadding + 54, cursorY + 3);
-      cursorY += 39;
+      context.font = "500 18px Inter, Arial, sans-serif";
+      context.fillText(classRangeLabel(exportMetric, exportDataKey, index, true), sideX + sidePadding + 54, cursorY + 2);
+      cursorY += 42;
     }
     context.fillStyle = "#cbd1dc";
     context.fillRect(sideX + sidePadding, cursorY + 2, 38, 22);
     context.strokeStyle = "rgba(255,255,255,.35)";
     context.strokeRect(sideX + sidePadding, cursorY + 2, 38, 22);
     context.fillStyle = "#e5e9f3";
-    context.font = "500 16px Inter, Arial, sans-serif";
-    context.fillText("Non disponible", sideX + sidePadding + 54, cursorY + 3);
+    context.font = "500 18px Inter, Arial, sans-serif";
+    context.fillText("Non disponible", sideX + sidePadding + 54, cursorY + 2);
     cursorY += 58;
 
     if (selectedBasinLayer?.feature?.properties?.bva_name) {
@@ -830,30 +1054,38 @@ async function downloadMapAsPng() {
     context.textAlign = "left";
 
     const areaSlug = mapExportSlug(selectedBasinLayer?.feature?.properties?.bva_name || "france");
-    const filename = `carte-${mapMetricKey.replaceAll("_", "-")}-${areaSlug}-2022-2023.png`;
+    const filename = `carte-${mapMetricKey.replaceAll("_", "-")}-${exportMode.exportSlug}-${areaSlug}-complete.png`;
     const exportInfo = await downloadCanvas(canvas, filename);
     const sizeLabel = exportInfo.bytes ? `, ${Math.round(exportInfo.bytes / 1024)} ko` : "";
-    status.textContent = `Carte PNG générée : ${filename}, ${canvas.width} × ${canvas.height} pixels${sizeLabel}.`;
+    status.textContent = `PNG complet généré : ${filename}, ${canvas.width} × ${canvas.height} pixels${sizeLabel}.`;
   } catch (error) {
-    console.error("Échec du téléchargement de la carte", error);
-    status.textContent = "Le téléchargement de la carte a échoué. Réessayez.";
+    console.error("Échec du téléchargement de la carte complète", error);
+    status.textContent = "Le téléchargement de la carte complète a échoué. Réessayez.";
     button.textContent = "Réessayer";
     window.setTimeout(() => { button.textContent = defaultLabel; }, 1800);
     return;
   } finally {
-    button.disabled = false;
+    setMapDownloadButtonsDisabled(false);
   }
   button.textContent = "PNG téléchargé";
   window.setTimeout(() => { button.textContent = defaultLabel; }, 1400);
 }
 
 function prepareMapControls() {
+  const modeSelect = document.querySelector("#map-mode");
   const themeSelect = document.querySelector("#map-theme");
   const variableSelect = document.querySelector("#map-variable");
-  mapMetricGroups.forEach((group) => themeSelect.add(new Option(group.label, group.id)));
+
+  const groupsForMode = () => mapMetricGroups
+    .map((group) => ({
+      ...group,
+      metrics: group.metrics.filter((metric) => mapModeKey === "level" || mapChangeConfig[metric.key])
+    }))
+    .filter((group) => group.metrics.length);
 
   const populateVariables = (groupId, preferredKey = null) => {
-    const group = mapMetricGroups.find((item) => item.id === groupId) || mapMetricGroups[0];
+    const groups = groupsForMode();
+    const group = groups.find((item) => item.id === groupId) || groups[0];
     variableSelect.replaceChildren();
     group.metrics.forEach((metric) => variableSelect.add(new Option(metric.label, metric.key)));
     const nextKey = group.metrics.some((metric) => metric.key === preferredKey) ? preferredKey : group.metrics[0].key;
@@ -861,8 +1093,22 @@ function prepareMapControls() {
     setMapMetric(nextKey);
   };
 
-  themeSelect.value = "poverty";
-  populateVariables("poverty", mapMetricKey);
+  const populateThemes = (preferredGroupId = "poverty") => {
+    const groups = groupsForMode();
+    themeSelect.replaceChildren();
+    groups.forEach((group) => themeSelect.add(new Option(group.label, group.id)));
+    const containingGroup = groups.find((group) => group.metrics.some((metric) => metric.key === mapMetricKey));
+    const nextGroup = containingGroup || groups.find((group) => group.id === preferredGroupId) || groups[0];
+    themeSelect.value = nextGroup.id;
+    populateVariables(nextGroup.id, mapMetricKey);
+  };
+
+  modeSelect.value = mapModeKey;
+  populateThemes("poverty");
+  modeSelect.addEventListener("change", () => {
+    mapModeKey = mapModes[modeSelect.value] ? modeSelect.value : "level";
+    populateThemes(themeSelect.value);
+  });
   themeSelect.addEventListener("change", () => populateVariables(themeSelect.value));
   variableSelect.addEventListener("change", () => setMapMetric(variableSelect.value));
   document.querySelector("#map-search").addEventListener("change", searchBasin);
@@ -876,7 +1122,8 @@ function prepareMapControls() {
     document.querySelector("#map-search").value = "";
     clearBasinSelection(true);
   });
-  document.querySelector("#map-download").addEventListener("click", downloadMapAsPng);
+  document.querySelector("#map-download-simple").addEventListener("click", downloadSimpleMapAsPng);
+  document.querySelector("#map-download-context").addEventListener("click", downloadContextMapAsPng);
 }
 
 async function initializeBvaMap() {
@@ -884,11 +1131,11 @@ async function initializeBvaMap() {
   const loading = document.querySelector(".map-loading");
   try {
     const [basins, metadata, departments] = await Promise.all([
-      fetch("assets/bva-atlas-classes.geojson").then((response) => {
+      fetch("assets/bva-atlas-classes.geojson?v=86").then((response) => {
         if (!response.ok) throw new Error("Bassins indisponibles");
         return response.json();
       }),
-      fetch("assets/bva-atlas-meta.json").then((response) => {
+      fetch("assets/bva-atlas-meta.json?v=86").then((response) => {
         if (!response.ok) throw new Error("Métadonnées cartographiques indisponibles");
         return response.json();
       }),
@@ -900,7 +1147,7 @@ async function initializeBvaMap() {
     bvaMeta = metadata;
     bvaFeatures = basins.features;
     departmentFeatures = departments.features;
-    bvaScale = getMapScale(mapMetricKey);
+    bvaScale = getMapScale(mapDataKey());
     bvaMap = L.map("bva-map", {
       zoomControl: false,
       attributionControl: false,
@@ -942,7 +1189,7 @@ async function initializeBvaMap() {
     renderMapLegend();
     renderBasinDetail();
     loading.remove();
-    document.querySelector("#map-download").disabled = false;
+    setMapDownloadButtonsDisabled(false);
   } catch (error) {
     loading.textContent = "La carte n’a pas pu être chargée. Les autres résultats restent disponibles.";
   }
