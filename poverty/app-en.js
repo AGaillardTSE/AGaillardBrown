@@ -80,25 +80,68 @@ const durationStatusSeries = [
   }
 ];
 
+const urssafSectors = [
+  ["c1", "Food industries"], ["c2", "Coking and refining"],
+  ["c3", "Electrical, electronic and computer equipment"], ["c4", "Transport equipment"],
+  ["c5", "Other manufactured products"], ["de", "Extractive industries, energy and water"],
+  ["fz", "Construction"], ["gz", "Trade"], ["hz", "Transport"],
+  ["iz", "Accommodation and food services"], ["jz", "Information and communication"],
+  ["kz", "Finance and insurance"], ["lz", "Real estate"],
+  ["mn", "Professional, technical and administrative services"],
+  ["oq", "Government, education, health and social work"], ["ru", "Other services"]
+];
+const urssafSource = "Urssaf open data (ODbL) · IGN ADMIN EXPRESS 2024";
+const urssafDensitySource = "Urssaf open data (ODbL) · annual population from the study database · IGN ADMIN EXPRESS 2024";
+const rentControlSource = "ANIL · Service-Public · prefectural orders and perimeter decrees · IGN ADMIN EXPRESS 2024";
+const urssafPeriods = {
+  level: "Year 2025",
+  change_2018_2023: "2018 → 2023",
+  change_2021_2023: "2021 → 2023"
+};
+const urssafDensityPeriods = {
+  level: "Year 2024 · 2024 population",
+  change_2018_2023: "2018 → 2023 · each year’s population",
+  change_2021_2023: "2021 → 2023 · each year’s population"
+};
+
+function urssafSectorMetrics(kind) {
+  const isEmployment = kind === "employees";
+  return urssafSectors.map(([code, label]) => ({
+    key: `urssaf_${kind}_${code}`,
+    label,
+    unit: isEmployment ? "private-sector employees" : "employer establishments",
+    shortUnit: isEmployment ? "employees" : "establishments",
+    digits: 0,
+    modes: ["level"],
+    periods: urssafPeriods,
+    source: urssafSource,
+    description: isEmployment
+      ? `Employees in “${label}” covered by the general social-security scheme at year-end 2025. Cells subject to statistical confidentiality remain unavailable.`
+      : `Employer establishments (Urssaf contributor accounts) in “${label}” in 2025. This is not a count of legally distinct firms.`
+  }));
+}
+
 const mapMetricGroups = [
   {
     id: "poverty",
     label: "Insecurity",
     metrics: [
-      { key: "housing_strict", label: "Homelessness", unit: "people / 1,000 households", shortUnit: "/ 1,000 households", digits: 2, description: "People assisted by RDC who experience homelessness in the broad sense, across more than 1,900 Restos du Cœur distribution centres, relative to the local number of households." },
-      { key: "rdc_total", label: "Food insecurity", unit: "people / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "All people assisted across more than 1,900 Restos du Cœur distribution centres, relative to the local number of households." }
+      { key: "housing_strict", label: "Homelessness in the strict sense", unit: "people / 1,000 households", shortUnit: "/ 1,000 households", digits: 2, description: "People living on the street or without their own housing, including those temporarily accommodated in emergency shelters (CHU), social reintegration accommodation centers (CHRS), or hotels, relative to the local number of households." },
+      { key: "housing_insecurity", label: "Housing insecurity", unit: "RDC household records / 1,000 households", shortUnit: "/ 1,000 households", digits: 2, description: "Records of households assisted by RDC that are homeless, do not have their own housing, are temporarily accommodated, or live in precarious or inadequate housing, relative to the local number of households. This category includes homelessness." },
+      { key: "rdc_total", label: "Food insecurity", unit: "people / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "People supported by RDC and belonging to households that identify themselves as needing food assistance, relative to the local number of households." }
     ]
   },
   {
     id: "housing",
     label: "Housing and accommodation",
     metrics: [
-      { key: "private_rent", label: "Private rent", unit: "€ / m²", shortUnit: "€/m²", digits: 1, description: "Average private-sector rent observed among housing-benefit recipients." },
-      { key: "social_rent", label: "Social rent", unit: "€ / m²", shortUnit: "€/m²", digits: 1, description: "Weighted average rent in the social-housing sector." },
-      { key: "social_stock", label: "Social-housing stock", unit: "homes / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "Number of social-housing units per 1,000 households." },
-      { key: "social_new", label: "New social housing", unit: "new homes / 1,000 households", shortUnit: "/ 1,000 households", digits: 2, description: "New social-housing units entering service per 1,000 households." },
-      { key: "social_vacancy", label: "Social-housing vacancy", unit: "%", shortUnit: "%", digits: 1, description: "Share of social-housing units that are vacant." },
-      { key: "social_mobility", label: "Social-housing turnover", unit: "%", shortUnit: "%", digits: 1, description: "Annual turnover rate in the social-housing sector." },
+      { key: "private_rent", label: "Private rent", unit: "€ / m²", shortUnit: "€/m²", digits: 1, description: "These rents are averages calculated across all private-sector tenants who receive housing assistance (APL)." },
+      { key: "rent_control_population_share_current", label: "Population in a municipality with rent caps", unit: "% of basin population", shortUnit: "%", digits: 1, modes: ["level"], periods: { level: "Position at 12 October 2026" }, source: rentControlSource, description: "Share of the basin population living in a municipality wholly or partly subject to rent-level caps. For the eight Grenoble municipalities covered only in part, this is an upper bound because the whole municipal population is counted. Hover over a treated basin to see municipalities and effective dates." },
+      { key: "social_rent", label: "Public housing rent", unit: "€ / m²", shortUnit: "€/m²", digits: 1, description: "Weighted average rent in the public-housing sector." },
+      { key: "social_stock", label: "Public-housing stock", unit: "homes / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "Number of public-housing units per 1,000 households." },
+      { key: "social_new", label: "New public housing", unit: "new homes / 1,000 households", shortUnit: "/ 1,000 households", digits: 2, description: "New public-housing units entering service per 1,000 households." },
+      { key: "social_vacancy", label: "Public-housing vacancy", unit: "%", shortUnit: "%", digits: 1, description: "Share of public-housing units that are vacant." },
+      { key: "social_mobility", label: "Public-housing turnover", unit: "%", shortUnit: "%", digits: 1, description: "Annual turnover rate in the public-housing sector." },
       { key: "shelter_capacity", label: "Accommodation capacity", unit: "beds / 1,000 households", shortUnit: "/ 1,000 households", digits: 2, description: "Capacity of accommodation facilities per 1,000 households." },
       { key: "shelters", label: "Accommodation facilities", unit: "facilities / 1,000 households", shortUnit: "/ 1,000 households", digits: 3, description: "Number of accommodation facilities per 1,000 households." }
     ]
@@ -107,9 +150,9 @@ const mapMetricGroups = [
     id: "economy",
     label: "Local economy",
     metrics: [
-      { key: "unemployment", label: "Broad unemployment", unit: "% of the labour force", shortUnit: "%", digits: 1, description: "Registered jobseekers in categories A, B, and C relative to the labour force." },
+      { key: "unemployment", label: "Broad unemployment", unit: "% of the labor force", shortUnit: "%", digits: 1, description: "Unemployment rates for categories A, B, and C: the number of people who are unemployed or working reduced hours relative to the size of the labor force." },
       { key: "local_income", label: "Average taxable income", unit: "€000 / resident", shortUnit: "€000 / resident", digits: 1, description: "Average annual taxable income per resident, in thousands of euros." },
-      { key: "food_price", label: "Food price index", unit: "index · Haute-Garonne 2016 = 100", shortUnit: "index", digits: 1, description: "Department-level food price index, normalised to 100 for Haute-Garonne in 2016." },
+      { key: "food_price", label: "Food price index", unit: "index · Haute-Garonne 2016 = 100", shortUnit: "index", digits: 1, description: "Department-level food price index, normalized to 100 for Haute-Garonne in 2016." },
       { key: "low_income_share", label: "Households in the lowest bracket", unit: "% of tax households", shortUnit: "%", digits: 1, description: "Share of tax households in the lowest taxable-income bracket." },
       { key: "firm_stock", label: "Stock of firms", unit: "firms / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "Total number of firms per 1,000 households." },
       { key: "firm_creations", label: "New firms", unit: "new firms / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "Annual new-firm registrations per 1,000 households." },
@@ -117,11 +160,31 @@ const mapMetricGroups = [
     ]
   },
   {
+    id: "urssaf-totals",
+    label: "Urssaf · all sectors",
+    metrics: [
+      { key: "urssaf_establishments_total", label: "Employer establishments", unit: "employer establishments", shortUnit: "establishments", digits: 0, periods: urssafPeriods, source: urssafSource, description: "Number of employer establishments, or Urssaf contributor accounts. The scope mainly covers private-sector employers under the general social-security scheme; it is not a count of legally distinct firms." },
+      { key: "urssaf_employees_total", label: "Private-sector employees", unit: "employees", shortUnit: "employees", digits: 0, periods: urssafPeriods, source: urssafSource, description: "Year-end employees in employer establishments covered by the general social-security scheme. Cells subject to statistical confidentiality are not imputed and appear as unavailable." },
+      { key: "urssaf_establishments_per_1000_residents", label: "Employer establishments / 1,000 residents", unit: "employer establishments / 1,000 residents", shortUnit: "estab. / 1,000 residents", digits: 1, periods: urssafDensityPeriods, source: urssafDensitySource, description: "Employer establishments located in the area, divided by the population from the same year. The level uses 2024, the latest almost-complete population year; one area remains unavailable." },
+      { key: "urssaf_employees_per_1000_residents", label: "Private-sector employees / 1,000 residents", unit: "employees / 1,000 residents", shortUnit: "employees / 1,000 residents", digits: 1, periods: urssafDensityPeriods, source: urssafDensitySource, description: "Employees located at employer establishments in the area, divided by the population from the same year. This is a workplace employment-density measure, not the employment rate of local residents. An area is not displayed when its exact total is unknown because of statistical confidentiality or when its population is missing." }
+    ]
+  },
+  {
+    id: "urssaf-employees",
+    label: "Urssaf · employees by sector",
+    metrics: urssafSectorMetrics("employees")
+  },
+  {
+    id: "urssaf-establishments",
+    label: "Urssaf · establishments by sector",
+    metrics: urssafSectorMetrics("establishments")
+  },
+  {
     id: "network",
     label: "RDC network",
     metrics: [
-      { key: "rdc_centers", label: "RDC centres", unit: "centres / 1,000 households", shortUnit: "/ 1,000 households", digits: 3, description: "Number of Restos du Cœur distribution centres per 1,000 households." },
-      { key: "households_served", label: "Households assisted by RDC", unit: "households assisted / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "Households assisted across more than 1,900 Restos du Cœur distribution centres, relative to the local number of households." }
+      { key: "rdc_centers", label: "RDC centers", unit: "centers / 1,000 households", shortUnit: "/ 1,000 households", digits: 3, description: "Number of RDC distribution centers per 1,000 households." },
+      { key: "households_served", label: "Households assisted by RDC", unit: "households assisted / 1,000 households", shortUnit: "/ 1,000 households", digits: 1, description: "Households assisted across more than 1,900 RDC distribution centers, relative to the local number of households." }
     ]
   },
   {
@@ -129,7 +192,7 @@ const mapMetricGroups = [
     label: "Area profile",
     metrics: [
       { key: "urban_share", label: "Urban population", unit: "%", shortUnit: "%", digits: 1, description: "Share of the population living in a municipality classified as urban." },
-      { key: "priority_area_share", label: "Municipalities with priority neighbourhoods", unit: "% of the population", shortUnit: "%", digits: 1, description: "Share of the population living in a municipality that contains at least one priority urban-policy neighbourhood." },
+      { key: "priority_area_share", label: "Municipalities with priority neighborhoods", unit: "% of the population", shortUnit: "%", digits: 1, description: "Share of the population living in a municipality that contains at least one priority urban-policy neighborhood." },
       { key: "tourist_share", label: "Tourist municipalities", unit: "% of the population", shortUnit: "%", digits: 1, description: "Share of the population living in a municipality classified as a tourist area." },
       { key: "mountain_share", label: "Mountain municipalities", unit: "% of the population", shortUnit: "%", digits: 1, description: "Share of the population living in a municipality classified as a mountain area." },
       { key: "active_household_share", label: "Economically active tax households", unit: "% of households", shortUnit: "%", digits: 1, description: "Share of tax households reporting earnings from work." },
@@ -137,7 +200,7 @@ const mapMetricGroups = [
       { key: "average_temperature", label: "Average temperature", unit: "°C", shortUnit: "°C", digits: 1, description: "Average department-level temperature during the campaign." },
       { key: "rainfall", label: "Rainfall", unit: "average monthly mm", shortUnit: "mm", digits: 1, description: "Average monthly department-level rainfall during the campaign." },
       { key: "population_thousands", label: "Population", unit: "thousands of residents", shortUnit: "thousands", digits: 1, description: "Population of the area, expressed in thousands of residents." },
-      { key: "commune_count", label: "Number of municipalities", unit: "municipalities", shortUnit: "municipalities", digits: 0, description: "Number of municipalities in the augmented living area." }
+      { key: "commune_count", label: "Number of municipalities", unit: "municipalities", shortUnit: "municipalities", digits: 0, description: "Number of municipalities in the augmented living basin." }
     ]
   }
 ];
@@ -145,6 +208,8 @@ const mapMetricGroups = [
 const mapMetrics = new Map(mapMetricGroups.flatMap((group) => group.metrics.map((metric) => [metric.key, metric])));
 const mapPalette = ["#f7e6d7", "#f3b58d", "#ed756f", "#b63a70", "#3a1748"];
 const mapChangePalette = ["#285a9f", "#8ab3dc", "#f1eee7", "#f2a37f", "#bd2357"];
+const mapNegativePalette = ["#285a9f", "#4f7fba", "#8ab3dc", "#c6d9ed", "#e8f0f7"];
+const mapPositivePalette = ["#fde8e0", "#f7c2ad", "#ef8b7b", "#d95270", "#bd2357"];
 const mapModes = {
   level: { suffix: "", period: "Winter 2022–2023", exportSlug: "level-2022-2023" },
   change_2018_2023: {
@@ -162,6 +227,7 @@ const mapModes = {
 };
 const mapChangeConfig = {
   housing_strict: { unit: "change per 1,000 households", shortUnit: "pt / 1,000 households", digits: 2, method: "points" },
+  housing_insecurity: { unit: "change per 1,000 households", shortUnit: "pt / 1,000 households", digits: 2, method: "points" },
   rdc_total: { unit: "change per 1,000 households", shortUnit: "pt / 1,000 households", digits: 1, method: "points" },
   private_rent: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
   social_rent: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
@@ -178,6 +244,10 @@ const mapChangeConfig = {
   firm_stock: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
   firm_creations: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
   sole_trader_creations: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_establishments_total: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_employees_total: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_establishments_per_1000_residents: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_employees_per_1000_residents: { unit: "% change", shortUnit: "%", digits: 1, method: "percent" },
   rdc_centers: { unit: "change per 1,000 households", shortUnit: "pt / 1,000 households", digits: 3, method: "points" },
   households_served: { unit: "change per 1,000 households", shortUnit: "pt / 1,000 households", digits: 1, method: "points" },
   urban_share: { unit: "percentage-point change", shortUnit: "pp", digits: 1, method: "percentage-points" },
@@ -192,9 +262,9 @@ const mapChangeConfig = {
 };
 
 const effectLabels = [
-  "Private rents", "Social rents", "Rental listings", "Social housing",
-  "Emergency accommodation", "Food prices", "Unemployment rate", "Local income",
-  "Number of firms", "New sole proprietorships", "New firms"
+  "Private Rent Levels", "Public Housing Rent Levels", "Number of Rental Listings", "Number of Public Housing Units",
+  "Emergency Housing", "Food Prices", "Unemployment Rate", "Average Local Incomes",
+  "Number of Businesses", "New sole proprietorships", "New Business Start-ups"
 ];
 
 const effectData = {
@@ -225,6 +295,8 @@ let bvaMap;
 let bvaLayer;
 let bvaFeatures = [];
 let departmentFeatures = [];
+let rentControlFeatures = [];
+let rentControlLayer;
 let bvaMeta = { metrics: {} };
 let bvaScale;
 let bvaBounds;
@@ -365,7 +437,7 @@ function renderAgePyramid(hostSelector, data, maximum, ticks, dividerIndexes = [
     row.type = "button";
     row.className = `pyramid-row${dividerIndexes.includes(index) ? " has-divider" : ""}`;
     row.setAttribute("role", "listitem");
-    row.setAttribute("aria-label", `Ages ${label}: France ${fr(france * 100, 1)}%, people assisted by RDC ${fr(rdc * 100, 1)}%, strict housing insecurity ${fr(housing * 100, 1)}%`);
+    row.setAttribute("aria-label", `Ages ${label}: France ${fr(france * 100, 1)}%, people assisted by RDC ${fr(rdc * 100, 1)}%, housing insecurity ${fr(housing * 100, 1)}%`);
     row.style.setProperty("--france-width", `${(france / maximum) * 50}%`);
     row.style.setProperty("--rdc-width", `${(rdc / maximum) * 50}%`);
     row.style.setProperty("--housing-width", `${(housing / maximum) * 50}%`);
@@ -378,7 +450,7 @@ function renderAgePyramid(hostSelector, data, maximum, ticks, dividerIndexes = [
         <i class="pyramid-bar pyramid-housing"></i>
       </span>
     `;
-    bindTooltip(row, `<strong>Ages ${label}</strong><br>France: ${fr(france * 100, 1)}%<br>People assisted by RDC: ${fr(rdc * 100, 1)}%<br>Strict housing insecurity: ${fr(housing * 100, 1)}%`);
+    bindTooltip(row, `<strong>Ages ${label}</strong><br>France: ${fr(france * 100, 1)}%<br>People assisted by RDC: ${fr(rdc * 100, 1)}%<br>Housing insecurity: ${fr(housing * 100, 1)}%`);
     host.appendChild(row);
   });
 
@@ -450,7 +522,9 @@ function activeMapMetric(key = mapMetricKey) {
   if (mapModeKey === "level") return base;
   const change = mapChangeConfig[key];
   if (!change) return base;
-  const rangePhrase = mapModes[mapModeKey].rangePhrase;
+  const rangePhrase = key.startsWith("urssaf_")
+    ? (mapModeKey === "change_2018_2023" ? "from 2018 to 2023" : "from 2021 to 2023")
+    : mapModes[mapModeKey].rangePhrase;
   const methodDescriptions = {
     percent: `Relative change ${rangePhrase}, expressed as a percentage.`,
     "percentage-points": `Change ${rangePhrase}, expressed in percentage points.`,
@@ -464,6 +538,10 @@ function activeMapMetric(key = mapMetricKey) {
     description: `${base.description} ${methodDescriptions[change.method]}`,
     signed: true
   };
+}
+
+function activeMapPeriod(metric = activeMapMetric()) {
+  return metric?.periods?.[mapModeKey] || mapModes[mapModeKey].period;
 }
 
 function metricClass(feature, key = mapDataKey()) {
@@ -493,7 +571,12 @@ function getMapScale(key) {
   const classCount = Number.isInteger(source.classCount) && source.classCount > 0
     ? source.classCount
     : thresholds.length + 1;
-  return { thresholds, classCount };
+  return {
+    thresholds,
+    classCount,
+    palette: source.palette || null,
+    negativeClassCount: Number.isInteger(source.negativeClassCount) ? source.negativeClassCount : null
+  };
 }
 
 function classRangeLabel(metric, key, index, includeUnit = true) {
@@ -503,7 +586,7 @@ function classRangeLabel(metric, key, index, includeUnit = true) {
   if (!thresholds.length) {
     label = `Class ${index + 1}`;
   } else if (index === 0) {
-    label = mapModeKey === "level" && thresholds[0] === 0 ? "None" : `≤ ${formatMetricBoundary(metric, thresholds[0])}`;
+    label = mapModeKey === "level" && !metric.signed && thresholds[0] === 0 ? "None" : `≤ ${formatMetricBoundary(metric, thresholds[0])}`;
   } else if (index >= classCount - 1) {
     label = `> ${formatMetricBoundary(metric, thresholds.at(-1))}`;
   } else {
@@ -516,16 +599,35 @@ function numericClassRangeLabel(metric, key, index) {
   if (!Number.isInteger(index) || index < 0) return "";
   const { thresholds } = getMapScale(key);
   if (!thresholds.length) return String(index + 1);
-  if (mapModeKey === "level" && index === 0 && thresholds[0] === 0) return formatMetricBoundary(metric, 0);
+  if (mapModeKey === "level" && !metric.signed && index === 0 && thresholds[0] === 0) return formatMetricBoundary(metric, 0);
   return classRangeLabel(metric, key, index, false);
+}
+
+function resamplePalette(palette, count) {
+  if (count <= 0) return [];
+  if (count === 1) return [palette[Math.floor((palette.length - 1) / 2)]];
+  return Array.from({ length: count }, (_, index) => (
+    palette[Math.round(index * (palette.length - 1) / (count - 1))]
+  ));
+}
+
+function activeMapPalette() {
+  const scale = bvaScale || getMapScale(mapDataKey());
+  const paletteType = scale.palette || (mapModeKey === "level" ? "sequential" : "diverging");
+  if (paletteType === "negative") return resamplePalette(mapNegativePalette, scale.classCount);
+  if (paletteType === "positive") return resamplePalette(mapPositivePalette, scale.classCount);
+  if (paletteType === "diverging" && scale.negativeClassCount) {
+    return [
+      ...resamplePalette(mapNegativePalette, scale.negativeClassCount),
+      ...resamplePalette(mapPositivePalette, scale.classCount - scale.negativeClassCount)
+    ];
+  }
+  return resamplePalette(paletteType === "diverging" ? mapChangePalette : mapPalette, scale.classCount);
 }
 
 function mapClassColor(index) {
   if (index < 0) return "#cbd1dc";
-  const classCount = bvaScale.classCount;
-  const palette = mapModeKey === "level" ? mapPalette : mapChangePalette;
-  const paletteIndex = classCount === 1 ? 2 : Math.round(index * (palette.length - 1) / (classCount - 1));
-  return palette[paletteIndex];
+  return activeMapPalette()[index] || "#cbd1dc";
 }
 
 function basinStyle(feature) {
@@ -574,7 +676,27 @@ function renderBasinDetail(feature = null) {
 function tooltipFor(feature) {
   const metric = activeMapMetric();
   const dataKey = mapDataKey();
-  return `<strong>${escapeHtml(feature.properties.bva_name)}</strong><br>${escapeHtml(metric.label)} : ${escapeHtml(classRangeLabel(metric, dataKey, metricClass(feature), true))}`;
+  const rentControlDetails = metric.key.startsWith("rent_control_") && feature.properties.rent_control_public_summary
+    ? `<br><span>${escapeHtml(feature.properties.rent_control_public_summary)}</span><br><span>Municipalities: ${escapeHtml(feature.properties.rent_control_public_communes)}</span>`
+    : "";
+  return `<strong>${escapeHtml(feature.properties.bva_name)}</strong><br>${escapeHtml(metric.label)} : ${escapeHtml(classRangeLabel(metric, dataKey, metricClass(feature), true))}${rentControlDetails}`;
+}
+
+function onEachRentControlCommune(feature, layer) {
+  const p = feature.properties || {};
+  layer.bindTooltip(
+    `<strong>${escapeHtml(p.commune || "Municipality")}</strong><br>${escapeHtml(p.territoire || "")}`
+      + `<br>In force since ${escapeHtml(p.date_debut || "")}`
+      + `<br>${escapeHtml(p.couverture === "couverture partielle" ? "partial coverage" : "whole municipality")}`,
+    { sticky: true, direction: "top", opacity: 1 }
+  );
+}
+
+function updateRentControlOverlay() {
+  if (!bvaMap || !rentControlLayer) return;
+  const shouldShow = activeMapMetric().key.startsWith("rent_control_");
+  if (shouldShow && !bvaMap.hasLayer(rentControlLayer)) rentControlLayer.addTo(bvaMap);
+  if (!shouldShow && bvaMap.hasLayer(rentControlLayer)) bvaMap.removeLayer(rentControlLayer);
 }
 
 function renderMapLegend() {
@@ -583,12 +705,11 @@ function renderMapLegend() {
   const dataKey = mapDataKey();
   const { thresholds, classCount } = bvaScale;
   host.replaceChildren();
-  const palette = mapModeKey === "level" ? mapPalette : mapChangePalette;
+  const palette = activeMapPalette();
   for (let index = 0; index < classCount; index += 1) {
     const row = document.createElement("div");
     row.className = "legend-segment";
-    const paletteIndex = classCount === 1 ? 2 : Math.round(index * (palette.length - 1) / (classCount - 1));
-    row.style.setProperty("--c", palette[paletteIndex]);
+    row.style.setProperty("--c", palette[index]);
     const label = classRangeLabel(metric, dataKey, index, true);
     row.innerHTML = `<i aria-hidden="true"></i><span>${escapeHtml(label)}</span>`;
     host.appendChild(row);
@@ -606,7 +727,9 @@ function setMapMetric(key) {
   const dataKey = mapDataKey(key);
   document.querySelector("#map-title").textContent = metric.label;
   document.querySelector("#map-description").textContent = metric.description;
-  document.querySelector("#map-period").textContent = mapModes[mapModeKey].period;
+  document.querySelector("#map-period").textContent = activeMapPeriod(metric);
+  const sourcePill = document.querySelector("#map-source-pill");
+  if (sourcePill) sourcePill.textContent = metric.source || "Leaflet · IGN municipal geometry · augmented living-basin classes";
   if (!bvaFeatures.length) return;
   bvaScale = getMapScale(dataKey);
   bvaLayer.eachLayer((layer) => {
@@ -614,6 +737,7 @@ function setMapMetric(key) {
     layer.setTooltipContent(tooltipFor(layer.feature));
   });
   if (selectedBasinLayer) highlightBasin(selectedBasinLayer, true);
+  updateRentControlOverlay();
   renderMapLegend();
   renderBasinDetail(selectedBasinLayer?.feature || null);
 }
@@ -742,8 +866,23 @@ function drawFeatureForExport(context, feature, offsetX, offsetY, scale, style, 
     context.lineWidth = style.lineWidth;
     context.lineJoin = "round";
     context.lineCap = "round";
+    context.setLineDash(style.dash || []);
     context.stroke();
+    context.setLineDash([]);
   }
+}
+
+function drawRentControlForExport(context, offsetY, scale, project) {
+  if (!activeMapMetric().key.startsWith("rent_control_")) return;
+  rentControlFeatures.forEach((feature) => {
+    const partial = feature.properties?.couverture === "couverture partielle";
+    drawFeatureForExport(context, feature, 0, offsetY, scale, {
+      fill: "rgba(255,79,139,.10)",
+      stroke: "#ff2f78",
+      lineWidth: Math.max(partial ? 1.6 : 2.1, (partial ? 1.15 : 1.5) * scale),
+      dash: partial ? [7, 5] : []
+    }, project);
+  });
 }
 
 function downloadCanvas(canvas, filename) {
@@ -796,7 +935,7 @@ async function downloadSimpleMapAsPng(event) {
   const defaultLabel = "Map-only PNG";
   const exportMetric = activeMapMetric();
   const exportDataKey = mapDataKey();
-  const exportModeSlug = mapModes[mapModeKey].exportSlug;
+  const exportModeSlug = mapExportSlug(activeMapPeriod(exportMetric));
   setMapDownloadButtonsDisabled(true);
   button.textContent = "Preparing…";
   status.textContent = "Preparing the map-only PNG.";
@@ -850,6 +989,7 @@ async function downloadSimpleMapAsPng(event) {
       stroke: "rgba(11,16,32,.62)",
       lineWidth: Math.max(1.15, .85 * mapScale)
     }, project));
+    drawRentControlForExport(context, 0, mapScale, project);
     if (selectedBasinLayer?.feature) drawFeatureForExport(context, selectedBasinLayer.feature, 0, 0, mapScale, {
       stroke: "#0b1020",
       lineWidth: Math.max(3, 2.1 * mapScale)
@@ -919,10 +1059,9 @@ async function downloadContextMapAsPng(event) {
   const defaultLabel = "Full PNG";
   const exportMetric = activeMapMetric();
   const exportDataKey = mapDataKey();
-  const exportMode = mapModes[mapModeKey];
   const exportPeriod = mapModeKey === "level"
-    ? `Level · ${exportMode.period}`
-    : `Change · ${exportMode.period}`;
+    ? `Level · ${activeMapPeriod(exportMetric)}`
+    : `Change · ${activeMapPeriod(exportMetric)}`;
   setMapDownloadButtonsDisabled(true);
   button.textContent = "Preparing…";
   status.textContent = "Preparing the full PNG.";
@@ -967,7 +1106,7 @@ async function downloadContextMapAsPng(event) {
     context.fillText(exportMetric.label, 46, 58);
     context.fillStyle = "#b7c0d4";
     context.font = "500 18px Inter, Arial, sans-serif";
-    context.fillText(`Augmented living areas · ${exportPeriod}`, 48, 116);
+    context.fillText(`Augmented living basins · ${exportPeriod}`, 48, 116);
 
     const mapY = headerHeight;
     context.save();
@@ -991,6 +1130,7 @@ async function downloadContextMapAsPng(event) {
       stroke: "rgba(11,16,32,.62)",
       lineWidth: Math.max(1.15, .85 * mapScale)
     }, project));
+    drawRentControlForExport(context, mapY, mapScale, project);
     if (selectedBasinLayer?.feature) drawFeatureForExport(context, selectedBasinLayer.feature, 0, mapY, mapScale, {
       stroke: "#0b1020",
       lineWidth: Math.max(3, 2.1 * mapScale)
@@ -1048,13 +1188,13 @@ async function downloadContextMapAsPng(event) {
     context.fillRect(0, footerY, width, footerHeight);
     context.fillStyle = "#b7c0d4";
     context.font = "500 14px Inter, Arial, sans-serif";
-    context.fillText("Source: Restos du Cœur · IGN ADMIN EXPRESS 2024 · GHWW", 46, footerY + 23);
+    context.fillText(`Source: ${exportMetric.source || "Restos du Cœur · IGN ADMIN EXPRESS 2024 · GHWW"}`, 46, footerY + 23);
     context.textAlign = "right";
-    context.fillText("Extreme poverty in rich countries", width - 40, footerY + 23);
+    context.fillText("Extreme Poverty in Wealthy Nations", width - 40, footerY + 23);
     context.textAlign = "left";
 
     const areaSlug = mapExportSlug(selectedBasinLayer?.feature?.properties?.bva_name || "france");
-    const filename = `map-${mapMetricKey.replaceAll("_", "-")}-${exportMode.exportSlug}-${areaSlug}-full.png`;
+    const filename = `map-${mapMetricKey.replaceAll("_", "-")}-${mapExportSlug(activeMapPeriod(exportMetric))}-${areaSlug}-full.png`;
     const exportInfo = await downloadCanvas(canvas, filename);
     const sizeLabel = exportInfo.bytes ? `, ${Math.round(exportInfo.bytes / 1024)} KB` : "";
     status.textContent = `Full PNG generated: ${filename}, ${canvas.width} × ${canvas.height} pixels${sizeLabel}.`;
@@ -1079,7 +1219,10 @@ function prepareMapControls() {
   const groupsForMode = () => mapMetricGroups
     .map((group) => ({
       ...group,
-      metrics: group.metrics.filter((metric) => mapModeKey === "level" || mapChangeConfig[metric.key])
+      metrics: group.metrics.filter((metric) => {
+        if (metric.modes && !metric.modes.includes(mapModeKey)) return false;
+        return mapModeKey === "level" || mapChangeConfig[metric.key];
+      })
     }))
     .filter((group) => group.metrics.length);
 
@@ -1130,23 +1273,28 @@ async function initializeBvaMap() {
   prepareMapControls();
   const loading = document.querySelector(".map-loading");
   try {
-    const [basins, metadata, departments] = await Promise.all([
-      fetch("assets/bva-atlas-classes.geojson?v=86").then((response) => {
+    const [basins, metadata, departments, rentControls] = await Promise.all([
+      fetch("assets/bva-atlas-classes.geojson?v=100").then((response) => {
         if (!response.ok) throw new Error("Areas unavailable");
         return response.json();
       }),
-      fetch("assets/bva-atlas-meta.json?v=86").then((response) => {
+      fetch("assets/bva-atlas-meta.json?v=100").then((response) => {
         if (!response.ok) throw new Error("Map metadata unavailable");
         return response.json();
       }),
       fetch("assets/departements.geojson").then((response) => {
         if (!response.ok) throw new Error("Departments unavailable");
         return response.json();
+      }),
+      fetch("assets/rent-control-communes.geojson?v=96").then((response) => {
+        if (!response.ok) throw new Error("Rent-control boundaries unavailable");
+        return response.json();
       })
     ]);
     bvaMeta = metadata;
     bvaFeatures = basins.features;
     departmentFeatures = departments.features;
+    rentControlFeatures = rentControls.features;
     bvaScale = getMapScale(mapDataKey());
     bvaMap = L.map("bva-map", {
       zoomControl: false,
@@ -1160,17 +1308,32 @@ async function initializeBvaMap() {
     const departmentPane = bvaMap.createPane("departments");
     departmentPane.style.zIndex = 420;
     departmentPane.style.pointerEvents = "none";
+    const rentControlPane = bvaMap.createPane("rentControl");
+    rentControlPane.style.zIndex = 430;
     const renderer = L.canvas({ padding: .35 });
-    bvaLayer = L.geoJSON(basins, { renderer, style: basinStyle, onEachFeature: onEachBasin }).addTo(bvaMap);
+    const rentControlRenderer = L.canvas({ padding: .35, pane: "rentControl" });
+    bvaLayer = L.geoJSON(basins, { renderer, pane: "basins", style: basinStyle, onEachFeature: onEachBasin }).addTo(bvaMap);
     L.geoJSON(departments, {
       renderer,
       pane: "departments",
       interactive: false,
       style: { color: "rgba(11,16,32,.58)", weight: .85, fillOpacity: 0 }
     }).addTo(bvaMap);
+    rentControlLayer = L.geoJSON(rentControls, {
+      renderer: rentControlRenderer,
+      pane: "rentControl",
+      style: (feature) => ({
+        color: "#ff4f8b",
+        weight: feature.properties?.couverture === "couverture partielle" ? 1.35 : 1.8,
+        dashArray: feature.properties?.couverture === "couverture partielle" ? "5 4" : null,
+        fillColor: "#ff4f8b",
+        fillOpacity: .08
+      }),
+      onEachFeature: onEachRentControlCommune
+    });
     L.control.zoom({ position: "bottomright" }).addTo(bvaMap);
     L.control.attribution({ position: "bottomleft", prefix: false })
-      .addAttribution("IGN ADMIN EXPRESS 2024 · GHWW data")
+      .addAttribution('IGN ADMIN EXPRESS 2024 · <a href="https://open.urssaf.fr/explore/dataset/etablissements-et-effectifs-salaries-au-niveau-commune-x-ape-last/" target="_blank" rel="noopener">Urssaf open data (ODbL)</a> · GHWW')
       .addTo(bvaMap);
     bvaBounds = bvaLayer.getBounds();
     bvaMap.fitBounds(bvaBounds, { padding: [10, 10] });
@@ -1188,6 +1351,7 @@ async function initializeBvaMap() {
       });
     renderMapLegend();
     renderBasinDetail();
+    updateRentControlOverlay();
     loading.remove();
     setMapDownloadButtonsDisabled(false);
   } catch (error) {
@@ -1217,7 +1381,7 @@ const entryShockCoefficients = {
 const shockVariableLabels = {
   unemployment: "unemployment",
   rent: "private rents",
-  housing: "the stock of social housing",
+  housing: "the stock of public housing",
   firms: "the number of firms"
 };
 
@@ -1301,8 +1465,8 @@ function renderEffects(hostSelector, mode, noteSelector) {
     host.appendChild(row);
   });
   document.querySelector(noteSelector).textContent = mode === "entry"
-    ? "When an interval does not cross zero, the effect is statistically significant at a confidence level above 90%."
-    : "The same reading rule applies: an interval that does not cross zero indicates significance above 90%. Overall, macroeconomic effects on exits are markedly less robust.";
+    ? "If this interval does not contain the value 0, we say that the estimated impact is statistically significant; this means there is a greater than 90% chance that the coefficient is different from 0."
+    : "The panel on the right shows the impact of the same variables on exit rates. We can see that they are much smaller than those of the entry flows and, in general, statistically insignificant.";
 }
 
 const questionMenu = document.querySelector(".question-menu");

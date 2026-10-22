@@ -1,7 +1,7 @@
 {
-  "version": 3,
+  "version": 9,
   "protection": "quintile_classes_only",
-  "note": "Only coarse public classes are distributed; exact basin values are not included.",
+  "note": "Only coarse public classes are distributed; exact basin values and source matrices are not included.",
   "periods": {
     "level": "2022–2023",
     "change_2018_2023": "2018–2023",
@@ -15,24 +15,29 @@
         63.4647,
         67.6217
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "active_household_share__change_2018_2023": {
       "thresholds": [
-        -0.9,
-        -0.3874,
-        0.3874,
-        0.9
+        -0.9775,
+        -0.4484,
+        0,
+        0.4577
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "active_household_share__change_2021_2023": {
       "thresholds": [
-        -0.4295,
-        -0.1993,
-        0.1993,
-        0.4295
+        0,
+        0.1995,
+        0.3663,
+        0.5729
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "average_temperature": {
@@ -42,24 +47,27 @@
         8.9219,
         9.7783
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "average_temperature__change_2018_2023": {
       "thresholds": [
-        -0.9034,
-        -0.6131,
-        0.6131,
-        0.9034
+        0.4712,
+        0.6508,
+        0.8063,
+        1.0238
       ],
+      "palette": "positive",
       "classCount": 5
     },
     "average_temperature__change_2021_2023": {
       "thresholds": [
-        -1.522,
-        -1.0033,
-        1.0033,
-        1.522
+        0.754,
+        1.1202,
+        1.43,
+        1.6944
       ],
+      "palette": "positive",
       "classCount": 5
     },
     "commune_count": {
@@ -69,6 +77,7 @@
         18,
         32
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "firm_creations": {
@@ -78,24 +87,29 @@
         22.5868,
         27.109
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "firm_creations__change_2018_2023": {
       "thresholds": [
-        -47.6387,
-        -30.9005,
-        30.9005,
-        47.6387
+        0,
+        27.3335,
+        39.7398,
+        52.8274
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "firm_creations__change_2021_2023": {
       "thresholds": [
-        -10.7863,
-        -4.6202,
-        4.6202,
-        10.7863
+        -6.6789,
+        0,
+        4.9732,
+        11.6335
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "firm_stock": {
@@ -105,24 +119,29 @@
         136.0374,
         159.0414
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "firm_stock__change_2018_2023": {
       "thresholds": [
-        -17.1832,
-        -12.5523,
-        12.5523,
-        17.1832
+        0,
+        11.4838,
+        14.8231,
+        18.6918
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "firm_stock__change_2021_2023": {
       "thresholds": [
-        -4.6043,
-        -2.8105,
-        2.8105,
-        4.6043
+        0,
+        2.5205,
+        3.7788,
+        5.1804
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "food_price": {
@@ -132,24 +151,28 @@
         110.677,
         112.8751
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "food_price__change_2018_2023": {
       "thresholds": [
-        -8.343,
-        -7.0286,
-        7.0286,
-        8.343
+        0,
+        6.7074,
+        7.6242,
+        8.8952
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "food_price__change_2021_2023": {
       "thresholds": [
-        -4.2672,
-        -3.152,
-        3.152,
-        4.2672
+        2.8092,
+        3.4643,
+        3.9847,
+        4.547
       ],
+      "palette": "positive",
       "classCount": 5
     },
     "households_served": {
@@ -159,24 +182,61 @@
         12.3392,
         17.0011
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "households_served__change_2018_2023": {
       "thresholds": [
-        -3.327,
-        -1.2586,
-        1.2586,
-        3.327
+        -3.4619,
+        -1.31,
+        0,
+        1.8753
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "households_served__change_2021_2023": {
       "thresholds": [
-        -2.3185,
-        -0.9743,
-        0.9743,
-        2.3185
+        0,
+        0.9533,
+        1.8706,
+        3.1061
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
+      "classCount": 5
+    },
+    "housing_insecurity": {
+      "thresholds": [
+        0.4898,
+        1.0537,
+        1.8587,
+        3.4187
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "housing_insecurity__change_2018_2023": {
+      "thresholds": [
+        -0.3556,
+        0,
+        0.4493,
+        1.053
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
+      "classCount": 5
+    },
+    "housing_insecurity__change_2021_2023": {
+      "thresholds": [
+        0,
+        0.3231,
+        0.6261,
+        1.2031
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "housing_strict": {
@@ -186,24 +246,29 @@
         0.9021,
         2.1036
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "housing_strict__change_2018_2023": {
       "thresholds": [
-        -0.7505,
-        -0.2849,
-        0.2849,
-        0.7505
+        0,
+        0.2517,
+        0.4907,
+        1.0137
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "housing_strict__change_2021_2023": {
       "thresholds": [
-        -0.6898,
-        -0.2751,
-        0.2751,
-        0.6898
+        0,
+        0.2474,
+        0.4803,
+        0.9038
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "local_income": {
@@ -213,24 +278,29 @@
         16.3334,
         18.3198
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "local_income__change_2018_2023": {
       "thresholds": [
-        -16.9564,
-        -13.6085,
-        13.6085,
-        16.9564
+        0,
+        12.764,
+        15.2458,
+        17.9898
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "local_income__change_2021_2023": {
       "thresholds": [
-        -6.0439,
-        -4.3355,
-        4.3355,
-        6.0439
+        0,
+        3.9896,
+        5.1619,
+        6.5761
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "low_income_share": {
@@ -240,51 +310,60 @@
         12.2607,
         15.583
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "low_income_share__change_2018_2023": {
       "thresholds": [
-        -1.394,
-        -0.7033,
-        0.7033,
-        1.394
+        -1.6301,
+        -1.0802,
+        -0.6268,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "low_income_share__change_2021_2023": {
       "thresholds": [
-        -0.7275,
-        -0.378,
-        0.378,
-        0.7275
+        -0.833,
+        -0.571,
+        -0.341,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "mountain_share": {
       "thresholds": [
         0,
         23.1489,
-        78.7162,
-        100
+        78.7162
       ],
-      "classCount": 5
+      "palette": "sequential",
+      "classCount": 4
     },
     "mountain_share__change_2018_2023": {
       "thresholds": [
-        -0.5307,
-        -0.1285,
-        0.1285,
-        0.5307
+        -0.5285,
+        -0.1497,
+        0,
+        0.2619
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "mountain_share__change_2021_2023": {
       "thresholds": [
-        -0.1104,
-        -0.0338,
-        0.0338,
-        0.1104
+        -0.1247,
+        -0.0454,
+        0,
+        0.0498
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "population_thousands": {
@@ -294,24 +373,29 @@
         19.2518,
         34.0702
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "population_thousands__change_2018_2023": {
       "thresholds": [
-        -2.9809,
-        -1.2609,
-        1.2609,
-        2.9809
+        -1.6477,
+        0,
+        1.502,
+        3.64
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "population_thousands__change_2021_2023": {
       "thresholds": [
-        -0.6769,
-        -0.2944,
-        0.2944,
-        0.6769
+        -0.4313,
+        0,
+        0.3142,
+        0.7716
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "priority_area_share": {
@@ -321,24 +405,29 @@
         45.4242,
         57.7133
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "priority_area_share__change_2018_2023": {
       "thresholds": [
-        -0.7849,
-        -0.3422,
-        0.3422,
-        0.7849
+        -0.9946,
+        -0.6471,
+        -0.3145,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "priority_area_share__change_2021_2023": {
       "thresholds": [
-        -0.2054,
-        -0.0766,
-        0.0766,
-        0.2054
+        -0.2153,
+        -0.0888,
+        0,
+        0.1111
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "private_rent": {
@@ -348,24 +437,29 @@
         10.7574,
         13.1695
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "private_rent__change_2018_2023": {
       "thresholds": [
-        -18.1192,
-        -12.1433,
-        12.1433,
-        18.1192
+        0,
+        11.1799,
+        14.9902,
+        20.4247
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "private_rent__change_2021_2023": {
       "thresholds": [
-        -5.909,
-        -3.0429,
-        3.0429,
-        5.909
+        0,
+        2.8576,
+        4.7939,
+        7.218
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "rainfall": {
@@ -375,24 +469,29 @@
         72.8294,
         89.0536
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "rainfall__change_2018_2023": {
       "thresholds": [
-        -18.3665,
-        -8.3072,
-        8.3072,
-        18.3665
+        -23.7701,
+        -11.5962,
+        0,
+        7.6242
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "rainfall__change_2021_2023": {
       "thresholds": [
-        -19.4272,
-        -9.6174,
-        9.6174,
-        19.4272
+        -20.9603,
+        -12.1975,
+        0,
+        13.2182
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "rdc_centers": {
@@ -402,24 +501,29 @@
         0.1026,
         0.1702
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "rdc_centers__change_2018_2023": {
       "thresholds": [
-        -0.0077,
-        -0.0031,
-        0.0031,
-        0.0077
+        -0.0088,
+        -0.0046,
+        -0.0023,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "rdc_centers__change_2021_2023": {
       "thresholds": [
-        -0.0015,
-        -0.0006,
-        0.0006,
-        0.0015
+        -0.0019,
+        -0.001,
+        -0.0005,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "rdc_total": {
@@ -429,25 +533,39 @@
         10.0282,
         14.3644
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "rdc_total__change_2018_2023": {
       "thresholds": [
-        -2.2942,
-        -0.8529,
-        0.8529,
-        2.2942
+        -2.3975,
+        -0.8896,
+        0,
+        1.4072
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "rdc_total__change_2021_2023": {
       "thresholds": [
-        -1.841,
-        -0.6814,
-        0.6814,
-        1.841
+        0,
+        0.6603,
+        1.4576,
+        2.507
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
+    },
+    "rent_control_population_share_current": {
+      "thresholds": [
+        0,
+        41.4294,
+        83.8343
+      ],
+      "palette": "sequential",
+      "classCount": 4
     },
     "retired_household_share": {
       "thresholds": [
@@ -456,24 +574,29 @@
         41.408,
         45.791
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "retired_household_share__change_2018_2023": {
       "thresholds": [
-        -0.8359,
-        -0.3557,
-        0.3557,
-        0.8359
+        -0.9005,
+        -0.4413,
+        0,
+        0.4473
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "retired_household_share__change_2021_2023": {
       "thresholds": [
-        -0.309,
-        -0.139,
-        0.139,
-        0.309
+        -0.2037,
+        0,
+        0.1438,
+        0.3248
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "shelter_capacity": {
@@ -483,24 +606,29 @@
         4.5253,
         8.2573
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "shelter_capacity__change_2018_2023": {
       "thresholds": [
-        -0.7764,
-        -0.1603,
-        0.1603,
-        0.7764
+        -0.2874,
+        -0.0942,
+        0,
+        1.0871
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "shelter_capacity__change_2021_2023": {
       "thresholds": [
-        -0.0853,
-        -0.0251,
-        0.0251,
-        0.0853
+        -0.0864,
+        -0.0416,
+        -0.0161,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "shelters": {
@@ -510,24 +638,29 @@
         0.157,
         0.2296
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "shelters__change_2018_2023": {
       "thresholds": [
-        -0.0422,
-        -0.0081,
-        0.0081,
-        0.0422
+        -0.0114,
+        -0.0046,
+        0,
+        0.0507
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "shelters__change_2021_2023": {
       "thresholds": [
         -0.0029,
-        -0.0012,
-        0.0012,
-        0.0029
+        -0.0016,
+        -0.0009,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "social_mobility": {
@@ -537,24 +670,29 @@
         10.9161,
         12.9544
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "social_mobility__change_2018_2023": {
       "thresholds": [
-        -3.1937,
-        -1.2048,
-        1.2048,
-        3.1937
+        -3.2986,
+        -1.323,
+        0,
+        1.7132
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "social_mobility__change_2021_2023": {
       "thresholds": [
-        -2.7829,
-        -1.075,
-        1.075,
-        2.7829
+        -1.6536,
+        0,
+        1.1711,
+        2.8454
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "social_new": {
@@ -564,24 +702,29 @@
         1.446,
         2.9905
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "social_new__change_2018_2023": {
       "thresholds": [
-        -1.8,
-        -0.6777,
-        0.6777,
-        1.8
+        -1.8539,
+        -0.6918,
+        0,
+        1.1096
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "social_new__change_2021_2023": {
       "thresholds": [
-        -1.6905,
-        -0.6494,
-        0.6494,
-        1.6905
+        -0.9238,
+        0,
+        0.7579,
+        1.8193
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "social_rent": {
@@ -591,24 +734,29 @@
         5.4056,
         5.7597
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "social_rent__change_2018_2023": {
       "thresholds": [
-        -5.2534,
-        -4.0802,
-        4.0802,
-        5.2534
+        0,
+        3.7834,
+        4.6692,
+        5.6771
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "social_rent__change_2021_2023": {
       "thresholds": [
-        -1.0092,
-        -0.5407,
-        0.5407,
-        1.0092
+        0,
+        0.4903,
+        0.7758,
+        1.1825
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "social_stock": {
@@ -618,24 +766,29 @@
         71.5416,
         106.5341
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "social_stock__change_2018_2023": {
       "thresholds": [
-        -4.1995,
-        -1.794,
-        1.794,
-        4.1995
+        -3.8963,
+        -1.8252,
+        0,
+        3.0159
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "social_stock__change_2021_2023": {
       "thresholds": [
-        -1.2994,
-        -0.4891,
-        0.4891,
-        1.2994
+        -1.0835,
+        -0.4701,
+        0,
+        1.1638
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "social_vacancy": {
@@ -645,24 +798,29 @@
         2.8268,
         4.8882
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "social_vacancy__change_2018_2023": {
       "thresholds": [
-        -1.9906,
-        -0.7393,
-        0.7393,
-        1.9906
+        -2.2092,
+        -0.8541,
+        0,
+        0.964
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "social_vacancy__change_2021_2023": {
       "thresholds": [
-        -1.5113,
-        -0.5555,
-        0.5555,
-        1.5113
+        -1.6701,
+        -0.6028,
+        0,
+        0.7664
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "sole_trader_creations": {
@@ -672,24 +830,29 @@
         15.9923,
         19.4237
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "sole_trader_creations__change_2018_2023": {
       "thresholds": [
-        -47.0251,
-        -27.9114,
-        27.9114,
-        47.0251
+        0,
+        25.0718,
+        38.9556,
+        53.3998
       ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
       "classCount": 5
     },
     "sole_trader_creations__change_2021_2023": {
       "thresholds": [
-        -12.3338,
-        -5.5738,
-        5.5738,
-        12.3338
+        -8.2719,
+        0,
+        5.6256,
+        12.8335
       ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     },
     "tourist_share": {
@@ -699,24 +862,29 @@
         42.1654,
         66.8819
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "tourist_share__change_2018_2023": {
       "thresholds": [
-        -0.6953,
-        -0.2657,
-        0.2657,
-        0.6953
+        -0.7167,
+        -0.3136,
+        0,
+        0.3374
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "tourist_share__change_2021_2023": {
       "thresholds": [
-        -0.1533,
-        -0.0573,
-        0.0573,
-        0.1533
+        -0.1644,
+        -0.0695,
+        0,
+        0.091
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "unemployment": {
@@ -726,24 +894,29 @@
         16.6768,
         19.0504
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "unemployment__change_2018_2023": {
       "thresholds": [
-        -3.2788,
-        -2.0131,
-        2.0131,
-        3.2788
+        -3.6127,
+        -2.667,
+        -1.7869,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "unemployment__change_2021_2023": {
       "thresholds": [
-        -1.4736,
-        -0.8987,
-        0.8987,
-        1.4736
+        -1.6414,
+        -1.2087,
+        -0.8044,
+        0
       ],
+      "palette": "diverging",
+      "negativeClassCount": 4,
       "classCount": 5
     },
     "urban_share": {
@@ -753,24 +926,475 @@
         65.9095,
         85.7294
       ],
+      "palette": "sequential",
       "classCount": 5
     },
     "urban_share__change_2018_2023": {
       "thresholds": [
-        -0.6381,
-        -0.2286,
-        0.2286,
-        0.6381
+        -0.6768,
+        -0.2463,
+        0,
+        0.3489
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
       "classCount": 5
     },
     "urban_share__change_2021_2023": {
       "thresholds": [
-        -0.1614,
-        -0.0575,
-        0.0575,
-        0.1614
+        -0.1642,
+        -0.0604,
+        0,
+        0.0968
       ],
+      "palette": "diverging",
+      "negativeClassCount": 3,
+      "classCount": 5
+    },
+    "urssaf_employees_c1": {
+      "thresholds": [
+        37,
+        77,
+        161,
+        431.6
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_c2": {
+      "thresholds": [
+        0,
+        9,
+        74,
+        238
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_c3": {
+      "thresholds": [
+        0,
+        15,
+        65.5,
+        241.5
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_c4": {
+      "thresholds": [
+        0,
+        8,
+        38,
+        193
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_c5": {
+      "thresholds": [
+        70,
+        196,
+        415,
+        951
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_de": {
+      "thresholds": [
+        4,
+        18,
+        47,
+        129
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_fz": {
+      "thresholds": [
+        126,
+        231,
+        375,
+        723
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_gz": {
+      "thresholds": [
+        208,
+        364.6,
+        622.4,
+        1449.2
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_hz": {
+      "thresholds": [
+        46,
+        113,
+        216.4,
+        585.2
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_iz": {
+      "thresholds": [
+        48,
+        97.2,
+        188.8,
+        473.8
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_jz": {
+      "thresholds": [
+        2,
+        6,
+        16,
+        58
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_kz": {
+      "thresholds": [
+        18,
+        34,
+        64,
+        146.8
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_lz": {
+      "thresholds": [
+        4,
+        10,
+        21,
+        63
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_mn": {
+      "thresholds": [
+        67,
+        141,
+        303,
+        892
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_oq": {
+      "thresholds": [
+        129.2,
+        243.4,
+        422.2,
+        921.6
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_per_1000_residents": {
+      "thresholds": [
+        119.7711,
+        153.7001,
+        191.4138,
+        247.9474
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_per_1000_residents__change_2018_2023": {
+      "thresholds": [
+        0,
+        4.6177,
+        7.9568,
+        12.0751
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
+      "classCount": 5
+    },
+    "urssaf_employees_per_1000_residents__change_2021_2023": {
+      "thresholds": [
+        -2.3774,
+        0,
+        1.4193,
+        3.6741
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
+      "classCount": 5
+    },
+    "urssaf_employees_ru": {
+      "thresholds": [
+        41,
+        75.6,
+        132,
+        283.2
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_total": {
+      "thresholds": [
+        1111,
+        1948,
+        3163,
+        6750
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_employees_total__change_2018_2023": {
+      "thresholds": [
+        0,
+        5.1497,
+        8.5907,
+        13.1321
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
+      "classCount": 5
+    },
+    "urssaf_employees_total__change_2021_2023": {
+      "thresholds": [
+        -2.2457,
+        0,
+        1.7258,
+        3.7677
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
+      "classCount": 5
+    },
+    "urssaf_establishments_c1": {
+      "thresholds": [
+        6,
+        10,
+        14,
+        25
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_c2": {
+      "thresholds": [
+        0,
+        1
+      ],
+      "palette": "sequential",
+      "classCount": 3
+    },
+    "urssaf_establishments_c3": {
+      "thresholds": [
+        0,
+        1,
+        2,
+        5
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_c4": {
+      "thresholds": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_c5": {
+      "thresholds": [
+        7,
+        13,
+        21,
+        39
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_de": {
+      "thresholds": [
+        1,
+        2,
+        5,
+        9
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_fz": {
+      "thresholds": [
+        28,
+        44,
+        66,
+        113.8
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_gz": {
+      "thresholds": [
+        34,
+        55,
+        89,
+        190.8
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_hz": {
+      "thresholds": [
+        5,
+        9,
+        15,
+        28
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_iz": {
+      "thresholds": [
+        14,
+        25,
+        42,
+        86
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_jz": {
+      "thresholds": [
+        1,
+        3,
+        5,
+        12
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_kz": {
+      "thresholds": [
+        7,
+        12,
+        19,
+        39
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_lz": {
+      "thresholds": [
+        3,
+        5,
+        9,
+        21
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_mn": {
+      "thresholds": [
+        16,
+        28,
+        49,
+        109
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_oq": {
+      "thresholds": [
+        14,
+        23,
+        36,
+        70.8
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_per_1000_residents": {
+      "thresholds": [
+        16.9829,
+        19.9494,
+        22.9362,
+        27.4284
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_per_1000_residents__change_2018_2023": {
+      "thresholds": [
+        0,
+        3.4387,
+        6.1574,
+        9.487
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
+      "classCount": 5
+    },
+    "urssaf_establishments_per_1000_residents__change_2021_2023": {
+      "thresholds": [
+        -2.0218,
+        0,
+        1.3905,
+        3.2491
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
+      "classCount": 5
+    },
+    "urssaf_establishments_ru": {
+      "thresholds": [
+        16,
+        26,
+        41,
+        75
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_total": {
+      "thresholds": [
+        171,
+        264,
+        417.6,
+        819.6
+      ],
+      "palette": "sequential",
+      "classCount": 5
+    },
+    "urssaf_establishments_total__change_2018_2023": {
+      "thresholds": [
+        0,
+        3.9943,
+        7.2808,
+        11.1068
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 1,
+      "classCount": 5
+    },
+    "urssaf_establishments_total__change_2021_2023": {
+      "thresholds": [
+        -2.1521,
+        0,
+        1.6112,
+        3.4632
+      ],
+      "palette": "diverging",
+      "negativeClassCount": 2,
       "classCount": 5
     }
   }

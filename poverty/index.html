@@ -20,9 +20,9 @@
     <title>L’extrême pauvreté dans les pays riches : Analyse empirique sur données françaises</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="vendor/leaflet/leaflet.css" />
-    <link rel="stylesheet" href="styles.css?v=89" />
+    <link rel="stylesheet" href="styles.css?v=96" />
     <script src="vendor/leaflet/leaflet.js" defer></script>
-    <script src="app.js?v=89" defer></script>
+    <script src="app.js?v=100" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#contenu">Aller au contenu</a>
@@ -34,7 +34,7 @@
       <nav class="topbar-nav" aria-label="Navigation par question">
         <div class="language-switch" aria-label="Choisir la langue">
           <a href="index.html" lang="fr" aria-current="page">FR</a>
-          <a href="" lang="en">EN</a>
+          <a href="en.html" lang="en">EN</a>
         </div>
         <details class="question-menu">
           <summary aria-label="Neuf questions pour comprendre la grande pauvreté">
@@ -399,7 +399,7 @@
               <label>
                 <span>Affichage</span>
                 <select id="map-mode" aria-label="Choisir entre le niveau et l’évolution">
-                  <option value="level">Niveau 2022–2023</option>
+                  <option value="level">Niveau</option>
                   <option value="change_2018_2023">Évolution 2018–2023</option>
                   <option value="change_2021_2023">Évolution 2021–2023</option>
                 </select>
@@ -427,7 +427,7 @@
             <div class="map-layout">
               <div class="map-stage">
                 <div class="map-stage-header">
-                  <span class="map-source-pill">Leaflet · géométrie communale IGN · classes par bassin augmenté</span>
+                  <span id="map-source-pill" class="map-source-pill">Leaflet · géométrie communale IGN · classes par bassin augmenté</span>
                   <span id="map-period">Hiver 2022–2023</span>
                 </div>
                 <div id="bva-map" class="bva-map" role="region" aria-label="Atlas interactif des bassins de vie augmentés">

@@ -533,7 +533,7 @@ h3 { font-size: var(--type-h3); }
 .bva-map .leaflet-control-zoom { overflow: hidden; border: 0; border-radius: 11px; box-shadow: 0 8px 24px rgba(23,34,61,0.18); }
 .bva-map .leaflet-control-zoom a { color: var(--ink); background: rgba(255,255,255,0.95); border-color: #e1e5ed; }
 .bva-map .leaflet-control-zoom a:hover { color: var(--pink-dark); background: var(--white); }
-.bva-map .leaflet-tooltip { padding: 0.55rem 0.65rem; color: var(--white); background: rgba(11,16,32,0.96); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; box-shadow: 0 9px 26px rgba(5,9,22,0.24); font-family: inherit; font-size: 0.72rem; line-height: 1.35; }
+.bva-map .leaflet-tooltip { max-width: 360px; padding: 0.55rem 0.65rem; color: var(--white); background: rgba(11,16,32,0.96); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; box-shadow: 0 9px 26px rgba(5,9,22,0.24); font-family: inherit; font-size: 0.72rem; line-height: 1.35; white-space: normal; }
 .bva-map .leaflet-tooltip::before { border-top-color: rgba(11,16,32,0.96); }
 .bva-map .leaflet-control-attribution { padding: 2px 5px; color: #66708a; background: rgba(255,255,255,0.82); font-size: 9px; }
 .map-side { padding: clamp(1.6rem,3vw,2.7rem); }

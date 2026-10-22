@@ -1,27 +1,14 @@
-# Site « L’extrême pauvreté dans les pays riches » — version 89
+# Extreme poverty in wealthy countries — website
 
-Ce dossier contient l’intégralité du site statique actuellement publié, prête pour GitHub Pages. Il comprend les versions française et anglaise, les scripts interactifs, Leaflet, les cartes et les fichiers GeoJSON.
+This archive contains the complete static French and English website, including the interactive maps and their data. It is ready to publish with GitHub Pages and does not require a build step.
 
-## Mise en ligne avec GitHub Pages
+## Publish with GitHub Pages
 
-1. Placez tout le contenu de ce dossier à la racine de votre dépôt GitHub. `index.html` doit se trouver directement à la racine.
-2. Envoyez les fichiers sur la branche `main`.
-3. Dans GitHub, ouvrez **Settings → Pages**.
-4. Sous **Build and deployment**, choisissez **Deploy from a branch**.
-5. Sélectionnez `main`, puis `/(root)`, et enregistrez.
+1. Create a GitHub repository and upload the contents of this folder to the repository root.
+2. In **Settings → Pages**, choose **Deploy from a branch**.
+3. Select the `main` branch and the `/ (root)` folder, then save.
 
-Le site sera disponible à une adresse de la forme `https://VOTRE-NOM.github.io/NOM-DU-DEPOT/`.
+The French homepage is `index.html`; the English version is `en.html`.
 
-Tous les chemins sont relatifs : le site fonctionne à la racine d’un domaine ou dans un sous-dossier GitHub Pages. Il doit être servi par HTTP(S), car l’ouverture directe de `index.html` peut empêcher le chargement des fichiers GeoJSON.
+The canonical and social-sharing URLs currently point to the published ChatGPT Site. If the GitHub Pages copy should become the primary public version, replace `https://grande-pauvrete-france-v35.joker8558.chatgpt.site` in `index.html` and `en.html` with the final GitHub Pages URL.
 
-## Contenu principal
-
-- `index.html` : version française ;
-- `en.html` : version anglaise ;
-- `styles.css` : mise en page ;
-- `app.js` et `app-en.js` : interactions, graphiques, carte et exports PNG ;
-- `assets/` : données cartographiques et images ;
-- `vendor/leaflet/` : bibliothèque Leaflet embarquée ;
-- `favicon.svg` : icône du site.
-
-Cette version correspond à la version 89 publiée en ligne et au commit source `65c7429bf80252cfee7076d03ca4e7cf8264a0eb`.

@@ -80,12 +80,54 @@ const durationStatusSeries = [
   }
 ];
 
+const urssafSectors = [
+  ["c1", "Industries agro-alimentaires"], ["c2", "Cokéfaction et raffinage"],
+  ["c3", "Équipements électriques, électroniques et informatiques"], ["c4", "Matériels de transport"],
+  ["c5", "Autres produits industriels"], ["de", "Industries extractives, énergie et eau"],
+  ["fz", "Construction"], ["gz", "Commerce"], ["hz", "Transports"],
+  ["iz", "Hébergement et restauration"], ["jz", "Information et communication"],
+  ["kz", "Finance et assurance"], ["lz", "Activités immobilières"],
+  ["mn", "Activités scientifiques, techniques et services administratifs"],
+  ["oq", "Administration, enseignement, santé et action sociale"], ["ru", "Autres services"]
+];
+const urssafSource = "Urssaf open data (ODbL) · IGN ADMIN EXPRESS 2024";
+const urssafDensitySource = "Urssaf open data (ODbL) · population annuelle de la base de l’étude · IGN ADMIN EXPRESS 2024";
+const rentControlSource = "ANIL · Service-Public · arrêtés préfectoraux et décrets de périmètre · IGN ADMIN EXPRESS 2024";
+const urssafPeriods = {
+  level: "Année 2025",
+  change_2018_2023: "2018 → 2023",
+  change_2021_2023: "2021 → 2023"
+};
+const urssafDensityPeriods = {
+  level: "Année 2024 · population 2024",
+  change_2018_2023: "2018 → 2023 · populations de chaque année",
+  change_2021_2023: "2021 → 2023 · populations de chaque année"
+};
+
+function urssafSectorMetrics(kind) {
+  const isEmployment = kind === "employees";
+  return urssafSectors.map(([code, label]) => ({
+    key: `urssaf_${kind}_${code}`,
+    label,
+    unit: isEmployment ? "salariés du privé" : "établissements employeurs",
+    shortUnit: isEmployment ? "salariés" : "établissements",
+    digits: 0,
+    modes: ["level"],
+    periods: urssafPeriods,
+    source: urssafSource,
+    description: isEmployment
+      ? `Effectifs salariés du secteur « ${label} » couverts par le régime général, en fin d’année 2025. Les cellules soumises au secret statistique restent non disponibles.`
+      : `Établissements employeurs (comptes cotisants Urssaf) du secteur « ${label} » en 2025. Il ne s’agit pas d’un décompte d’entreprises juridiquement distinctes.`
+  }));
+}
+
 const mapMetricGroups = [
   {
     id: "poverty",
     label: "Précarité",
     metrics: [
       { key: "housing_strict", label: "Sans-abrisme", unit: "personnes / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 2, description: "Personnes accueillies aux RDC en situation de sans-abrisme au sens large, dans les plus de 1 900 centres de distribution des Restos, rapportées au nombre local de ménages." },
+      { key: "housing_insecurity", label: "Précarité résidentielle", unit: "dossiers-ménages RDC / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 2, description: "Dossiers de ménages accueillis aux RDC vivant sans logement personnel, en hébergement temporaire ou dans un logement précaire ou inadéquat, rapportés au nombre local de ménages. Cette catégorie inclut le sans-abrisme." },
       { key: "rdc_total", label: "Précarité alimentaire", unit: "personnes / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 1, description: "Ensemble des personnes accueillies dans les plus de 1 900 centres de distribution des Restos, rapporté au nombre local de ménages." }
     ]
   },
@@ -94,6 +136,7 @@ const mapMetricGroups = [
     label: "Logement et hébergement",
     metrics: [
       { key: "private_rent", label: "Loyer privé", unit: "€ / m²", shortUnit: "€/m²", digits: 1, description: "Loyer moyen du parc privé observé parmi les bénéficiaires d’APL." },
+      { key: "rent_control_population_share_current", label: "Population dans une commune avec encadrement des loyers", unit: "% de la population du bassin", shortUnit: "%", digits: 1, modes: ["level"], periods: { level: "Situation au 12 octobre 2026" }, source: rentControlSource, description: "Part de la population du bassin vivant dans une commune entièrement ou partiellement soumise à l’encadrement du niveau des loyers. Pour les huit communes grenobloises couvertes seulement en partie, cette mesure constitue une borne haute en comptant toute la population communale. Survolez un bassin traité pour voir les communes et leurs dates d’entrée en vigueur." },
       { key: "social_rent", label: "Loyer social", unit: "€ / m²", shortUnit: "€/m²", digits: 1, description: "Loyer moyen pondéré du parc locatif social." },
       { key: "social_stock", label: "Parc de logements sociaux", unit: "logements / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 1, description: "Nombre de logements sociaux rapporté à 1 000 ménages." },
       { key: "social_new", label: "Nouveaux logements sociaux", unit: "mises en service / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 2, description: "Nouvelles mises en service dans le parc social rapportées à 1 000 ménages." },
@@ -115,6 +158,26 @@ const mapMetricGroups = [
       { key: "firm_creations", label: "Créations d’entreprises", unit: "créations / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 1, description: "Créations annuelles d’entreprises rapportées à 1 000 ménages." },
       { key: "sole_trader_creations", label: "Créations d’entreprises individuelles", unit: "créations / 1 000 ménages", shortUnit: "/ 1 000 ménages", digits: 1, description: "Créations annuelles d’entreprises individuelles rapportées à 1 000 ménages." }
     ]
+  },
+  {
+    id: "urssaf-totals",
+    label: "Urssaf · ensemble",
+    metrics: [
+      { key: "urssaf_establishments_total", label: "Établissements employeurs", unit: "établissements employeurs", shortUnit: "établissements", digits: 0, periods: urssafPeriods, source: urssafSource, description: "Nombre d’établissements employeurs, ou comptes cotisants Urssaf. Le champ couvre principalement le secteur privé relevant du régime général ; il ne correspond pas au nombre d’entreprises juridiquement distinctes." },
+      { key: "urssaf_employees_total", label: "Salariés du privé", unit: "salariés", shortUnit: "salariés", digits: 0, periods: urssafPeriods, source: urssafSource, description: "Effectifs salariés en fin d’année dans les établissements employeurs couverts par le régime général. Les cellules soumises au secret statistique ne sont pas imputées et apparaissent comme non disponibles." },
+      { key: "urssaf_establishments_per_1000_residents", label: "Établissements employeurs / 1 000 habitants", unit: "établissements employeurs / 1 000 habitants", shortUnit: "établ. / 1 000 hab.", digits: 1, periods: urssafDensityPeriods, source: urssafDensitySource, description: "Établissements employeurs localisés dans le bassin, rapportés à la population du même millésime. Le niveau utilise 2024, dernière année disponible presque complète ; un bassin reste non disponible." },
+      { key: "urssaf_employees_per_1000_residents", label: "Salariés du privé / 1 000 habitants", unit: "salariés / 1 000 habitants", shortUnit: "salariés / 1 000 hab.", digits: 1, periods: urssafDensityPeriods, source: urssafDensitySource, description: "Effectifs salariés localisés dans les établissements employeurs du bassin, rapportés à la population du même millésime. Il s’agit d’une densité d’emplois au lieu de travail, pas du taux d’emploi des résidents. Un bassin n’est pas affiché si son total exact est inconnu à cause du secret statistique ou si sa population manque." }
+    ]
+  },
+  {
+    id: "urssaf-employees",
+    label: "Urssaf · salariés par secteur",
+    metrics: urssafSectorMetrics("employees")
+  },
+  {
+    id: "urssaf-establishments",
+    label: "Urssaf · établissements par secteur",
+    metrics: urssafSectorMetrics("establishments")
   },
   {
     id: "network",
@@ -145,6 +208,8 @@ const mapMetricGroups = [
 const mapMetrics = new Map(mapMetricGroups.flatMap((group) => group.metrics.map((metric) => [metric.key, metric])));
 const mapPalette = ["#f7e6d7", "#f3b58d", "#ed756f", "#b63a70", "#3a1748"];
 const mapChangePalette = ["#285a9f", "#8ab3dc", "#f1eee7", "#f2a37f", "#bd2357"];
+const mapNegativePalette = ["#285a9f", "#4f7fba", "#8ab3dc", "#c6d9ed", "#e8f0f7"];
+const mapPositivePalette = ["#fde8e0", "#f7c2ad", "#ef8b7b", "#d95270", "#bd2357"];
 const mapModes = {
   level: { suffix: "", period: "Hiver 2022–2023", exportSlug: "niveau-2022-2023" },
   change_2018_2023: {
@@ -162,6 +227,7 @@ const mapModes = {
 };
 const mapChangeConfig = {
   housing_strict: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 2, method: "points" },
+  housing_insecurity: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 2, method: "points" },
   rdc_total: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 1, method: "points" },
   private_rent: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
   social_rent: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
@@ -178,6 +244,10 @@ const mapChangeConfig = {
   firm_stock: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
   firm_creations: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
   sole_trader_creations: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_establishments_total: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_employees_total: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_establishments_per_1000_residents: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
+  urssaf_employees_per_1000_residents: { unit: "variation en %", shortUnit: "%", digits: 1, method: "percent" },
   rdc_centers: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 3, method: "points" },
   households_served: { unit: "écart pour 1 000 ménages", shortUnit: "pt / 1 000 ménages", digits: 1, method: "points" },
   urban_share: { unit: "écart en points de pourcentage", shortUnit: "pp", digits: 1, method: "percentage-points" },
@@ -225,6 +295,8 @@ let bvaMap;
 let bvaLayer;
 let bvaFeatures = [];
 let departmentFeatures = [];
+let rentControlFeatures = [];
+let rentControlLayer;
 let bvaMeta = { metrics: {} };
 let bvaScale;
 let bvaBounds;
@@ -450,7 +522,9 @@ function activeMapMetric(key = mapMetricKey) {
   if (mapModeKey === "level") return base;
   const change = mapChangeConfig[key];
   if (!change) return base;
-  const rangePhrase = mapModes[mapModeKey].rangePhrase;
+  const rangePhrase = key.startsWith("urssaf_")
+    ? (mapModeKey === "change_2018_2023" ? "de 2018 à 2023" : "de 2021 à 2023")
+    : mapModes[mapModeKey].rangePhrase;
   const methodDescriptions = {
     percent: `Variation relative ${rangePhrase}, exprimée en pourcentage.`,
     "percentage-points": `Écart ${rangePhrase}, exprimé en points de pourcentage.`,
@@ -464,6 +538,10 @@ function activeMapMetric(key = mapMetricKey) {
     description: `${base.description} ${methodDescriptions[change.method]}`,
     signed: true
   };
+}
+
+function activeMapPeriod(metric = activeMapMetric()) {
+  return metric?.periods?.[mapModeKey] || mapModes[mapModeKey].period;
 }
 
 function metricClass(feature, key = mapDataKey()) {
@@ -493,7 +571,12 @@ function getMapScale(key) {
   const classCount = Number.isInteger(source.classCount) && source.classCount > 0
     ? source.classCount
     : thresholds.length + 1;
-  return { thresholds, classCount };
+  return {
+    thresholds,
+    classCount,
+    palette: source.palette || null,
+    negativeClassCount: Number.isInteger(source.negativeClassCount) ? source.negativeClassCount : null
+  };
 }
 
 function classRangeLabel(metric, key, index, includeUnit = true) {
@@ -503,7 +586,7 @@ function classRangeLabel(metric, key, index, includeUnit = true) {
   if (!thresholds.length) {
     label = `Classe ${index + 1}`;
   } else if (index === 0) {
-    label = mapModeKey === "level" && thresholds[0] === 0 ? "Aucun" : `≤ ${formatMetricBoundary(metric, thresholds[0])}`;
+    label = mapModeKey === "level" && !metric.signed && thresholds[0] === 0 ? "Aucun" : `≤ ${formatMetricBoundary(metric, thresholds[0])}`;
   } else if (index >= classCount - 1) {
     label = `> ${formatMetricBoundary(metric, thresholds.at(-1))}`;
   } else {
@@ -516,16 +599,35 @@ function numericClassRangeLabel(metric, key, index) {
   if (!Number.isInteger(index) || index < 0) return "";
   const { thresholds } = getMapScale(key);
   if (!thresholds.length) return String(index + 1);
-  if (mapModeKey === "level" && index === 0 && thresholds[0] === 0) return formatMetricBoundary(metric, 0);
+  if (mapModeKey === "level" && !metric.signed && index === 0 && thresholds[0] === 0) return formatMetricBoundary(metric, 0);
   return classRangeLabel(metric, key, index, false);
+}
+
+function resamplePalette(palette, count) {
+  if (count <= 0) return [];
+  if (count === 1) return [palette[Math.floor((palette.length - 1) / 2)]];
+  return Array.from({ length: count }, (_, index) => (
+    palette[Math.round(index * (palette.length - 1) / (count - 1))]
+  ));
+}
+
+function activeMapPalette() {
+  const scale = bvaScale || getMapScale(mapDataKey());
+  const paletteType = scale.palette || (mapModeKey === "level" ? "sequential" : "diverging");
+  if (paletteType === "negative") return resamplePalette(mapNegativePalette, scale.classCount);
+  if (paletteType === "positive") return resamplePalette(mapPositivePalette, scale.classCount);
+  if (paletteType === "diverging" && scale.negativeClassCount) {
+    return [
+      ...resamplePalette(mapNegativePalette, scale.negativeClassCount),
+      ...resamplePalette(mapPositivePalette, scale.classCount - scale.negativeClassCount)
+    ];
+  }
+  return resamplePalette(paletteType === "diverging" ? mapChangePalette : mapPalette, scale.classCount);
 }
 
 function mapClassColor(index) {
   if (index < 0) return "#cbd1dc";
-  const classCount = bvaScale.classCount;
-  const palette = mapModeKey === "level" ? mapPalette : mapChangePalette;
-  const paletteIndex = classCount === 1 ? 2 : Math.round(index * (palette.length - 1) / (classCount - 1));
-  return palette[paletteIndex];
+  return activeMapPalette()[index] || "#cbd1dc";
 }
 
 function basinStyle(feature) {
@@ -574,7 +676,27 @@ function renderBasinDetail(feature = null) {
 function tooltipFor(feature) {
   const metric = activeMapMetric();
   const dataKey = mapDataKey();
-  return `<strong>${escapeHtml(feature.properties.bva_name)}</strong><br>${escapeHtml(metric.label)} : ${escapeHtml(classRangeLabel(metric, dataKey, metricClass(feature), true))}`;
+  const rentControlDetails = metric.key.startsWith("rent_control_") && feature.properties.rent_control_public_summary
+    ? `<br><span>${escapeHtml(feature.properties.rent_control_public_summary)}</span><br><span>Communes : ${escapeHtml(feature.properties.rent_control_public_communes)}</span>`
+    : "";
+  return `<strong>${escapeHtml(feature.properties.bva_name)}</strong><br>${escapeHtml(metric.label)} : ${escapeHtml(classRangeLabel(metric, dataKey, metricClass(feature), true))}${rentControlDetails}`;
+}
+
+function onEachRentControlCommune(feature, layer) {
+  const p = feature.properties || {};
+  layer.bindTooltip(
+    `<strong>${escapeHtml(p.commune || "Commune")}</strong><br>${escapeHtml(p.territoire || "")}`
+      + `<br>En vigueur depuis le ${escapeHtml(p.date_debut || "")}`
+      + `<br>${escapeHtml(p.couverture || "")}`,
+    { sticky: true, direction: "top", opacity: 1 }
+  );
+}
+
+function updateRentControlOverlay() {
+  if (!bvaMap || !rentControlLayer) return;
+  const shouldShow = activeMapMetric().key.startsWith("rent_control_");
+  if (shouldShow && !bvaMap.hasLayer(rentControlLayer)) rentControlLayer.addTo(bvaMap);
+  if (!shouldShow && bvaMap.hasLayer(rentControlLayer)) bvaMap.removeLayer(rentControlLayer);
 }
 
 function renderMapLegend() {
@@ -583,12 +705,11 @@ function renderMapLegend() {
   const dataKey = mapDataKey();
   const { thresholds, classCount } = bvaScale;
   host.replaceChildren();
-  const palette = mapModeKey === "level" ? mapPalette : mapChangePalette;
+  const palette = activeMapPalette();
   for (let index = 0; index < classCount; index += 1) {
     const row = document.createElement("div");
     row.className = "legend-segment";
-    const paletteIndex = classCount === 1 ? 2 : Math.round(index * (palette.length - 1) / (classCount - 1));
-    row.style.setProperty("--c", palette[paletteIndex]);
+    row.style.setProperty("--c", palette[index]);
     const label = classRangeLabel(metric, dataKey, index, true);
     row.innerHTML = `<i aria-hidden="true"></i><span>${escapeHtml(label)}</span>`;
     host.appendChild(row);
@@ -606,7 +727,9 @@ function setMapMetric(key) {
   const dataKey = mapDataKey(key);
   document.querySelector("#map-title").textContent = metric.label;
   document.querySelector("#map-description").textContent = metric.description;
-  document.querySelector("#map-period").textContent = mapModes[mapModeKey].period;
+  document.querySelector("#map-period").textContent = activeMapPeriod(metric);
+  const sourcePill = document.querySelector("#map-source-pill");
+  if (sourcePill) sourcePill.textContent = metric.source || "Leaflet · géométrie communale IGN · classes par bassin augmenté";
   if (!bvaFeatures.length) return;
   bvaScale = getMapScale(dataKey);
   bvaLayer.eachLayer((layer) => {
@@ -614,6 +737,7 @@ function setMapMetric(key) {
     layer.setTooltipContent(tooltipFor(layer.feature));
   });
   if (selectedBasinLayer) highlightBasin(selectedBasinLayer, true);
+  updateRentControlOverlay();
   renderMapLegend();
   renderBasinDetail(selectedBasinLayer?.feature || null);
 }
@@ -742,8 +866,23 @@ function drawFeatureForExport(context, feature, offsetX, offsetY, scale, style, 
     context.lineWidth = style.lineWidth;
     context.lineJoin = "round";
     context.lineCap = "round";
+    context.setLineDash(style.dash || []);
     context.stroke();
+    context.setLineDash([]);
   }
+}
+
+function drawRentControlForExport(context, offsetY, scale, project) {
+  if (!activeMapMetric().key.startsWith("rent_control_")) return;
+  rentControlFeatures.forEach((feature) => {
+    const partial = feature.properties?.couverture === "couverture partielle";
+    drawFeatureForExport(context, feature, 0, offsetY, scale, {
+      fill: "rgba(255,79,139,.10)",
+      stroke: "#ff2f78",
+      lineWidth: Math.max(partial ? 1.6 : 2.1, (partial ? 1.15 : 1.5) * scale),
+      dash: partial ? [7, 5] : []
+    }, project);
+  });
 }
 
 function downloadCanvas(canvas, filename) {
@@ -796,7 +935,7 @@ async function downloadSimpleMapAsPng(event) {
   const defaultLabel = "PNG carte seule";
   const exportMetric = activeMapMetric();
   const exportDataKey = mapDataKey();
-  const exportModeSlug = mapModes[mapModeKey].exportSlug;
+  const exportModeSlug = mapExportSlug(activeMapPeriod(exportMetric));
   setMapDownloadButtonsDisabled(true);
   button.textContent = "Préparation…";
   status.textContent = "Préparation du PNG carte seule.";
@@ -850,6 +989,7 @@ async function downloadSimpleMapAsPng(event) {
       stroke: "rgba(11,16,32,.62)",
       lineWidth: Math.max(1.15, .85 * mapScale)
     }, project));
+    drawRentControlForExport(context, 0, mapScale, project);
     if (selectedBasinLayer?.feature) drawFeatureForExport(context, selectedBasinLayer.feature, 0, 0, mapScale, {
       stroke: "#0b1020",
       lineWidth: Math.max(3, 2.1 * mapScale)
@@ -919,10 +1059,9 @@ async function downloadContextMapAsPng(event) {
   const defaultLabel = "PNG complet";
   const exportMetric = activeMapMetric();
   const exportDataKey = mapDataKey();
-  const exportMode = mapModes[mapModeKey];
   const exportPeriod = mapModeKey === "level"
-    ? `Niveau · ${exportMode.period}`
-    : `Évolution · ${exportMode.period}`;
+    ? `Niveau · ${activeMapPeriod(exportMetric)}`
+    : `Évolution · ${activeMapPeriod(exportMetric)}`;
   setMapDownloadButtonsDisabled(true);
   button.textContent = "Préparation…";
   status.textContent = "Préparation du PNG complet.";
@@ -991,6 +1130,7 @@ async function downloadContextMapAsPng(event) {
       stroke: "rgba(11,16,32,.62)",
       lineWidth: Math.max(1.15, .85 * mapScale)
     }, project));
+    drawRentControlForExport(context, mapY, mapScale, project);
     if (selectedBasinLayer?.feature) drawFeatureForExport(context, selectedBasinLayer.feature, 0, mapY, mapScale, {
       stroke: "#0b1020",
       lineWidth: Math.max(3, 2.1 * mapScale)
@@ -1048,13 +1188,13 @@ async function downloadContextMapAsPng(event) {
     context.fillRect(0, footerY, width, footerHeight);
     context.fillStyle = "#b7c0d4";
     context.font = "500 14px Inter, Arial, sans-serif";
-    context.fillText("Source : Restos du Cœur · IGN ADMIN EXPRESS 2024 · GHWW", 46, footerY + 23);
+    context.fillText(`Source : ${exportMetric.source || "Restos du Cœur · IGN ADMIN EXPRESS 2024 · GHWW"}`, 46, footerY + 23);
     context.textAlign = "right";
     context.fillText("L’extrême pauvreté dans les pays riches", width - 40, footerY + 23);
     context.textAlign = "left";
 
     const areaSlug = mapExportSlug(selectedBasinLayer?.feature?.properties?.bva_name || "france");
-    const filename = `carte-${mapMetricKey.replaceAll("_", "-")}-${exportMode.exportSlug}-${areaSlug}-complete.png`;
+    const filename = `carte-${mapMetricKey.replaceAll("_", "-")}-${mapExportSlug(activeMapPeriod(exportMetric))}-${areaSlug}-complete.png`;
     const exportInfo = await downloadCanvas(canvas, filename);
     const sizeLabel = exportInfo.bytes ? `, ${Math.round(exportInfo.bytes / 1024)} ko` : "";
     status.textContent = `PNG complet généré : ${filename}, ${canvas.width} × ${canvas.height} pixels${sizeLabel}.`;
@@ -1079,7 +1219,10 @@ function prepareMapControls() {
   const groupsForMode = () => mapMetricGroups
     .map((group) => ({
       ...group,
-      metrics: group.metrics.filter((metric) => mapModeKey === "level" || mapChangeConfig[metric.key])
+      metrics: group.metrics.filter((metric) => {
+        if (metric.modes && !metric.modes.includes(mapModeKey)) return false;
+        return mapModeKey === "level" || mapChangeConfig[metric.key];
+      })
     }))
     .filter((group) => group.metrics.length);
 
@@ -1130,23 +1273,28 @@ async function initializeBvaMap() {
   prepareMapControls();
   const loading = document.querySelector(".map-loading");
   try {
-    const [basins, metadata, departments] = await Promise.all([
-      fetch("assets/bva-atlas-classes.geojson?v=86").then((response) => {
+    const [basins, metadata, departments, rentControls] = await Promise.all([
+      fetch("assets/bva-atlas-classes.geojson?v=100").then((response) => {
         if (!response.ok) throw new Error("Bassins indisponibles");
         return response.json();
       }),
-      fetch("assets/bva-atlas-meta.json?v=86").then((response) => {
+      fetch("assets/bva-atlas-meta.json?v=100").then((response) => {
         if (!response.ok) throw new Error("Métadonnées cartographiques indisponibles");
         return response.json();
       }),
       fetch("assets/departements.geojson").then((response) => {
         if (!response.ok) throw new Error("Départements indisponibles");
         return response.json();
+      }),
+      fetch("assets/rent-control-communes.geojson?v=96").then((response) => {
+        if (!response.ok) throw new Error("Périmètres d’encadrement indisponibles");
+        return response.json();
       })
     ]);
     bvaMeta = metadata;
     bvaFeatures = basins.features;
     departmentFeatures = departments.features;
+    rentControlFeatures = rentControls.features;
     bvaScale = getMapScale(mapDataKey());
     bvaMap = L.map("bva-map", {
       zoomControl: false,
@@ -1160,17 +1308,32 @@ async function initializeBvaMap() {
     const departmentPane = bvaMap.createPane("departments");
     departmentPane.style.zIndex = 420;
     departmentPane.style.pointerEvents = "none";
+    const rentControlPane = bvaMap.createPane("rentControl");
+    rentControlPane.style.zIndex = 430;
     const renderer = L.canvas({ padding: .35 });
-    bvaLayer = L.geoJSON(basins, { renderer, style: basinStyle, onEachFeature: onEachBasin }).addTo(bvaMap);
+    const rentControlRenderer = L.canvas({ padding: .35, pane: "rentControl" });
+    bvaLayer = L.geoJSON(basins, { renderer, pane: "basins", style: basinStyle, onEachFeature: onEachBasin }).addTo(bvaMap);
     L.geoJSON(departments, {
       renderer,
       pane: "departments",
       interactive: false,
       style: { color: "rgba(11,16,32,.58)", weight: .85, fillOpacity: 0 }
     }).addTo(bvaMap);
+    rentControlLayer = L.geoJSON(rentControls, {
+      renderer: rentControlRenderer,
+      pane: "rentControl",
+      style: (feature) => ({
+        color: "#ff4f8b",
+        weight: feature.properties?.couverture === "couverture partielle" ? 1.35 : 1.8,
+        dashArray: feature.properties?.couverture === "couverture partielle" ? "5 4" : null,
+        fillColor: "#ff4f8b",
+        fillOpacity: .08
+      }),
+      onEachFeature: onEachRentControlCommune
+    });
     L.control.zoom({ position: "bottomright" }).addTo(bvaMap);
     L.control.attribution({ position: "bottomleft", prefix: false })
-      .addAttribution("IGN ADMIN EXPRESS 2024 · données GHWW")
+      .addAttribution('IGN ADMIN EXPRESS 2024 · <a href="https://open.urssaf.fr/explore/dataset/etablissements-et-effectifs-salaries-au-niveau-commune-x-ape-last/" target="_blank" rel="noopener">Urssaf open data (ODbL)</a> · GHWW')
       .addTo(bvaMap);
     bvaBounds = bvaLayer.getBounds();
     bvaMap.fitBounds(bvaBounds, { padding: [10, 10] });
@@ -1188,6 +1351,7 @@ async function initializeBvaMap() {
       });
     renderMapLegend();
     renderBasinDetail();
+    updateRentControlOverlay();
     loading.remove();
     setMapDownloadButtonsDisabled(false);
   } catch (error) {
